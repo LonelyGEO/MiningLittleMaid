@@ -96,12 +96,14 @@ public class TaskMining implements IFarmTask {
         MaidMineDurabilityCheckTask durabilityTask = new MaidMineDurabilityCheckTask();
         MaidMineInventoryCheckTask inventoryTask = new MaidMineInventoryCheckTask();
         MaidMineTorchPlaceTask torchTask = new MaidMineTorchPlaceTask();
+        MaidMineCombatCheckTask combatTask = new MaidMineCombatCheckTask();
         MaidMineMoveTask moveTask = new MaidMineMoveTask(this, 0.6f, VERTICAL_SEARCH_RANGE);
         MaidMineBreakTask breakTask = new MaidMineBreakTask(this);
         return Lists.newArrayList(
                 Pair.of(4, durabilityTask),
                 Pair.of(4, inventoryTask),
                 Pair.of(4, torchTask),
+                Pair.of(4, combatTask),
                 Pair.of(5, moveTask),
                 Pair.of(6, breakTask)
         );
