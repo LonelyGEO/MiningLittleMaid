@@ -8,6 +8,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.wrapper.CombinedInvWrapper;
+import com.github.lonelygeo.mininglittlemaid.config.Config;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,7 +25,7 @@ public class MaidMineInventoryCheckTask extends MaidCheckRateTask {
     @Override
     protected void start(ServerLevel world, EntityMaid maid, long gameTime) {
         if (isInventoryFull(maid)) {
-            LOGGER.debug("Maid inventory full, cancelling mining task");
+            Config.debugLog(LOGGER,"Maid inventory full, cancelling mining task");
             if (maid.getOwner() instanceof ServerPlayer player) {
                 player.sendSystemMessage(Component.translatable(FULL_NOTIFY_KEY));
             }

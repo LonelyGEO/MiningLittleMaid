@@ -16,6 +16,7 @@ import net.minecraft.world.entity.ai.behavior.BehaviorControl;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
+import com.github.lonelygeo.mininglittlemaid.config.Config;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -59,7 +60,7 @@ public class TaskMining implements IFarmTask {
 
     @Override
     public void harvest(EntityMaid maid, BlockPos cropPos, BlockState cropState) {
-        LOGGER.debug("Destroying block at {}", cropPos);
+        Config.debugLog(LOGGER,"Destroying block at {}", cropPos);
         if (maid.canDestroyBlock(cropPos)) {
             maid.destroyBlock(cropPos);
         }
@@ -120,7 +121,7 @@ public class TaskMining implements IFarmTask {
             return FunctionCallSwitchResult.OK;
         }
         if (TaskEquipUtil.tryEquipFromBackpack(maid, MiningFavorGate::isMiningTool)) {
-            LOGGER.debug("Task switch: equipping mining tool from backpack");
+            Config.debugLog(LOGGER,"Task switch: equipping mining tool from backpack");
             return FunctionCallSwitchResult.OK;
         }
         return FunctionCallSwitchResult.MISSING_REQUIRED_ITEM;

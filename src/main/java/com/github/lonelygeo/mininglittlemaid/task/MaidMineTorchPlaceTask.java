@@ -58,7 +58,7 @@ public class MaidMineTorchPlaceTask extends MaidCheckRateTask {
 
         world.setBlock(placePos, Blocks.TORCH.defaultBlockState(), 3);
         lastPlaceTime = gameTime;
-        LOGGER.debug("Placed torch at {}", placePos);
+        Config.debugLog(LOGGER,"Placed torch at {}", placePos);
     }
 
     private BlockPos findPlaceableSurface(ServerLevel world, BlockPos maidPos) {

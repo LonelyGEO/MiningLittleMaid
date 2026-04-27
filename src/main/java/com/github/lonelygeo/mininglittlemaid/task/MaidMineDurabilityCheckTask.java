@@ -32,10 +32,10 @@ public class MaidMineDurabilityCheckTask extends MaidCheckRateTask {
         if (TaskEquipUtil.tryEquipFromBackpack(maid, stack ->
                 MiningFavorGate.isMiningTool(stack)
                         && (stack.getMaxDamage() - stack.getDamageValue()) >= minDurability)) {
-            LOGGER.debug("Swapped to spare mining tool, remaining durability >= {}", minDurability);
+            Config.debugLog(LOGGER,"Swapped to spare mining tool, remaining durability >= {}", minDurability);
             return;
         }
-        LOGGER.debug("No durable mining tool available, cancelling mining task");
+        Config.debugLog(LOGGER,"No durable mining tool available, cancelling mining task");
         maid.setTask(null);
     }
 

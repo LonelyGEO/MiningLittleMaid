@@ -9,6 +9,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import com.github.lonelygeo.mininglittlemaid.config.Config;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -73,7 +74,7 @@ public class MiningFavorGate {
         else if (favorLevel >= 2) radius = 2;
         else if (favorLevel >= 1) radius = 2;
         else radius = 1;
-        LOGGER.debug("Sniff radius: favorLevel={} -> radius={}", favorLevel, radius);
+        Config.debugLog(LOGGER,"Sniff radius: favorLevel={} -> radius={}", favorLevel, radius);
         return radius;
     }
 

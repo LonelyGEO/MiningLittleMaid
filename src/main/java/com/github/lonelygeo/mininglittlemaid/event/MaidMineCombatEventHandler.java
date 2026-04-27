@@ -40,7 +40,7 @@ public class MaidMineCombatEventHandler {
         if (ticks >= Config.COMBAT_RETURN_DELAY_TICKS.get()) {
             TaskManager.findTask(ResourceLocation.parse(taskId)).ifPresent(task -> {
                 maid.setTask(task);
-                LOGGER.debug("Combat ended, resuming task: {}", taskId);
+                Config.debugLog(LOGGER,"Combat ended, resuming task: {}", taskId);
             });
             maid.getPersistentData().remove(RESUME_KEY);
             IDLE_COUNTER.remove(id);
