@@ -25,8 +25,8 @@ public class ClientGuiEventHandler {
             return;
         }
         EntityMaid maid = (EntityMaid) event.getGui().getMaid();
-        int x = event.getLeftPos() + 9;
-        int y = event.getTopPos() + 34;
+        int x = event.getLeftPos() + 86;
+        int y = event.getTopPos() + 158;
         Checkbox checkBox = Checkbox.builder(CHAT_LABEL, Minecraft.getInstance().font)
                 .pos(x, y)
                 .selected(MaidMineBreakTask.isChatNotifyEnabled(maid))
