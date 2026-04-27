@@ -333,7 +333,118 @@ public List<Pair<Integer, BehaviorControl<? super EntityMaid>>> createBrainTasks
 
 - 好感度 0（新女仆）不检查耐久，行为与当前完全一致
 - 不影响现有 Move/Break 任务的优先级和执行逻辑
+
 - [ ] Add "stop when inventory full" logic
+
+### 4) 背包满时停止 + 通知
+
+**目标**：所有好感度等级生效。女仆背包满时自动停止采矿、通知玩家、转为空闲。以独立 Brain Task 实现，与 Feature 3 同级（优先级 4）。
+
+---
+
+#### 用户选择
+
+| 参数 | 选择 |
+|------|------|
+| 满包行为 | 停止挖矿 → 通知玩家 → 转为空闲 |
+| 判定标准 | 所有可用栏位全满（含背包模组栏位） |
+| 好感度门控 | 不挂钩，所有等级生效 |
+| 实现方式 | 独立 Brain Task，优先级 4 |
+
+---
+
+#### 主 mod API 分析
+
+| API | 返回类型 | 用途 |
+|-----|---------|------|
+| `maid.getAvailableInv(true)` | `CombinedInvWrapper` | 所有栏位（主物品栏 + 背包模组栏位） |
+| `inv.getSlots()` | `int` | 总栏位数 |
+| `inv.getStackInSlot(i)` | `ItemStack` | 访问第 i 格 |
+
+---
+
+#### 接口设计
+
+**新增 `MaidMineInventoryCheckTask.java`**（优先级 4，与耐久检查同级）：
+
+```java
+public class MaidMineInventoryCheckTask extends MaidCheckRateTask {
+    private static final int CHECK_RATE = 60; // 每 3 秒一次
+    private static final String FULL_NOTIFY_KEY = "message.mining_little_maid.inventory_full";
+
+    public MaidMineInventoryCheckTask() {
+        super(ImmutableMap.of()); // 无需特定 memory 条件
+        this.setMaxCheckRate(CHECK_RATE);
+    }
+
+    @Override
+    protected void start(ServerLevel world, EntityMaid maid, long gameTime) {
+        if (isInventoryFull(maid)) {
+            // 通知主人
+            if (maid.getOwner() instanceof ServerPlayer player) {
+                player.sendSystemMessage(
+                    Component.translatable(FULL_NOTIFY_KEY));
+            }
+            // 取消采矿任务，变回空闲
+            maid.switchTask(null);
+        }
+    }
+
+    private static boolean isInventoryFull(EntityMaid maid) {
+        CombinedInvWrapper inv = maid.getAvailableInv(true);
+        for (int i = 0; i < inv.getSlots(); i++) {
+            ItemStack stack = inv.getStackInSlot(i);
+            if (stack.isEmpty()) return false;
+            if (stack.getCount() < stack.getMaxStackSize()) return false;
+        }
+        return true;
+    }
+}
+```
+
+**`TaskMining.createBrainTasks()` 修改**：
+
+```java
+@Override
+public List<Pair<Integer, BehaviorControl<? super EntityMaid>>> createBrainTasks(EntityMaid maid) {
+    MaidMineDurabilityCheckTask durabilityTask = new MaidMineDurabilityCheckTask(this, maxVeinSize);
+    MaidMineInventoryCheckTask inventoryTask = new MaidMineInventoryCheckTask();
+    MaidMineMoveTask moveTask = new MaidMineMoveTask(this, 0.6f, VERTICAL_SEARCH_RANGE);
+    MaidMineBreakTask breakTask = new MaidMineBreakTask(this);
+    return Lists.newArrayList(
+        Pair.of(4, durabilityTask),   // 耐久检查
+        Pair.of(4, inventoryTask),    // 背包满检查（同级，两项同时执行）
+        Pair.of(5, moveTask),
+        Pair.of(6, breakTask)
+    );
+}
+```
+
+---
+
+#### 新增翻译键
+
+| 键 | zh_cn | en_us |
+|---|-------|-------|
+| `message.mining_little_maid.inventory_full` | `女仆的背包已满，停止采矿` | `Maid's inventory is full, mining stopped` |
+
+---
+
+#### 涉及文件
+
+| 文件 | 操作 |
+|------|------|
+| `MaidMineInventoryCheckTask.java` | 新建 |
+| `TaskMining.java` | `createBrainTasks()` 加入优先级 4 的新任务 |
+| `zh_cn.json` | 新增翻译键 |
+| `en_us.json` | 新增翻译键 |
+
+---
+
+#### 向下兼容
+
+- `getAvailableInv(true)` 即使未安装背包模组也返回基础物品栏，行为无变化
+- 独立 Brain Task 不影响现有逻辑
 - [ ] Add torch placement while mining (light up dark areas)
 - [ ] Support the "Create" mod's drill tool as a pickaxe alternative
 - [ ] Add custom ambient sound for mining (instead of reusing MAID_FARM sound)
