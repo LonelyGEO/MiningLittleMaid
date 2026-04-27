@@ -209,6 +209,7 @@ After editing:
 1. Run targeted verification first (filtered `test --tests ...` when applicable).
 2. Run `./gradlew.bat check` before handoff.
 3. Ensure diff does not contain unrelated formatting churn.
+4. **runClient 需要用户确认**：执行 `runClient` 前必须向用户提出确认，不得自行启动。
 
 ## 8) Packet-specific checklist
 
