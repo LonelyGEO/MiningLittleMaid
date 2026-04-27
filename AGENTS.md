@@ -33,6 +33,14 @@ Run from repository root `G:\CursorProject\Mining-Little-Maid`.
 - `./gradlew.bat runServer`
 - `./gradlew.bat tasks --all`
 
+### runClient 注意事项
+
+- `runClient` 是 GUI 进程，启动后不会自动退出，**不能用 shell timeout 等待**。
+- 正确启动方式：`Start-Process -FilePath ".\gradlew.bat" -ArgumentList "runClient" -WorkingDirectory "G:\CursorProject\Mining-Little-Maid"`
+- 或让用户在自己终端手动执行 `.\gradlew.bat runClient`。
+- 游戏退出后检查 `run/client/logs/latest.log` 中的 ERROR 和 crash-reports 目录。
+- Gradle 不会自动关闭游戏窗口，窗口由用户手动关闭。
+
 ## 3) Architecture
 
 ### Entry point
