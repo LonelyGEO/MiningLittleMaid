@@ -129,13 +129,4 @@ Note: TouhouLittleMaid's source code lives at `G:\CursorProject\Touhou Little Ma
 - **不可逆操作必须询问**：包括但不限于 `git push --force`、`git reset --hard`、`git rebase`、分支删除、`--amend` 已推送的 commit。
 - **遇到 SSH 权限错误、认证失败、远程冲突等 git 问题时，暂停操作并主动询问用户**。
 
-## 6) Future improvements
 
-- [ ] Add configurable ore whitelist via block tag
-- [ ] Add particle effects / sound when mining
-- [ ] Support vein mining (breaking connected ore blocks in one go)
-- [ ] Add tool durability check before breaking
-- [ ] Add "stop when inventory full" logic
-- [ ] Add torch placement while mining (light up dark areas)
-- [ ] Support the "Create" mod's drill tool as a pickaxe alternative
-- [ ] Add custom ambient sound for mining (instead of reusing MAID_FARM sound)

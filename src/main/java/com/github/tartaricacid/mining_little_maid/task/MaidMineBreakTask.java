@@ -97,4 +97,10 @@ public class MaidMineBreakTask extends Behavior<EntityMaid> {
     public static void toggleChatNotify(EntityMaid maid) {
         maid.getPersistentData().putBoolean(CHAT_NOTIFY_KEY, !isChatNotifyEnabled(maid));
     }
+
+    public static void toggleForMaid(net.minecraft.world.level.Level level, int maidId) {
+        if (level.getEntity(maidId) instanceof EntityMaid maid) {
+            toggleChatNotify(maid);
+        }
+    }
 }
