@@ -8,11 +8,13 @@ import com.github.tartaricacid.touhoulittlemaid.util.TaskEquipUtil;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.phys.AABB;
 import com.github.lonelygeo.mininglittlemaid.config.Config;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.List;
 
 public class MaidMineCombatCheckTask extends MaidCheckRateTask {
     private static final int CHECK_RATE = 60;
@@ -31,8 +33,10 @@ public class MaidMineCombatCheckTask extends MaidCheckRateTask {
             return;
         }
 
-        LivingEntity target = maid.getTarget();
-        if (!(target instanceof Monster)) {
+        AABB searchArea = maid.getBoundingBox().inflate(10.0, 5.0, 10.0);
+        List<Monster> monsters = world.getEntitiesOfClass(Monster.class, searchArea,
+                m -> m.isAlive() && maid.canAttack(m));
+        if (monsters.isEmpty()) {
             return;
         }
 

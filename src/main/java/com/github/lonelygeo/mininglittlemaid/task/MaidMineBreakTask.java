@@ -25,6 +25,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.ArrayDeque;
 import java.util.HashSet;
 import java.util.Queue;
+import java.util.Random;
 import java.util.Set;
 
 public class MaidMineBreakTask extends Behavior<EntityMaid> {
@@ -68,9 +69,19 @@ public class MaidMineBreakTask extends Behavior<EntityMaid> {
                 maid.getBrain().eraseMemory(MemoryModuleType.WALK_TARGET);
                 worldIn.sendParticles(ParticleTypes.HAPPY_VILLAGER, maid.getX(), maid.getY() + 1.5, maid.getZ(),
                         3, 0.3, 0.3, 0.3, 0);
-                maid.getChatBubbleManager().addTextChatBubble("message.mining_little_maid.ore_above_below");
+                BlockState targetState = worldIn.getBlockState(targetPos);
+                Component oreName = targetState.getBlock().getName();
+                String kaomoji = randomKaomoji();
+                String directionHint = yDiff > 3 ? "↑" : "↓";
+                String bubbleText = directionHint + " " + oreName.getString() + " " + kaomoji;
+                maid.getChatBubbleManager().addTextChatBubble(bubbleText);
+                String directionKey = yDiff > 3
+                        ? "message.mining_little_maid.ore_above"
+                        : "message.mining_little_maid.ore_below";
+                Component msg = Component.translatable(directionKey, oreName)
+                        .append(Component.literal(" " + kaomoji));
                 if (isChatNotifyEnabled(maid) && maid.getOwner() instanceof ServerPlayer player) {
-                    player.sendSystemMessage(Component.translatable("message.mining_little_maid.ore_above_below"));
+                    player.sendSystemMessage(msg);
                 }
                 return;
             }
@@ -171,5 +182,17 @@ public class MaidMineBreakTask extends Behavior<EntityMaid> {
             toggleChatNotify(maid);
             Config.debugLog(LOGGER,"Chat notify toggled, maidId={}, enabled={}", maidId, isChatNotifyEnabled(maid));
         }
+    }
+
+    private static final String[] KAOMOJI = {
+        "(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧",
+        "☆*:.｡.o(≧▽≦)o.｡.:*☆",
+        "ヽ(>∀<☆)ノ",
+        "(๑˃̵ᴗ˂̵)و",
+        "✧⁺⸜(●′▾‵●)⸝⁺✧"
+    };
+
+    private static String randomKaomoji() {
+        return KAOMOJI[new Random().nextInt(KAOMOJI.length)];
     }
 }
