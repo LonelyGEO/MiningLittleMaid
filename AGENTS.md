@@ -250,3 +250,19 @@ For changes under `network`:
 - 每次提交前检查 `git status` 和 `git diff`，确保不包含敏感信息（密钥、token 等）。
 
 Keep this file updated when tooling/rules/project conventions change.
+
+## 12) Versioning
+
+- 当前版本: `0.1.0-neoforge+mc1.21.1`
+- 后缀 `-neoforge+mc1.21.1` 为平台标识，保持不变
+
+| 版本位 | 触发条件 |
+|--------|---------|
+| PATCH (`0.1.x`) | Bug 修复、参数微调、语言文件补充 |
+| MINOR (`0.x.0`) | 新增功能（每完成 planToAgent.md 中一项） |
+| MAJOR (`x.0.0`) | 功能基本完整时升至 `1.0.0`；架构重写或 MC 版本升级 |
+
+规则：
+- 版本号变更单独一条 commit，格式 `release: x.y.z`
+- **每次版本迭代前必须向用户确认**，不得自行决定发版
+- 发版时在 `planToAgent.md` 记录该版本已完成的功能
