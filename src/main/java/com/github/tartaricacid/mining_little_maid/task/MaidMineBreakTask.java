@@ -5,6 +5,8 @@ import com.github.tartaricacid.touhoulittlemaid.init.InitEntities;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.ai.behavior.Behavior;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.minecraft.world.entity.ai.behavior.BlockPosTracker;
@@ -46,6 +48,11 @@ public class MaidMineBreakTask extends Behavior<EntityMaid> {
         this.lastCheckTime = worldIn.getGameTime();
         maid.getBrain().getMemory(InitEntities.TARGET_POS.get()).ifPresent(posTracker -> {
             BlockPos targetPos = BlockPos.containing(posTracker.currentPosition());
+            if (Math.abs(targetPos.getY() - maid.blockPosition().getY()) > 2) {
+                maid.getBrain().eraseMemory(InitEntities.TARGET_POS.get());
+                worldIn.playSound(null, targetPos, SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.NEUTRAL, 0.3f, 1.2f);
+                return;
+            }
             task.harvest(maid, targetPos, worldIn.getBlockState(targetPos));
             BlockPos nextOre = findAdjacentOre(worldIn, maid);
             if (nextOre != null) {

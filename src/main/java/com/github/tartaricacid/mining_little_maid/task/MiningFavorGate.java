@@ -13,10 +13,10 @@ public class MiningFavorGate {
      * 根据好感度等级获取嗅探半径（透过石头的检测距离）
      */
     public static int getSniffRadius(int favorLevel) {
-        if (favorLevel >= 3) return 5;
-        if (favorLevel >= 2) return 5;
-        if (favorLevel >= 1) return 4;
-        return 3;
+        if (favorLevel >= 3) return 3;
+        if (favorLevel >= 2) return 2;
+        if (favorLevel >= 1) return 2;
+        return 1;
     }
 
     /**
