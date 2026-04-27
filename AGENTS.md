@@ -121,7 +121,14 @@ Note: TouhouLittleMaid's source code lives at `G:\CursorProject\Touhou Little Ma
 - Do NOT add unnecessary comments. Chinese comments are OK but keep them concise.
 - Imports: split into project/local → third-party/Minecraft → Java → static.
 
-## 5) Future improvements
+## 5) Git workflow
+
+- **Remote**: `https://github.com/LonelyGEO/MiningLittleMaid.git`
+- **每个改动单独 commit**，不要多个不相关修改混在一个 commit 里。
+- **不可逆操作必须询问**：包括但不限于 `git push --force`、`git reset --hard`、`git rebase`、分支删除、`--amend` 已推送的 commit。
+- **遇到 SSH 权限错误、认证失败、远程冲突等 git 问题时，暂停操作并主动询问用户**。
+
+## 6) Future improvements
 
 - [ ] Add configurable ore whitelist via block tag
 - [ ] Add particle effects / sound when mining
