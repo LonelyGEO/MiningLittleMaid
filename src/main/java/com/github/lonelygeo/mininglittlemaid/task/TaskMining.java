@@ -17,6 +17,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.PickaxeItem;
 import net.minecraft.world.level.block.state.BlockState;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
@@ -26,6 +28,7 @@ import java.util.function.Predicate;
 public class TaskMining implements IFarmTask {
     private static final ResourceLocation UID = ResourceLocation.fromNamespaceAndPath("mining_little_maid", "mining");
     private static final int VERTICAL_SEARCH_RANGE = 16;
+    private static final Logger LOGGER = LogManager.getLogger();
 
     @Override
     public ResourceLocation getUid() {
@@ -57,6 +60,7 @@ public class TaskMining implements IFarmTask {
 
     @Override
     public void harvest(EntityMaid maid, BlockPos cropPos, BlockState cropState) {
+        LOGGER.debug("Destroying block at {}", cropPos);
         if (maid.canDestroyBlock(cropPos)) {
             maid.destroyBlock(cropPos);
         }
@@ -106,6 +110,7 @@ public class TaskMining implements IFarmTask {
             return FunctionCallSwitchResult.OK;
         }
         if (TaskEquipUtil.tryEquipFromBackpack(maid, stack -> stack.getItem() instanceof PickaxeItem)) {
+            LOGGER.debug("Task switch: equipping pickaxe from backpack");
             return FunctionCallSwitchResult.OK;
         }
         return FunctionCallSwitchResult.MISSING_REQUIRED_ITEM;

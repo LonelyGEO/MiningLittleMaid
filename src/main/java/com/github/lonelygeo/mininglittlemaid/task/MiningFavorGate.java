@@ -3,20 +3,26 @@ package com.github.lonelygeo.mininglittlemaid.task;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * 好感度门控：好感度越高，女仆透过石头探测矿石的范围越远
  */
 public class MiningFavorGate {
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * 根据好感度等级获取嗅探半径（透过石头的检测距离）
      */
     public static int getSniffRadius(int favorLevel) {
-        if (favorLevel >= 3) return 3;
-        if (favorLevel >= 2) return 2;
-        if (favorLevel >= 1) return 2;
-        return 1;
+        int radius;
+        if (favorLevel >= 3) radius = 3;
+        else if (favorLevel >= 2) radius = 2;
+        else if (favorLevel >= 1) radius = 2;
+        else radius = 1;
+        LOGGER.debug("Sniff radius: favorLevel={} -> radius={}", favorLevel, radius);
+        return radius;
     }
 
     /**
