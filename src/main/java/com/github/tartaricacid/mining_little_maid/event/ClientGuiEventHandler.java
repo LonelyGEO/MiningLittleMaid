@@ -4,6 +4,7 @@ import com.github.tartaricacid.mining_little_maid.MiningLittleMaid;
 import com.github.tartaricacid.mining_little_maid.network.MiningChatNotifyToggleMessage;
 import com.github.tartaricacid.mining_little_maid.task.MaidMineBreakTask;
 import com.github.tartaricacid.touhoulittlemaid.api.event.client.MaidContainerGuiEvent;
+import com.github.tartaricacid.touhoulittlemaid.client.gui.entity.maid.config.MaidConfigContainerGui;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Checkbox;
@@ -20,9 +21,12 @@ public class ClientGuiEventHandler {
 
     @SubscribeEvent
     public static void onInitMaidGui(MaidContainerGuiEvent.Init event) {
+        if (!(event.getGui() instanceof MaidConfigContainerGui)) {
+            return;
+        }
         EntityMaid maid = (EntityMaid) event.getGui().getMaid();
-        int x = event.getLeftPos() + 51;
-        int y = event.getTopPos() + 197;
+        int x = event.getLeftPos() + 9;
+        int y = event.getTopPos() + 34;
         Checkbox checkBox = Checkbox.builder(CHAT_LABEL, Minecraft.getInstance().font)
                 .pos(x, y)
                 .selected(MaidMineBreakTask.isChatNotifyEnabled(maid))

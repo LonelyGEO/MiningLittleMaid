@@ -63,7 +63,7 @@ public class MaidMineBreakTask extends Behavior<EntityMaid> {
             task.harvest(maid, targetPos, worldIn.getBlockState(targetPos));
             BlockPos nextOre = findAdjacentOre(worldIn, maid);
             if (nextOre != null) {
-                BehaviorUtils.setWalkAndLookTargetMemories(maid, nextOre, 0.6f, 0);
+                BehaviorUtils.setWalkAndLookTargetMemories(maid, nextOre, 0.6f, 2);
                 maid.getBrain().setMemory(InitEntities.TARGET_POS.get(), new BlockPosTracker(nextOre));
             } else {
                 maid.getBrain().eraseMemory(InitEntities.TARGET_POS.get());

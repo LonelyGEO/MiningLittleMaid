@@ -64,7 +64,7 @@ public class MaidMineMoveTask extends MaidCheckRateTask {
             return false;
         });
         if (this.adjacentOrePos != null) {
-            BehaviorUtils.setWalkAndLookTargetMemories(maid, this.adjacentOrePos, movementSpeed, 0);
+            BehaviorUtils.setWalkAndLookTargetMemories(maid, this.adjacentOrePos, movementSpeed, 2);
             maid.getBrain().setMemory(InitEntities.TARGET_POS.get(), new BlockPosTracker(this.adjacentOrePos));
             this.setNextCheckTickCount(5);
         } else if (maid.getOwner() != null) {
