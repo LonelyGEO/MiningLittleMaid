@@ -12,10 +12,13 @@ import net.minecraft.world.entity.ai.behavior.BlockPosTracker;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.level.block.state.BlockState;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class MaidMineMoveTask extends MaidCheckRateTask {
     private static final int MAX_DELAY_TIME = 120;
     private static final float DEFAULT_SEARCH_RADIUS = 16.0F;
+    private static final Logger LOGGER = LogManager.getLogger();
     private final TaskMining task;
     private final float movementSpeed;
     private final int verticalSearchRange;
@@ -47,6 +50,7 @@ public class MaidMineMoveTask extends MaidCheckRateTask {
         );
         this.adjacentOrePos = null;
         int sniffRadius = MiningFavorGate.getSniffRadius(maid.getFavorabilityManager().getLevel());
+        LOGGER.debug("BFS search started, sniffRadius={}, maxDistance={}, verticalRange={}", sniffRadius, maxDistance, verticalSearchRange);
         bfs.find(pos -> {
             for (int dx = -sniffRadius; dx <= sniffRadius; dx++) {
                 for (int dy = -sniffRadius; dy <= sniffRadius; dy++) {
@@ -64,10 +68,12 @@ public class MaidMineMoveTask extends MaidCheckRateTask {
             return false;
         });
         if (this.adjacentOrePos != null) {
+            LOGGER.debug("Ore found at {} via BFS, setting walk and look target", this.adjacentOrePos);
             BehaviorUtils.setWalkAndLookTargetMemories(maid, this.adjacentOrePos, movementSpeed, 2);
             maid.getBrain().setMemory(InitEntities.TARGET_POS.get(), new BlockPosTracker(this.adjacentOrePos));
             this.setNextCheckTickCount(5);
         } else if (maid.getOwner() != null) {
+            LOGGER.debug("No ore in BFS range, wandering near owner");
             BlockPos ownerPos = maid.getOwner().blockPosition();
             int x = ownerPos.getX() + maid.getRandom().nextInt(12) - 6;
             int y = ownerPos.getY() + maid.getRandom().nextInt(4) - 2;
