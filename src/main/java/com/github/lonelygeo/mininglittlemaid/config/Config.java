@@ -8,6 +8,7 @@ public class Config {
     public static final ModConfigSpec.IntValue MAX_VEIN_SIZE;
     public static final ModConfigSpec.IntValue MIN_LIGHT_LEVEL;
     public static final ModConfigSpec.IntValue TORCH_COOLDOWN_TICKS;
+    public static final ModConfigSpec.IntValue COMBAT_RETURN_DELAY_TICKS;
 
     static {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
@@ -24,6 +25,10 @@ public class Config {
         TORCH_COOLDOWN_TICKS = builder
                 .comment("火把放置冷却时间（tick，20 tick = 1 秒）")
                 .defineInRange("torchCooldownTicks", 120, 20, 600);
+
+        COMBAT_RETURN_DELAY_TICKS = builder
+                .comment("战斗结束后等多久切回采矿（tick，20 tick = 1 秒）")
+                .defineInRange("combatReturnDelayTicks", 100, 20, 600);
 
         SPEC = builder.build();
     }

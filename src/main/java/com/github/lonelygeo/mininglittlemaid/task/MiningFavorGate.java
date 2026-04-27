@@ -26,11 +26,22 @@ public class MiningFavorGate {
             TagKey.create(Registries.ITEM,
                     ResourceLocation.fromNamespaceAndPath(MiningLittleMaid.MOD_ID, "mining_tools"));
 
+    public static final TagKey<Item> WEAPONS =
+            TagKey.create(Registries.ITEM,
+                    ResourceLocation.fromNamespaceAndPath(MiningLittleMaid.MOD_ID, "weapons"));
+
     /**
      * 检查工具是否为可采矿工具（Item Tag 驱动）
      */
     public static boolean isMiningTool(ItemStack stack) {
         return stack.is(MINING_TOOLS);
+    }
+
+    /**
+     * 检查物品是否为武器（Item Tag 驱动）
+     */
+    public static boolean isWeapon(ItemStack stack) {
+        return stack.is(WEAPONS);
     }
 
     /**

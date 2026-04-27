@@ -764,7 +764,7 @@ TaskEquipUtil.tryEquipFromBackpack(maid, stack ->
 
 ---
 
-- [ ] Combat detection: auto-switch to combat when monster nearby, return to mining after
+- [x] Combat detection: auto-switch to combat when monster nearby, return to mining after
 
 ### 7) 采矿遇怪自动切换战斗
 
