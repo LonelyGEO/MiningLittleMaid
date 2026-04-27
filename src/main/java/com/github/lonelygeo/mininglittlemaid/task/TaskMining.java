@@ -114,11 +114,11 @@ public class TaskMining implements IFarmTask {
 
     @Override
     public FunctionCallSwitchResult onFunctionCallSwitch(EntityMaid maid) {
-        if (hasPickaxe(maid)) {
+        if (MiningFavorGate.isMiningTool(maid.getMainHandItem())) {
             return FunctionCallSwitchResult.OK;
         }
         if (TaskEquipUtil.tryEquipFromBackpack(maid, MiningFavorGate::isMiningTool)) {
-            LOGGER.debug("Task switch: equipping pickaxe from backpack");
+            LOGGER.debug("Task switch: equipping mining tool from backpack");
             return FunctionCallSwitchResult.OK;
         }
         return FunctionCallSwitchResult.MISSING_REQUIRED_ITEM;

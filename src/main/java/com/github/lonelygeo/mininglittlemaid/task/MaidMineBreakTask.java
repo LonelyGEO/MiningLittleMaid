@@ -15,6 +15,7 @@ import net.minecraft.world.entity.ai.behavior.Behavior;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.minecraft.world.entity.ai.behavior.BlockPosTracker;
 import net.minecraft.world.entity.ai.behavior.PositionTracker;
+import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
@@ -60,9 +61,11 @@ public class MaidMineBreakTask extends Behavior<EntityMaid> {
         this.lastCheckTime = worldIn.getGameTime();
         maid.getBrain().getMemory(InitEntities.TARGET_POS.get()).ifPresent(posTracker -> {
             BlockPos targetPos = BlockPos.containing(posTracker.currentPosition());
-            if (Math.abs(targetPos.getY() - maid.blockPosition().getY()) > 2) {
-                LOGGER.debug("Ore at {} unreachable (height diff={}), sending above/below message", targetPos, Math.abs(targetPos.getY() - maid.blockPosition().getY()));
+            int yDiff = targetPos.getY() - maid.blockPosition().getY();
+            if (yDiff > 3 || yDiff < -1) {
+                LOGGER.debug("Ore at {} unreachable (yDiff={}), sending above/below message", targetPos, yDiff);
                 maid.getBrain().eraseMemory(InitEntities.TARGET_POS.get());
+                maid.getBrain().eraseMemory(MemoryModuleType.WALK_TARGET);
                 worldIn.sendParticles(ParticleTypes.HAPPY_VILLAGER, maid.getX(), maid.getY() + 1.5, maid.getZ(),
                         3, 0.3, 0.3, 0.3, 0);
                 maid.getChatBubbleManager().addTextChatBubble("message.mining_little_maid.ore_above_below");
