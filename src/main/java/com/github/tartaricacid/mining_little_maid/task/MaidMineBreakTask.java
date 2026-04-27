@@ -4,9 +4,8 @@ import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.init.InitEntities;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.ai.behavior.Behavior;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.minecraft.world.entity.ai.behavior.BlockPosTracker;
@@ -50,7 +49,8 @@ public class MaidMineBreakTask extends Behavior<EntityMaid> {
             BlockPos targetPos = BlockPos.containing(posTracker.currentPosition());
             if (Math.abs(targetPos.getY() - maid.blockPosition().getY()) > 2) {
                 maid.getBrain().eraseMemory(InitEntities.TARGET_POS.get());
-                worldIn.playSound(null, targetPos, SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.NEUTRAL, 0.3f, 1.2f);
+                worldIn.sendParticles(ParticleTypes.HAPPY_VILLAGER, maid.getX(), maid.getY() + 1.5, maid.getZ(),
+                        3, 0.3, 0.3, 0.3, 0);
                 return;
             }
             task.harvest(maid, targetPos, worldIn.getBlockState(targetPos));
