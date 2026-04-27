@@ -12,21 +12,18 @@ import net.minecraft.world.entity.ai.behavior.Behavior;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.minecraft.world.entity.ai.behavior.BlockPosTracker;
 import net.minecraft.world.entity.ai.behavior.PositionTracker;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.level.block.state.BlockState;
-
-import java.util.Map;
 
 public class MaidMineBreakTask extends Behavior<EntityMaid> {
     private static final int CHECK_RATE = 20;
     private static final String CHAT_NOTIFY_KEY = "mining_chat_notify";
+    private static final int CLOSE_ENOUGH_HORIZONTAL = 3;
     private final TaskMining task;
     private long lastCheckTime;
 
     public MaidMineBreakTask(TaskMining task) {
         super(ImmutableMap.of(
-                MemoryModuleType.WALK_TARGET, MemoryStatus.VALUE_ABSENT,
                 InitEntities.TARGET_POS.get(), MemoryStatus.VALUE_PRESENT
         ));
         this.task = task;
@@ -40,7 +37,8 @@ public class MaidMineBreakTask extends Behavior<EntityMaid> {
         return maid.getBrain().getMemory(InitEntities.TARGET_POS.get())
                 .map(PositionTracker::currentPosition)
                 .map(BlockPos::containing)
-                .filter(pos -> pos.distManhattan(maid.blockPosition()) <= 3)
+                .filter(pos -> Math.abs(pos.getX() - maid.blockPosition().getX())
+                        + Math.abs(pos.getZ() - maid.blockPosition().getZ()) <= CLOSE_ENOUGH_HORIZONTAL)
                 .filter(pos -> task.canHarvest(maid, pos, worldIn.getBlockState(pos)))
                 .isPresent();
     }
