@@ -2,9 +2,10 @@
 
 ## Language policy
 
-- Default to simplified Chinese (简体中文).
-- Keep code, commands, error messages, and API names in their original language.
-- Ask questions in Chinese.
+- 默认使用简体中文回答。
+- 除非我明确要求英文，否则不要切换英文叙述。
+- 代码、命令、报错、API 名称保持原文，不要强行翻译。
+- 提问澄清时也使用中文。
 
 ## 1) Project snapshot
 

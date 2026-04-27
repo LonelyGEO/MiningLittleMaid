@@ -1,0 +1,9 @@
+{
+    "maid.mode.mining": {
+        "category": "neutral",
+        "subtitle": "subtitle.mining_little_maid.maid.mode.mining",
+        "sounds": [
+            "touhou_little_maid:maid/empty"
+        ]
+    }
+}

@@ -3,7 +3,7 @@ package com.github.tartaricacid.mining_little_maid.task;
 import com.github.tartaricacid.touhoulittlemaid.api.task.FunctionCallSwitchResult;
 import com.github.tartaricacid.touhoulittlemaid.api.task.IFarmTask;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
-import com.github.tartaricacid.touhoulittlemaid.init.InitSounds;
+import com.github.tartaricacid.mining_little_maid.init.InitSounds;
 import com.github.tartaricacid.touhoulittlemaid.util.ItemsUtil;
 import com.github.tartaricacid.touhoulittlemaid.util.SoundUtil;
 import com.github.tartaricacid.touhoulittlemaid.util.TaskEquipUtil;
@@ -82,7 +82,7 @@ public class TaskMining implements IFarmTask {
     @Nullable
     @Override
     public SoundEvent getAmbientSound(EntityMaid maid) {
-        return SoundUtil.environmentSound(maid, InitSounds.MAID_FARM.get(), 0.5f);
+        return SoundUtil.environmentSound(maid, InitSounds.MAID_MINING.get(), 0.5f);
     }
 
     @Override
