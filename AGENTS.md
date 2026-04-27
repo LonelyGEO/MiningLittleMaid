@@ -248,12 +248,13 @@ For changes under `network`:
   - `git commit --amend`（已推送的 commit）
   - 以及其他会修改已推送历史或破坏工作区的操作
 - 每次提交前检查 `git status` 和 `git diff`，确保不包含敏感信息（密钥、token 等）。
+- **提交前主动提出版本变更建议**：每次完成代码改动后，Agent 应主动根据 §12 的版本位规则进行判断。PATCH 级别（Bug 修复、小调整）可自行决定并变更版本号；MINOR 及以上（新功能、架构重写、MC 版本升级）必须向用户确认后再变更。
 
 Keep this file updated when tooling/rules/project conventions change.
 
 ## 12) Versioning
 
-- 当前版本: `0.1.0-neoforge+mc1.21.1`
+- 当前版本: `0.1.1-neoforge+mc1.21.1`
 - 后缀 `-neoforge+mc1.21.1` 为平台标识，保持不变
 
 | 版本位 | 触发条件 |
@@ -264,5 +265,5 @@ Keep this file updated when tooling/rules/project conventions change.
 
 规则：
 - 版本号变更单独一条 commit，格式 `release: x.y.z`
-- **每次版本迭代前必须向用户确认**，不得自行决定发版
+- **PATCH 版本 Agent 可自行决定并变更**；MINOR/MAJOR 版本迭代前必须向用户确认，不得自行决定发版
 - 发版时在 `planToAgent.md` 记录该版本已完成的功能
