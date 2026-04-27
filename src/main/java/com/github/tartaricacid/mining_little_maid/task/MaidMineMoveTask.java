@@ -6,6 +6,7 @@ import com.github.tartaricacid.touhoulittlemaid.entity.passive.MaidPathFindingBF
 import com.github.tartaricacid.touhoulittlemaid.init.InitEntities;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.minecraft.world.entity.ai.behavior.BlockPosTracker;
@@ -13,14 +14,13 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.level.block.state.BlockState;
 
-import java.util.Optional;
-
 public class MaidMineMoveTask extends MaidCheckRateTask {
     private static final int MAX_DELAY_TIME = 120;
     private static final float DEFAULT_SEARCH_RADIUS = 16.0F;
     private final TaskMining task;
     private final float movementSpeed;
     private final int verticalSearchRange;
+    private BlockPos adjacentOrePos;
 
     public MaidMineMoveTask(TaskMining task, float movementSpeed, int verticalSearchRange) {
         super(ImmutableMap.of(
@@ -46,16 +46,24 @@ public class MaidMineMoveTask extends MaidCheckRateTask {
                 maxDistance,
                 verticalSearchRange
         );
-        Optional<BlockPos> result = bfs.find(pos -> {
-            BlockState state = world.getBlockState(pos);
-            return MiningFavorGate.isMineableOre(state)
-                    && task.canHarvest(maid, pos, state);
+        this.adjacentOrePos = null;
+        bfs.find(pos -> {
+            for (Direction dir : Direction.values()) {
+                BlockPos adjacent = pos.relative(dir);
+                BlockState state = world.getBlockState(adjacent);
+                if (MiningFavorGate.isMineableOre(state)
+                        && task.canHarvest(maid, adjacent, state)) {
+                    this.adjacentOrePos = adjacent.immutable();
+                    return true;
+                }
+            }
+            return false;
         });
-        result.ifPresent(pos -> {
-            BehaviorUtils.setWalkAndLookTargetMemories(maid, pos, movementSpeed, 0);
-            maid.getBrain().setMemory(InitEntities.TARGET_POS.get(), new BlockPosTracker(pos));
+        if (this.adjacentOrePos != null) {
+            BehaviorUtils.setWalkAndLookTargetMemories(maid, this.adjacentOrePos, movementSpeed, 0);
+            maid.getBrain().setMemory(InitEntities.TARGET_POS.get(), new BlockPosTracker(this.adjacentOrePos));
             this.setNextCheckTickCount(5);
-        });
+        }
         bfs.finish();
     }
 }
