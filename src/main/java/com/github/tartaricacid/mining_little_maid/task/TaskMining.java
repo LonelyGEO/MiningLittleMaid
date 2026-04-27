@@ -38,6 +38,11 @@ public class TaskMining implements IFarmTask {
     }
 
     @Override
+    public boolean isEnable(EntityMaid maid) {
+        return !maid.isHomeModeEnable();
+    }
+
+    @Override
     public boolean isSeed(ItemStack stack) {
         return false;
     }

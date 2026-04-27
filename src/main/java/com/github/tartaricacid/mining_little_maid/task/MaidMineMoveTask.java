@@ -35,7 +35,10 @@ public class MaidMineMoveTask extends MaidCheckRateTask {
 
     @Override
     protected void start(ServerLevel world, EntityMaid maid, long gameTime) {
-        float maxDistance = maid.hasRestriction() ? maid.getRestrictRadius() : DEFAULT_SEARCH_RADIUS;
+        if (maid.isHomeModeEnable()) {
+            return;
+        }
+        float maxDistance = DEFAULT_SEARCH_RADIUS;
         MaidPathFindingBFS bfs = new MaidPathFindingBFS(
                 maid.getNavigation().getNodeEvaluator(),
                 world,
