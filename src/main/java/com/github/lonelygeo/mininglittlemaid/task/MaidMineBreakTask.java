@@ -63,7 +63,7 @@ public class MaidMineBreakTask extends Behavior<EntityMaid> {
             BlockPos targetPos = BlockPos.containing(posTracker.currentPosition());
             int yDiff = targetPos.getY() - maid.blockPosition().getY();
             if (yDiff > 3 || yDiff < -1) {
-                LOGGER.debug("Ore at {} unreachable (yDiff={}), sending above/below message", targetPos, yDiff);
+                Config.debugLog(LOGGER,"Ore at {} unreachable (yDiff={}), sending above/below message", targetPos, yDiff);
                 maid.getBrain().eraseMemory(InitEntities.TARGET_POS.get());
                 maid.getBrain().eraseMemory(MemoryModuleType.WALK_TARGET);
                 worldIn.sendParticles(ParticleTypes.HAPPY_VILLAGER, maid.getX(), maid.getY() + 1.5, maid.getZ(),
@@ -74,7 +74,7 @@ public class MaidMineBreakTask extends Behavior<EntityMaid> {
                 }
                 return;
             }
-            LOGGER.debug("Mining ore at {}", targetPos);
+            Config.debugLog(LOGGER,"Mining ore at {}", targetPos);
             BlockState targetState = worldIn.getBlockState(targetPos);
             int count;
             if (MiningFavorGate.canVeinMine(maid.getFavorabilityManager().getLevel())) {
@@ -88,18 +88,18 @@ public class MaidMineBreakTask extends Behavior<EntityMaid> {
                 tool.hurtAndBreak(count, maid, EquipmentSlot.MAINHAND);
             }
             if (count > 1) {
-                LOGGER.debug("Vein mined {} ores", count);
+                Config.debugLog(LOGGER,"Vein mined {} ores", count);
                 worldIn.sendParticles(ParticleTypes.HAPPY_VILLAGER,
                         maid.getX(), maid.getY() + 1.5, maid.getZ(),
                         count * 2, 0.5, 0.5, 0.5, 0.1);
             }
             BlockPos nextOre = findAdjacentOre(worldIn, maid);
             if (nextOre != null) {
-                LOGGER.debug("Adjacent ore found at {}, continuing chain", nextOre);
+                Config.debugLog(LOGGER,"Adjacent ore found at {}, continuing chain", nextOre);
                 BehaviorUtils.setWalkAndLookTargetMemories(maid, nextOre, 0.6f, 2);
                 maid.getBrain().setMemory(InitEntities.TARGET_POS.get(), new BlockPosTracker(nextOre));
             } else {
-                LOGGER.debug("No adjacent ore, clearing target");
+                Config.debugLog(LOGGER,"No adjacent ore, clearing target");
                 maid.getBrain().eraseMemory(InitEntities.TARGET_POS.get());
             }
         });
@@ -169,7 +169,7 @@ public class MaidMineBreakTask extends Behavior<EntityMaid> {
     public static void toggleForMaid(net.minecraft.world.level.Level level, int maidId) {
         if (level.getEntity(maidId) instanceof EntityMaid maid) {
             toggleChatNotify(maid);
-            LOGGER.debug("Chat notify toggled, maidId={}, enabled={}", maidId, isChatNotifyEnabled(maid));
+            Config.debugLog(LOGGER,"Chat notify toggled, maidId={}, enabled={}", maidId, isChatNotifyEnabled(maid));
         }
     }
 }

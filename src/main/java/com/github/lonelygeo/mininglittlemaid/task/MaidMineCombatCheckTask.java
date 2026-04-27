@@ -10,6 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Monster;
+import com.github.lonelygeo.mininglittlemaid.config.Config;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -43,7 +44,7 @@ public class MaidMineCombatCheckTask extends MaidCheckRateTask {
         if (!TaskEquipUtil.tryEquipFromBackpack(maid, MiningFavorGate::isWeapon)) {
             return;
         }
-        LOGGER.debug("Combat detected, equipping weapon and switching to attack task");
+        Config.debugLog(LOGGER,"Combat detected, equipping weapon and switching to attack task");
 
         if (currentTask != null) {
             maid.getPersistentData().putString(RESUME_KEY, currentTask.getUid().toString());
@@ -52,7 +53,7 @@ public class MaidMineCombatCheckTask extends MaidCheckRateTask {
         TaskManager.findTask(ResourceLocation.parse(ATTACK_TASK_ID))
                 .ifPresent(task -> {
                     maid.setTask(task);
-                    LOGGER.debug("Switched to attack task, will resume mining after combat");
+                    Config.debugLog(LOGGER,"Switched to attack task, will resume mining after combat");
                 });
     }
 }

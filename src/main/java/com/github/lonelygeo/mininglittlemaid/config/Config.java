@@ -1,6 +1,7 @@
 package com.github.lonelygeo.mininglittlemaid.config;
 
 import net.neoforged.neoforge.common.ModConfigSpec;
+import org.apache.logging.log4j.Logger;
 
 public class Config {
     public static final ModConfigSpec SPEC;
@@ -9,6 +10,7 @@ public class Config {
     public static final ModConfigSpec.IntValue MIN_LIGHT_LEVEL;
     public static final ModConfigSpec.IntValue TORCH_COOLDOWN_TICKS;
     public static final ModConfigSpec.IntValue COMBAT_RETURN_DELAY_TICKS;
+    public static final ModConfigSpec.BooleanValue DEBUG_LOGGING;
 
     static {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
@@ -30,6 +32,16 @@ public class Config {
                 .comment("战斗结束后等多久切回采矿（tick，20 tick = 1 秒）")
                 .defineInRange("combatReturnDelayTicks", 100, 20, 600);
 
+        DEBUG_LOGGING = builder
+                .comment("启用 Debug 日志输出（需重启生效）")
+                .define("enableDebugLog", false);
+
         SPEC = builder.build();
+    }
+
+    public static void debugLog(Logger logger, String message, Object... params) {
+        if (DEBUG_LOGGING.get()) {
+            logger.debug(message, params);
+        }
     }
 }
