@@ -445,6 +445,221 @@ public List<Pair<Integer, BehaviorControl<? super EntityMaid>>> createBrainTasks
 
 - `getAvailableInv(true)` 即使未安装背包模组也返回基础物品栏，行为无变化
 - 独立 Brain Task 不影响现有逻辑
+
 - [ ] Add torch placement while mining (light up dark areas)
+
+### 5) 移动时自动放置火把
+
+**目标**：所有好感度等级生效。女仆在采矿任务中定期检测脚边亮度，低于可配置阈值时自动放置火把。以独立 Brain Task 实现（优先级 4），面向多模组服务器深度优化性能。
+
+---
+
+#### 用户选择
+
+| 参数 | 选择 |
+|------|------|
+| 放置时机 | 移动经过时，AI 定期检测周围亮度 |
+| 放置位置 | 脚边（向下搜索最近可放置面） |
+| 火把来源 | 背包消耗；无火把时通知玩家 |
+| 好感度门控 | 不挂钩 |
+| 实现方式 | 独立 Brain Task，优先级 4 |
+
+---
+
+#### 性能优化设计（多模组服务器优先）
+
+| 优化点 | 说明 |
+|--------|------|
+| 检测周期 | 60 ticks（3 秒），继承 `MaidCheckRateTask` 框架 |
+| 冷却时间 | 120 ticks（6 秒），可配置 |
+| 亮度查询 | `world.getMaxLocalRawBrightness(pos)` — O(1) |
+| 静止跳过 | 坐标与上次相同时跳过（避免同一暗处反复检查） |
+| 最昂贵操作 | `world.setBlock` 仅在所有条件满足时执行一次 |
+
+---
+
+#### 接口设计
+
+**`MiningLittleMaid.java` 注册配置**：
+
+```java
+public MiningLittleMaid(IEventBus modEventBus) {
+    InitSounds.SOUNDS.register(modEventBus);
+    modEventBus.addListener(this::registerPayloadHandlers);
+    // 注册配置文件
+    modEventBus.getContainer().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+}
+```
+
+**新增 `config/Config.java`**（共享配置类，供 Feature 2/3/5 使用）：
+
+```java
+package com.github.lonelygeo.mininglittlemaid.config;
+
+@ModConfigSpec
+public class Config {
+    public static final ConfigSpec SPEC;
+
+    // Feature 2: 矿脉连锁
+    public static final ConfigSpec.IntValue MAX_VEIN_SIZE;
+
+    // Feature 5: 火把
+    public static final ConfigSpec.IntValue MIN_LIGHT_LEVEL;
+    public static final ConfigSpec.IntValue TORCH_COOLDOWN_TICKS;
+
+    static {
+        Builder builder = new Builder();
+        builder.comment("Mining Little Maid 配置");
+
+        MAX_VEIN_SIZE = builder
+                .comment("矿脉连锁最大块数（仅好感度等级 3 生效）")
+                .defineInRange("maxVeinSize", 8, 2, 64);
+
+        MIN_LIGHT_LEVEL = builder
+                .comment("亮度低于此值时女仆放置火把")
+                .defineInRange("minLightLevel", 7, 0, 15);
+
+        TORCH_COOLDOWN_TICKS = builder
+                .comment("火把放置冷却时间（tick，20 tick = 1 秒）")
+                .defineInRange("torchCooldownTicks", 120, 20, 600);
+
+        SPEC = builder.build();
+    }
+}
+```
+
+**运行时生成文件**：`config/mining_little_maid-common.toml`
+
+```toml
+[Mining Little Maid 配置]
+# 矿脉连锁最大块数（仅好感度等级 3 生效）
+# 范围: 2 ~ 64
+maxVeinSize = 8
+# 亮度低于此值时女仆放置火把
+# 范围: 0 ~ 15
+minLightLevel = 7
+# 火把放置冷却时间（tick，20 tick = 1 秒）
+# 范围: 20 ~ 600
+torchCooldownTicks = 120
+```
+
+**新增 `MaidMineTorchPlaceTask.java`**（优先级 4）：
+
+```java
+public class MaidMineTorchPlaceTask extends MaidCheckRateTask {
+    private static final int CHECK_RATE = 60; // 每 3 秒
+    private static final String NO_TORCH_KEY = "message.mining_little_maid.no_torch";
+    private BlockPos lastPos = BlockPos.ZERO;
+    private long lastPlaceTime; // 冷却计时
+
+    public MaidMineTorchPlaceTask() {
+        super(ImmutableMap.of());
+        this.setMaxCheckRate(CHECK_RATE);
+    }
+
+    @Override
+    protected void start(ServerLevel world, EntityMaid maid, long gameTime) {
+        // 坐标未变 → 跳过（避免同一位置反复检查）
+        if (maid.blockPosition().equals(lastPos)) return;
+        lastPos = maid.blockPosition().immutable();
+
+        // 亮度足够 → 跳过
+        if (world.getMaxLocalRawBrightness(maid.blockPosition()) >= Config.MIN_LIGHT_LEVEL.get()) return;
+
+        // 冷却中 → 跳过
+        long cooldown = Config.TORCH_COOLDOWN_TICKS.get();
+        if (gameTime - lastPlaceTime < cooldown) return;
+
+        // 找脚边可放置面
+        BlockPos placePos = findPlaceableSurface(world, maid.blockPosition());
+        if (placePos == null) return;
+
+        // 消耗火把
+        if (!consumeTorch(maid)) {
+            if (maid.getOwner() instanceof ServerPlayer player) {
+                player.sendSystemMessage(Component.translatable(NO_TORCH_KEY));
+            }
+            return;
+        }
+
+        // 放置火把
+        world.setBlock(placePos, Blocks.TORCH.defaultBlockState(), 3);
+        lastPlaceTime = gameTime;
+    }
+
+    private BlockPos findPlaceableSurface(ServerLevel world, BlockPos maidPos) {
+        BlockPos.MutableBlockPos check = new BlockPos.MutableBlockPos();
+        for (int dy = 0; dy >= -3; dy--) {
+            check.set(maidPos.getX(), maidPos.getY() + dy, maidPos.getZ());
+            if (world.getBlockState(check).isFaceSturdy(world, check, Direction.UP)
+                    && world.getBlockState(check.above()).isAir()) {
+                return check.above().immutable();
+            }
+        }
+        return null;
+    }
+
+    private boolean consumeTorch(EntityMaid maid) {
+        CombinedInvWrapper inv = maid.getAvailableInv(true);
+        for (int i = 0; i < inv.getSlots(); i++) {
+            ItemStack stack = inv.getStackInSlot(i);
+            if (stack.is(Items.TORCH)) {
+                stack.shrink(1);
+                return true;
+            }
+        }
+        return false;
+    }
+}
+```
+
+**`TaskMining.createBrainTasks()` 修改**：
+
+```java
+@Override
+public List<Pair<Integer, BehaviorControl<? super EntityMaid>>> createBrainTasks(EntityMaid maid) {
+    int maxVeinSize = Config.MAX_VEIN_SIZE.get();
+    return Lists.newArrayList(
+        Pair.of(4, new MaidMineDurabilityCheckTask(this, maxVeinSize)),
+        Pair.of(4, new MaidMineInventoryCheckTask()),
+        Pair.of(4, new MaidMineTorchPlaceTask()),
+        Pair.of(5, new MaidMineMoveTask(this, 0.6f, VERTICAL_SEARCH_RANGE)),
+        Pair.of(6, new MaidMineBreakTask(this))
+    );
+}
+```
+
+---
+
+#### 新增翻译键
+
+| 键 | zh_cn | en_us |
+|---|-------|-------|
+| `message.mining_little_maid.no_torch` | `女仆需要火把，但背包里没有` | `Maid needs a torch, but none in inventory` |
+
+---
+
+#### AI 优先级总览（Feature 3/4/5 完成后）
+
+| 优先级 | 任务 | 功能 | 检查周期 |
+|--------|------|------|---------|
+| 4 | `DurabilityCheckTask` | 耐久预检 + 自动换镐 | 60 ticks |
+| 4 | `InventoryCheckTask` | 背包满时停止 | 60 ticks |
+| 4 | `TorchPlaceTask` | 自动放火把 | 60 ticks + 120 ticks 冷却 |
+| 5 | `MineMoveTask` | BFS 搜索矿石 | 120 ticks（未找到时） |
+| 6 | `MineBreakTask` | 挖掘矿石 | 20 ticks |
+
+---
+
+#### 涉及文件
+
+| 文件 | 操作 |
+|------|------|
+| `config/Config.java` | 新建 |
+| `MiningLittleMaid.java` | `registerConfig` 一行 |
+| `MaidMineTorchPlaceTask.java` | 新建 |
+| `TaskMining.java` | `createBrainTasks()` 加入优先级 4 |
+| `zh_cn.json` | `message.mining_little_maid.no_torch` |
+| `en_us.json` | `message.mining_little_maid.no_torch` |
 - [ ] Support the "Create" mod's drill tool as a pickaxe alternative
 - [ ] Add custom ambient sound for mining (instead of reusing MAID_FARM sound)
