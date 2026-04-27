@@ -25,7 +25,7 @@ import java.util.function.Predicate;
 
 public class TaskMining implements IFarmTask {
     private static final ResourceLocation UID = ResourceLocation.fromNamespaceAndPath("mining_little_maid", "mining");
-    private static final int VERTICAL_SEARCH_START = -8;
+    private static final int VERTICAL_SEARCH_START = 0;
     private static final int VERTICAL_SEARCH_RANGE = 16;
 
     @Override

@@ -63,8 +63,8 @@ Registers the mining task via `addMaidTask(TaskManager)`.
 | `MaidMineMoveTask` | `MaidMoveToBlockTask` | BFS search for mineable ores in work area |
 | `MaidMineBreakTask` | `Behavior<EntityMaid>` | Arrive → break block → erase TARGET_POS memory |
 
-Search parameters: `verticalSearchStart = -8`, `verticalSearchRange = 16`
-(searches vertical layers: 0, 1, -1, 2, -2, ..., 16, -16)
+Search parameters: `verticalSearchStart = 0`, `verticalSearchRange = 16`
+(searches vertical layers: 0, 1, -1, 2, -2, ..., 16, -16 覆盖全部 33 层)
 
 ### Favor gating
 
