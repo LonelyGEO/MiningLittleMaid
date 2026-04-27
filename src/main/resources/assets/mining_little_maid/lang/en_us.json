@@ -1,6 +1,6 @@
 {
     "task.mining_little_maid.mining": "Mining",
-    "task.mining_little_maid.mining.desc": "Maid will mine different ores based on favor level.\nLevel 0: Coal, Copper\nLevel 1: Iron\nLevel 2: Gold, Lapis, Redstone, Nether Quartz\nLevel 3: Diamond, Emerald, Ancient Debris",
+    "task.mining_little_maid.mining.desc": "Maid mines ores while following owner.\nHigher favor increases detection range through stone.\nLevel 0: Surface ores only\nLevel 1: 1 block penetration\nLevel 2: 2 block penetration\nLevel 3: 3 block penetration",
     "task.mining_little_maid.mining.condition.has_pickaxe": "Has pickaxe in backpack",
     "subtitle.mining_little_maid.maid.mode.mining": "Maid: Mining"
 }

@@ -6,7 +6,6 @@ import com.github.tartaricacid.touhoulittlemaid.entity.passive.MaidPathFindingBF
 import com.github.tartaricacid.touhoulittlemaid.init.InitEntities;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.minecraft.world.entity.ai.behavior.BlockPosTracker;
@@ -47,14 +46,20 @@ public class MaidMineMoveTask extends MaidCheckRateTask {
                 verticalSearchRange
         );
         this.adjacentOrePos = null;
+        int sniffRadius = MiningFavorGate.getSniffRadius(maid.getFavorabilityManager().getLevel());
         bfs.find(pos -> {
-            for (Direction dir : Direction.values()) {
-                BlockPos adjacent = pos.relative(dir);
-                BlockState state = world.getBlockState(adjacent);
-                if (MiningFavorGate.isMineableOre(state)
-                        && task.canHarvest(maid, adjacent, state)) {
-                    this.adjacentOrePos = adjacent.immutable();
-                    return true;
+            int r = sniffRadius + 1;
+            for (int dx = -r; dx <= r; dx++) {
+                for (int dy = -r; dy <= r; dy++) {
+                    for (int dz = -r; dz <= r; dz++) {
+                        BlockPos checkPos = pos.offset(dx, dy, dz);
+                        BlockState state = world.getBlockState(checkPos);
+                        if (MiningFavorGate.isMineableOre(state)
+                                && task.canHarvest(maid, checkPos, state)) {
+                            this.adjacentOrePos = checkPos.immutable();
+                            return true;
+                        }
+                    }
                 }
             }
             return false;

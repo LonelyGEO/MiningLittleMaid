@@ -52,8 +52,7 @@ public class TaskMining implements IFarmTask {
         if (!hasPickaxe(maid)) {
             return false;
         }
-        int level = maid.getFavorabilityManager().getLevel();
-        return MiningFavorGate.canMineAtLevel(cropState, level);
+        return MiningFavorGate.isMineableOre(cropState);
     }
 
     @Override
@@ -98,7 +97,7 @@ public class TaskMining implements IFarmTask {
 
     @Override
     public String getMaidActionSummary() {
-        return "Mine ores based on favor level";
+        return "Mine ores with detection range based on favor level";
     }
 
     @Override

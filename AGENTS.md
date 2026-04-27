@@ -69,16 +69,16 @@ Search approach: Uses `MaidPathFindingBFS.find()` — BFS 从女仆位置向外�
 
 ### Favor gating
 
-`MiningFavorGate` statically maps favor levels to ore tags:
+`MiningFavorGate` 根据女仆好感度等级决定嗅探半径（透过石头的探测距离）：
 
-| Favor Level | Ores Unlocked |
-|---|---|
-| 0 (0-63) | Coal (`BlockTags.COAL_ORES`), Copper (`BlockTags.COPPER_ORES`) |
-| 1 (64-191) | +Iron (`BlockTags.IRON_ORES`) |
-| 2 (192-383) | +Gold (`BlockTags.GOLD_ORES`), Lapis (`BlockTags.LAPIS_ORES`), Redstone (`BlockTags.REDSTONE_ORES`), Nether Quartz (`Blocks.NETHER_QUARTZ_ORE`) |
-| 3 (384+) | +Diamond (`BlockTags.DIAMOND_ORES`), Emerald (`BlockTags.EMERALD_ORES`), Ancient Debris (`Blocks.ANCIENT_DEBRIS`) |
+| Favor Level | Sniff Radius | 探测范围（相对可通行位置） |
+|---|---|---|
+| 0 (0-63) | 0 | 相邻 3×3×3（仅表面矿石） |
+| 1 (64-191) | 1 | 5×5×5（穿透 1 格石头） |
+| 2 (192-383) | 2 | 7×7×7（穿透 2 格石头） |
+| 3 (384+) | 3 | 9×9×9（穿透 3 格石头） |
 
-`isMineableOre(BlockState)` returns true for any ore regardless of level.
+所有矿石类型在任何等级均可挖掘。`isMineableOre(BlockState)` 返回 true 对于任意矿石。
 
 ### Key APIs from Touhou Little Maid used
 

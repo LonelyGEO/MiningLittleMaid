@@ -1,6 +1,6 @@
 {
     "task.mining_little_maid.mining": "采矿",
-    "task.mining_little_maid.mining.desc": "女仆会根据好感度等级挖掘不同种类的矿石。\n等级0：煤、铜\n等级1：铁\n等级2：金、青金石、红石、下界石英\n等级3：钻石、绿宝石、远古残骸",
+    "task.mining_little_maid.mining.desc": "女仆跟随主人时自动挖掘周围矿石。\n好感度越高，透过石头的探测范围越远。\n等级0：仅表面矿石\n等级1：穿透1格\n等级2：穿透2格\n等级3：穿透3格",
     "task.mining_little_maid.mining.condition.has_pickaxe": "背包内有镐子",
     "subtitle.mining_little_maid.maid.mode.mining": "女仆：采矿"
 }

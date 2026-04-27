@@ -5,29 +5,25 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
 /**
- * 根据女仆好感度等级，决定当前可挖掘的矿石类型
+ * 好感度门控：好感度越高，女仆透过石头探测矿石的范围越远
  */
 public class MiningFavorGate {
+
+    /**
+     * 根据好感度等级获取嗅探半径（透过石头的检测距离）
+     */
+    public static int getSniffRadius(int favorLevel) {
+        if (favorLevel >= 3) return 3;
+        if (favorLevel >= 2) return 2;
+        if (favorLevel >= 1) return 1;
+        return 0;
+    }
 
     /**
      * 检查在给定好感度等级下，是否可以挖掘该方块
      */
     public static boolean canMineAtLevel(BlockState state, int favorLevel) {
-        if (state.is(BlockTags.COAL_ORES) || state.is(BlockTags.COPPER_ORES)) {
-            return favorLevel >= 0;
-        }
-        if (state.is(BlockTags.IRON_ORES)) {
-            return favorLevel >= 1;
-        }
-        if (state.is(BlockTags.GOLD_ORES) || state.is(BlockTags.LAPIS_ORES)
-                || state.is(BlockTags.REDSTONE_ORES) || state.is(Blocks.NETHER_QUARTZ_ORE)) {
-            return favorLevel >= 2;
-        }
-        if (state.is(BlockTags.DIAMOND_ORES) || state.is(BlockTags.EMERALD_ORES)
-                || state.is(Blocks.ANCIENT_DEBRIS)) {
-            return favorLevel >= 3;
-        }
-        return false;
+        return isMineableOre(state);
     }
 
     /**
