@@ -1,0 +1,49 @@
+package com.github.lonelygeo.mininglittlemaid.task;
+
+import com.github.lonelygeo.mininglittlemaid.config.Config;
+import com.github.tartaricacid.touhoulittlemaid.entity.ai.brain.task.MaidCheckRateTask;
+import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
+import com.github.tartaricacid.touhoulittlemaid.util.TaskEquipUtil;
+import com.google.common.collect.ImmutableMap;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.ItemStack;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+public class MaidMineDurabilityCheckTask extends MaidCheckRateTask {
+    private static final int CHECK_RATE = 60;
+    private static final Logger LOGGER = LogManager.getLogger();
+
+    public MaidMineDurabilityCheckTask() {
+        super(ImmutableMap.of());
+        this.setMaxCheckRate(CHECK_RATE);
+    }
+
+    @Override
+    protected void start(ServerLevel world, EntityMaid maid, long gameTime) {
+        int favorLevel = maid.getFavorabilityManager().getLevel();
+        if (favorLevel < 1) {
+            return;
+        }
+        if (hasDurableTool(maid)) {
+            return;
+        }
+        int minDurability = Config.MAX_VEIN_SIZE.get();
+        if (TaskEquipUtil.tryEquipFromBackpack(maid, stack ->
+                MiningFavorGate.isMiningTool(stack)
+                        && (stack.getMaxDamage() - stack.getDamageValue()) >= minDurability)) {
+            LOGGER.debug("Swapped to spare mining tool, remaining durability >= {}", minDurability);
+            return;
+        }
+        LOGGER.debug("No durable mining tool available, cancelling mining task");
+        maid.setTask(null);
+    }
+
+    private boolean hasDurableTool(EntityMaid maid) {
+        ItemStack mainHand = maid.getMainHandItem();
+        if (MiningFavorGate.isMiningTool(mainHand)) {
+            return (mainHand.getMaxDamage() - mainHand.getDamageValue()) >= Config.MAX_VEIN_SIZE.get();
+        }
+        return false;
+    }
+}

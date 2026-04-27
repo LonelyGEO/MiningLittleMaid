@@ -4,5 +4,7 @@
     "task.mining_little_maid.mining.condition.has_pickaxe": "背包内有镐子",
     "subtitle.mining_little_maid.maid.mode.mining": "女仆：采矿",
     "message.mining_little_maid.ore_above_below": "头顶或脚下发现了矿石！",
+    "message.mining_little_maid.inventory_full": "女仆的背包已满，停止采矿",
+    "message.mining_little_maid.no_torch": "女仆需要火把，但背包里没有",
     "gui.mining_little_maid.chat_notify": "挖矿提示"
 }

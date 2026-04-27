@@ -4,5 +4,7 @@
     "task.mining_little_maid.mining.condition.has_pickaxe": "Has pickaxe in backpack",
     "subtitle.mining_little_maid.maid.mode.mining": "Maid: Mining",
     "message.mining_little_maid.ore_above_below": "Ore detected above or below!",
+    "message.mining_little_maid.inventory_full": "Maid's inventory is full, mining stopped",
+    "message.mining_little_maid.no_torch": "Maid needs a torch, but none in inventory",
     "gui.mining_little_maid.chat_notify": "Mining Alert"
 }

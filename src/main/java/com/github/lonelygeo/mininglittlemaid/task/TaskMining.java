@@ -15,7 +15,6 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.ai.behavior.BehaviorControl;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.PickaxeItem;
 import net.minecraft.world.level.block.state.BlockState;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -94,9 +93,18 @@ public class TaskMining implements IFarmTask {
 
     @Override
     public List<Pair<Integer, BehaviorControl<? super EntityMaid>>> createBrainTasks(EntityMaid maid) {
+        MaidMineDurabilityCheckTask durabilityTask = new MaidMineDurabilityCheckTask();
+        MaidMineInventoryCheckTask inventoryTask = new MaidMineInventoryCheckTask();
+        MaidMineTorchPlaceTask torchTask = new MaidMineTorchPlaceTask();
         MaidMineMoveTask moveTask = new MaidMineMoveTask(this, 0.6f, VERTICAL_SEARCH_RANGE);
         MaidMineBreakTask breakTask = new MaidMineBreakTask(this);
-        return Lists.newArrayList(Pair.of(5, moveTask), Pair.of(6, breakTask));
+        return Lists.newArrayList(
+                Pair.of(4, durabilityTask),
+                Pair.of(4, inventoryTask),
+                Pair.of(4, torchTask),
+                Pair.of(5, moveTask),
+                Pair.of(6, breakTask)
+        );
     }
 
     @Override
@@ -109,7 +117,7 @@ public class TaskMining implements IFarmTask {
         if (hasPickaxe(maid)) {
             return FunctionCallSwitchResult.OK;
         }
-        if (TaskEquipUtil.tryEquipFromBackpack(maid, stack -> stack.getItem() instanceof PickaxeItem)) {
+        if (TaskEquipUtil.tryEquipFromBackpack(maid, MiningFavorGate::isMiningTool)) {
             LOGGER.debug("Task switch: equipping pickaxe from backpack");
             return FunctionCallSwitchResult.OK;
         }
@@ -122,9 +130,9 @@ public class TaskMining implements IFarmTask {
     }
 
     private boolean hasPickaxe(EntityMaid maid) {
-        if (maid.getMainHandItem().getItem() instanceof PickaxeItem) {
+        if (MiningFavorGate.isMiningTool(maid.getMainHandItem())) {
             return true;
         }
-        return ItemsUtil.isStackIn(maid.getAvailableInv(false), stack -> stack.getItem() instanceof PickaxeItem);
+        return ItemsUtil.isStackIn(maid.getAvailableInv(false), MiningFavorGate::isMiningTool);
     }
 }
