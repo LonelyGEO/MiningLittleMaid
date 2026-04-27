@@ -761,3 +761,251 @@ TaskEquipUtil.tryEquipFromBackpack(maid, stack ->
 
 - `#minecraft:pickaxes` 包含所有原版镐子，行为完全不变
 - 仅替换判断条件，不影响任何运行时逻辑
+
+---
+
+- [ ] Combat detection: auto-switch to combat when monster nearby, return to mining after
+
+### 7) 采矿遇怪自动切换战斗
+
+**目标**：好感度等级 1+ 解锁。采矿时检测到怪物 → 自动装备武器 → 切换到主 mod 的 `TaskAttack` 战斗任务；战斗结束后延迟切回采矿。
+
+---
+
+#### 用户选择
+
+| 参数 | 选择 |
+|------|------|
+| 检测方式 | 被动 `maid.getTarget()`（信任主 mod 战斗 AI） |
+| 切换目标 | 主 mod `TaskAttack`（UID: `touhou_little_maid:attack`） |
+| 武器判定 | Item Tag `#mining_little_maid:weapons` |
+| 战斗结束延迟 | 可配置，默认 100 ticks（5 秒） |
+| 好感度门控 | 等级 1+（好感度 ≥ 64） |
+| 无武器 | 静默跳过，保持采矿 |
+
+---
+
+#### 主 mod API 验证
+
+| API | 值 | 用途 |
+|-----|-----|------|
+| `maid.getTarget()` | `LivingEntity` | 当前攻击目标（主 mod 战斗 AI 自动设置） |
+| `TaskManager.findTask(ResourceLocation)` | `Optional<IMaidTask>` | 查找战斗任务 |
+| `maid.setTask(IMaidTask)` | — | 切换女仆任务 |
+| `MaidTickEvent` | 每 tick 事件 | 战斗结束切回监控（无额外开销） |
+| `maid.getPersistentData()` | `CompoundTag` | 存储采矿任务引用 |
+
+---
+
+#### 双组件设计
+
+| 组件 | 类型 | 职责 | 触发频率 |
+|------|------|------|---------|
+| `MaidMineCombatCheckTask` | Brain Task（优先级 4） | 检测怪物 → 切到战斗 | 60 ticks |
+| `MaidMineCombatEventHandler` | Event Subscriber | 战斗结束 → 切回采矿 | MaidTickEvent |
+
+**流程**：
+
+```
+[采矿中] → 每3秒 Brain Task 检查
+  → 好感度 ≥ 1?                          ✗ → 跳过
+  → maid.getTarget() instanceof Monster?  ✗ → 跳过
+  → 背包有武器（#mining_little_maid:weapons）?
+      ✗ → 跳过（继续挖矿）
+  → 自动装备武器到主手
+  → persistentData["mining_resume"] = currentTask
+  → TaskManager.findTask("touhou_little_maid:attack")
+  → maid.setTask(attackTask)
+
+[战斗中] → MaidTickEvent 每 tick
+  → persistentData 有 "mining_resume"?
+      → getTarget() == null?
+          → idleTicks++ >= config.delay?
+              → 切回采矿任务 + 清除 flag
+      → else
+          → idleTicks = 0
+```
+
+---
+
+#### 接口设计
+
+**新增 Item Tag**：`data/mining_little_maid/tags/item/weapons.json`
+
+```json
+{
+    "replace": false,
+    "values": [
+        "#minecraft:swords",
+        "#minecraft:axes"
+    ]
+}
+```
+
+> 其他模组追加自己的武器即可（刀、枪、棒等）。
+
+**Config.java 新增**：
+
+```java
+public static final ModConfigSpec.IntValue COMBAT_RETURN_DELAY_TICKS;
+
+// static block 中：
+COMBAT_RETURN_DELAY_TICKS = builder
+        .comment("战斗结束后等多久切回采矿（tick，20 tick = 1 秒）")
+        .defineInRange("combatReturnDelayTicks", 100, 20, 600);
+```
+
+**新增 `MaidMineCombatCheckTask.java`**（优先级 4）：
+
+```java
+public class MaidMineCombatCheckTask extends MaidCheckRateTask {
+    private static final int CHECK_RATE = 60; // 每 3 秒
+    private static final String ATTACK_TASK_ID = "touhou_little_maid:attack";
+    private static final String RESUME_KEY = "mining_resume";
+
+    public MaidMineCombatCheckTask() {
+        super(ImmutableMap.of());
+        this.setMaxCheckRate(CHECK_RATE);
+    }
+
+    @Override
+    protected void start(ServerLevel world, EntityMaid maid, long gameTime) {
+        if (maid.getFavorabilityManager().getLevel() < 1) return;
+
+        LivingEntity target = maid.getTarget();
+        if (!(target instanceof Monster)) return;
+
+        // 已在战斗任务中 → 跳过
+        IMaidTask currentTask = maid.getTask();
+        if (currentTask != null
+                && "touhou_little_maid:attack".equals(currentTask.getUid().toString())) return;
+
+        // 搜索武器并装备
+        if (!tryEquipWeapon(maid)) return; // 无武器，静默跳过
+
+        // 保存当前任务引用用于切回
+        if (currentTask != null) {
+            maid.getPersistentData().putString(RESUME_KEY,
+                    currentTask.getUid().toString());
+        }
+
+        // 切换到战斗任务
+        TaskManager.findTask(ResourceLocation.parse(ATTACK_TASK_ID))
+                .ifPresent(maid::setTask);
+    }
+
+    private boolean tryEquipWeapon(EntityMaid maid) {
+        CombinedInvWrapper inv = maid.getAvailableInv(true);
+        for (int i = 0; i < inv.getSlots(); i++) {
+            ItemStack stack = inv.getStackInSlot(i);
+            if (MiningFavorGate.isWeapon(stack)) {
+                // 装备到主手
+                ItemStack mainHand = maid.getMainHandItem();
+                // 先把当前主手物品放回背包
+                inv.insertItem(i, mainHand, false);
+                // 再装备武器
+                inv.extractItem(i, 1, false);
+                maid.setItemSlot(EquipmentSlot.MAINHAND, stack.copy());
+                return true;
+            }
+        }
+        return false;
+    }
+}
+```
+
+**`MiningFavorGate.java` 新增武器判定**：
+
+```java
+public static final TagKey<Item> WEAPONS = TagKey.create(Registries.ITEM,
+        ResourceLocation.fromNamespaceAndPath(MiningLittleMaid.MOD_ID, "weapons"));
+
+public static boolean isWeapon(ItemStack stack) {
+    return stack.is(WEAPONS);
+}
+```
+
+**新增 `MaidMineCombatEventHandler.java`**（Event Subscriber）：
+
+```java
+@EventBusSubscriber(modid = MiningLittleMaid.MOD_ID)
+public class MaidMineCombatEventHandler {
+    private static final String RESUME_KEY = "mining_resume";
+    private static final Map<UUID, Integer> idleCounter = new HashMap<>();
+
+    @SubscribeEvent
+    public static void onMaidTick(MaidTickEvent event) {
+        EntityMaid maid = event.getMaid();
+        UUID id = maid.getUUID();
+        String taskId = maid.getPersistentData().getString(RESUME_KEY);
+        if (taskId.isEmpty()) {
+            idleCounter.remove(id);
+            return;
+        }
+
+        if (maid.getTarget() != null) {
+            idleCounter.remove(id); // 战斗中，重置
+            return;
+        }
+
+        int ticks = idleCounter.getOrDefault(id, 0) + 1;
+        if (ticks >= Config.COMBAT_RETURN_DELAY_TICKS.get()) {
+            TaskManager.findTask(ResourceLocation.parse(taskId))
+                    .ifPresent(maid::setTask);
+            maid.getPersistentData().remove(RESUME_KEY);
+            idleCounter.remove(id);
+        } else {
+            idleCounter.put(id, ticks);
+        }
+    }
+}
+```
+
+> 注：`idleCounter` 用静态 `HashMap<UUID, Integer>` 存储而非 NBT，避免频繁 NBT 读写开销。
+
+**`TaskMining.createBrainTasks()` 更新**：
+
+```java
+return Lists.newArrayList(
+    Pair.of(4, new MaidMineDurabilityCheckTask()),
+    Pair.of(4, new MaidMineInventoryCheckTask()),
+    Pair.of(4, new MaidMineTorchPlaceTask()),
+    Pair.of(4, new MaidMineCombatCheckTask()),   // 新增
+    Pair.of(5, new MaidMineMoveTask(this, 0.6f, VERTICAL_SEARCH_RANGE)),
+    Pair.of(6, new MaidMineBreakTask(this))
+);
+```
+
+---
+
+#### AI 优先级总览（全部完成后）
+
+| 优先级 | 任务 | 功能 | 检查周期 |
+|--------|------|------|---------|
+| 4 | `DurabilityCheckTask` | 耐久预检 + 自动换镐 | 60 ticks |
+| 4 | `InventoryCheckTask` | 背包满时停止 | 60 ticks |
+| 4 | `TorchPlaceTask` | 自动放火把 | 60 ticks + 120 ticks 冷却 |
+| 4 | `CombatCheckTask` | 遇怪切战斗 | 60 ticks |
+| 5 | `MineMoveTask` | BFS 搜索矿石 | 120 ticks |
+| 6 | `MineBreakTask` | 挖掘矿石 | 20 ticks |
+
+---
+
+#### 涉及文件
+
+| 文件 | 操作 |
+|------|------|
+| `data/.../tags/item/weapons.json` | 新建 |
+| `MiningFavorGate.java` | 新增 `isWeapon()` + `WEAPONS` 常量 |
+| `config/Config.java` | 新增 `COMBAT_RETURN_DELAY_TICKS` |
+| `MaidMineCombatCheckTask.java` | 新建 |
+| `MaidMineCombatEventHandler.java` | 新建 |
+| `TaskMining.java` | `createBrainTasks()` 加入优先级 4 |
+
+---
+
+#### 向下兼容
+
+- 好感度 0 时不检测，行为不变
+- `MaidTickEvent` 是主 mod 已有事件，订阅无额外开销
+- 无武器时静默跳过，不影响采矿正常进行
