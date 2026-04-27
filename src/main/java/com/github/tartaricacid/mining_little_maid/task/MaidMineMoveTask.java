@@ -1,31 +1,58 @@
 package com.github.tartaricacid.mining_little_maid.task;
 
-import com.github.tartaricacid.touhoulittlemaid.entity.ai.brain.task.MaidMoveToBlockTask;
+import com.github.tartaricacid.touhoulittlemaid.entity.ai.brain.task.MaidCheckRateTask;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
+import com.github.tartaricacid.touhoulittlemaid.entity.passive.MaidPathFindingBFS;
+import com.github.tartaricacid.touhoulittlemaid.init.InitEntities;
+import com.google.common.collect.ImmutableMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
+import net.minecraft.world.entity.ai.behavior.BlockPosTracker;
+import net.minecraft.world.entity.ai.memory.MemoryModuleType;
+import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class MaidMineMoveTask extends MaidMoveToBlockTask {
+import java.util.Optional;
+
+public class MaidMineMoveTask extends MaidCheckRateTask {
+    private static final int MAX_DELAY_TIME = 120;
+    private static final float DEFAULT_SEARCH_RADIUS = 16.0F;
     private final TaskMining task;
+    private final float movementSpeed;
+    private final int verticalSearchRange;
 
-    public MaidMineMoveTask(TaskMining task, float movementSpeed, int verticalSearchStart, int verticalSearchRange) {
-        super(movementSpeed, verticalSearchRange);
-        this.verticalSearchStart = verticalSearchStart;
+    public MaidMineMoveTask(TaskMining task, float movementSpeed, int verticalSearchRange) {
+        super(ImmutableMap.of(
+                MemoryModuleType.WALK_TARGET, MemoryStatus.VALUE_ABSENT,
+                InitEntities.TARGET_POS.get(), MemoryStatus.VALUE_ABSENT
+        ));
         this.task = task;
+        this.movementSpeed = movementSpeed;
+        this.verticalSearchRange = verticalSearchRange;
+        this.setMaxCheckRate(MAX_DELAY_TIME);
     }
 
     @Override
-    protected void start(ServerLevel worldIn, EntityMaid maid, long gameTimeIn) {
-        this.searchForDestination(worldIn, maid);
-    }
-
-    @Override
-    protected boolean shouldMoveTo(ServerLevel worldIn, EntityMaid maid, BlockPos basePos) {
-        BlockState state = worldIn.getBlockState(basePos);
-        if (!MiningFavorGate.isMineableOre(state)) {
-            return false;
-        }
-        return task.canHarvest(maid, basePos, state);
+    protected void start(ServerLevel world, EntityMaid maid, long gameTime) {
+        float maxDistance = maid.hasRestriction() ? maid.getRestrictRadius() : DEFAULT_SEARCH_RADIUS;
+        MaidPathFindingBFS bfs = new MaidPathFindingBFS(
+                maid.getNavigation().getNodeEvaluator(),
+                world,
+                maid,
+                maxDistance,
+                verticalSearchRange
+        );
+        Optional<BlockPos> result = bfs.find(pos -> {
+            BlockState state = world.getBlockState(pos);
+            return MiningFavorGate.isMineableOre(state)
+                    && task.canHarvest(maid, pos, state);
+        });
+        result.ifPresent(pos -> {
+            BehaviorUtils.setWalkAndLookTargetMemories(maid, pos, movementSpeed, 0);
+            maid.getBrain().setMemory(InitEntities.TARGET_POS.get(), new BlockPosTracker(pos));
+            this.setNextCheckTickCount(5);
+        });
+        bfs.finish();
     }
 }

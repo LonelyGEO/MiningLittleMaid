@@ -60,11 +60,12 @@ Registers the mining task via `addMaidTask(TaskManager)`.
 
 | Class | Extends | Role |
 |---|---|---|
-| `MaidMineMoveTask` | `MaidMoveToBlockTask` | BFS search for mineable ores in work area |
+| `MaidMineMoveTask` | `MaidCheckRateTask` | BFS search for mineable ores in work area |
 | `MaidMineBreakTask` | `Behavior<EntityMaid>` | Arrive → break block → erase TARGET_POS memory |
 
-Search parameters: `verticalSearchStart = 0`, `verticalSearchRange = 16`
-(searches vertical layers: 0, 1, -1, 2, -2, ..., 16, -16 覆盖全部 33 层)
+Search approach: Uses `MaidPathFindingBFS.find()` — BFS 从女仆位置向外扩散
+搜索（驻留模式从 home 中心，跟随模式从女仆位置），找到第一个可挖掘矿石即停止。
+无 `checkOwnerPos` 距离限制，跟随模式同样可挖矿。
 
 ### Favor gating
 

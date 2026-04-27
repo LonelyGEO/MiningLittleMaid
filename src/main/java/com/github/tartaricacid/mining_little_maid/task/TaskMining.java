@@ -25,7 +25,6 @@ import java.util.function.Predicate;
 
 public class TaskMining implements IFarmTask {
     private static final ResourceLocation UID = ResourceLocation.fromNamespaceAndPath("mining_little_maid", "mining");
-    private static final int VERTICAL_SEARCH_START = 0;
     private static final int VERTICAL_SEARCH_RANGE = 16;
 
     @Override
@@ -87,7 +86,7 @@ public class TaskMining implements IFarmTask {
 
     @Override
     public List<Pair<Integer, BehaviorControl<? super EntityMaid>>> createBrainTasks(EntityMaid maid) {
-        MaidMineMoveTask moveTask = new MaidMineMoveTask(this, 0.6f, VERTICAL_SEARCH_START, VERTICAL_SEARCH_RANGE);
+        MaidMineMoveTask moveTask = new MaidMineMoveTask(this, 0.6f, VERTICAL_SEARCH_RANGE);
         MaidMineBreakTask breakTask = new MaidMineBreakTask(this);
         return Lists.newArrayList(Pair.of(5, moveTask), Pair.of(6, breakTask));
     }
