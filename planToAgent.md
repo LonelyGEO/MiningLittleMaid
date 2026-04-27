@@ -204,7 +204,135 @@ while queue 非空 且 count < maxVeinSize:
 
 - 好感度 < 3 时行为与当前完全一致（单块挖掘）
 - 连锁完毕后仍调用 `findAdjacentOre()` 寻找下一个矿脉
+
 - [ ] Add tool durability check before breaking
+
+### 3) 工具耐久度预检 + 自动换镐
+
+**目标**：好感度等级 1 解锁。镐子耐久不足时自动从背包换备用镐，无备用镐则取消采矿任务变回空闲。以独立 Brain Task 实现，资源占用低。
+
+---
+
+#### 用户选择
+
+| 参数 | 选择 |
+|------|------|
+| 预检逻辑 | 耐久不足 → 自动换备用镐 → 仍无 → 取消任务 |
+| 耐久阈值 | 剩余耐久 < `maxVeinSize`(8) 时触发 |
+| 好感度门控 | 仅等级 1+（好感度 ≥ 64）可用 |
+| 实现方式 | 独立 Brain Task，优先级 4（高于 Move/5、Break/6） |
+
+---
+
+#### 好感度行为总结
+
+| 等级 | 好感度 | 嗅探半径 | 耐久预检 | 自动换镐 | 连锁挖掘 |
+|------|--------|---------|---------|---------|---------|
+| 0 | 0-63 | 1 | ✗ | ✗ | ✗ |
+| 1 | 64-191 | 2 | ✓ | ✓ | ✗ |
+| 2 | 192-383 | 2 | ✓ | ✓ | ✗ |
+| 3 | 384+ | 3 | ✓ | ✓ | ✓ |
+
+---
+
+#### 接口设计
+
+**`MiningFavorGate.java` 新增**：
+
+```java
+public static boolean canCheckDurability(int favorLevel) {
+    return favorLevel >= 1;
+}
+```
+
+**新增 `MaidMineDurabilityCheckTask.java`**（优先级 4）：
+
+```java
+public class MaidMineDurabilityCheckTask extends MaidCheckRateTask {
+    private static final int CHECK_RATE = 60; // 每 3 秒一次
+    private final TaskMining task;
+    private final int maxVeinSize;
+
+    public MaidMineDurabilityCheckTask(TaskMining task, int maxVeinSize) {
+        super(ImmutableMap.of()); // 无需特定 memory 条件
+        this.task = task;
+        this.maxVeinSize = maxVeinSize;
+        this.setMaxCheckRate(CHECK_RATE);
+    }
+
+    @Override
+    protected void start(ServerLevel world, EntityMaid maid, long gameTime) {
+        // 好感度 < 1 不检查
+        if (!MiningFavorGate.canCheckDurability(maid.getFavorabilityManager().getLevel())) {
+            return;
+        }
+        // 当前镐子耐久足够，无需处理
+        if (hasDurablePickaxe(maid)) {
+            return;
+        }
+        // 尝试从背包换一把耐久 ≥ maxVeinSize 的镐子
+        if (TaskEquipUtil.tryEquipFromBackpack(maid, stack ->
+                stack.getItem() instanceof PickaxeItem
+                && (stack.getMaxDamage() - stack.getDamageValue()) >= maxVeinSize)) {
+            return;
+        }
+        // 无备用镐 → 取消采矿任务，变回空闲
+        maid.switchTask(null);
+    }
+
+    private boolean hasDurablePickaxe(EntityMaid maid) {
+        ItemStack mainHand = maid.getMainHandItem();
+        if (mainHand.getItem() instanceof PickaxeItem) {
+            return (mainHand.getMaxDamage() - mainHand.getDamageValue()) >= maxVeinSize;
+        }
+        return false;
+    }
+}
+```
+
+**`TaskMining.createBrainTasks()` 修改**：
+
+```java
+@Override
+public List<Pair<Integer, BehaviorControl<? super EntityMaid>>> createBrainTasks(EntityMaid maid) {
+    MaidMineDurabilityCheckTask checkTask = new MaidMineDurabilityCheckTask(this, maxVeinSize);
+    MaidMineMoveTask moveTask = new MaidMineMoveTask(this, 0.6f, VERTICAL_SEARCH_RANGE);
+    MaidMineBreakTask breakTask = new MaidMineBreakTask(this);
+    return Lists.newArrayList(
+        Pair.of(4, checkTask),   // 新增：最高优先，耐久检查
+        Pair.of(5, moveTask),
+        Pair.of(6, breakTask)
+    );
+}
+```
+
+---
+
+#### 为什么是独立 Brain Task
+
+| 对比项 | `canHarvest()` 链 | 独立 Brain Task |
+|--------|------------------|----------------|
+| 能否取消任务 | ❌ 不能（谓词无副作用） | ✅ 直接操作任务状态 |
+| 触发频率 | 高（BFS 每节点一次） | 低（60 ticks 一次） |
+| 资源开销 | 高 | 极低 |
+| 架构 | 勉强 | 符合 `MaidCheckRateTask` 模式 |
+
+---
+
+#### 涉及文件
+
+| 文件 | 操作 |
+|------|------|
+| `MiningFavorGate.java` | 新增 `canCheckDurability()` |
+| `MaidMineDurabilityCheckTask.java` | 新建 |
+| `TaskMining.java` | `createBrainTasks()` 加入优先级 4 的新任务 |
+
+---
+
+#### 向下兼容
+
+- 好感度 0（新女仆）不检查耐久，行为与当前完全一致
+- 不影响现有 Move/Break 任务的优先级和执行逻辑
 - [ ] Add "stop when inventory full" logic
 - [ ] Add torch placement while mining (light up dark areas)
 - [ ] Support the "Create" mod's drill tool as a pickaxe alternative
