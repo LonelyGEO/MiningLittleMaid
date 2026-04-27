@@ -80,7 +80,7 @@ public static boolean isMineableOre(BlockState state) {
 
 - **下界石英** 和 **远古残骸** 没有 vanilla `#minecraft:*_ores` tag，须用方块 ID 字面量
 - `replace: false` 确保其他模组自动注册自己的矿石时零配置生效
-- `canMineAtLevel()` 无需修改——它已经委托给 `isMineableOre()`
+- `canMineAtLevel()` 已退化为仅调 `isMineableOre()`→ 删除此方法，调用处直接改 `isMineableOre()`
 
 - [ ] Support vein mining (breaking connected ore blocks in one go)
 
@@ -173,8 +173,9 @@ count ← 0
 while queue 非空 且 count < maxVeinSize:
     current ← queue.poll()
     if !isMineableOre(state) 或 !maid.canDestroyBlock(current):
+        continue   // 跳过不计入 count
+    if !maid.destroyBlock(current):  // 返回 false 也跳过
         continue
-    maid.destroyBlock(current)     // 自带音效+粒子+掉落
     count++
     对 current 的 6 个相邻方向:
         neighbor ← current.offset(dir)
@@ -187,7 +188,7 @@ while queue 非空 且 count < maxVeinSize:
 
 #### 可配置项
 
-`maxVeinSize`：可在 `ModConfigSpec` 或常量中定义，范围 2~64，默认 8。
+`maxVeinSize`：通过 `Config.MAX_VEIN_SIZE.get()` 读取，范围 2~64，默认 8。
 
 ---
 
@@ -250,13 +251,9 @@ public static boolean canCheckDurability(int favorLevel) {
 ```java
 public class MaidMineDurabilityCheckTask extends MaidCheckRateTask {
     private static final int CHECK_RATE = 60; // 每 3 秒一次
-    private final TaskMining task;
-    private final int maxVeinSize;
 
-    public MaidMineDurabilityCheckTask(TaskMining task, int maxVeinSize) {
+    public MaidMineDurabilityCheckTask() {
         super(ImmutableMap.of()); // 无需特定 memory 条件
-        this.task = task;
-        this.maxVeinSize = maxVeinSize;
         this.setMaxCheckRate(CHECK_RATE);
     }
 
@@ -270,10 +267,11 @@ public class MaidMineDurabilityCheckTask extends MaidCheckRateTask {
         if (hasDurablePickaxe(maid)) {
             return;
         }
-        // 尝试从背包换一把耐久 ≥ maxVeinSize 的镐子
+        int minDurability = Config.MAX_VEIN_SIZE.get();
+        // 尝试从背包换一把耐久 ≥ minDurability 的镐子
         if (TaskEquipUtil.tryEquipFromBackpack(maid, stack ->
-                stack.getItem() instanceof PickaxeItem
-                && (stack.getMaxDamage() - stack.getDamageValue()) >= maxVeinSize)) {
+                MiningFavorGate.isMiningTool(stack)
+                && (stack.getMaxDamage() - stack.getDamageValue()) >= minDurability)) {
             return;
         }
         // 无备用镐 → 取消采矿任务，变回空闲
@@ -282,8 +280,8 @@ public class MaidMineDurabilityCheckTask extends MaidCheckRateTask {
 
     private boolean hasDurablePickaxe(EntityMaid maid) {
         ItemStack mainHand = maid.getMainHandItem();
-        if (mainHand.getItem() instanceof PickaxeItem) {
-            return (mainHand.getMaxDamage() - mainHand.getDamageValue()) >= maxVeinSize;
+        if (MiningFavorGate.isMiningTool(mainHand)) {
+            return (mainHand.getMaxDamage() - mainHand.getDamageValue()) >= Config.MAX_VEIN_SIZE.get();
         }
         return false;
     }
@@ -295,7 +293,7 @@ public class MaidMineDurabilityCheckTask extends MaidCheckRateTask {
 ```java
 @Override
 public List<Pair<Integer, BehaviorControl<? super EntityMaid>>> createBrainTasks(EntityMaid maid) {
-    MaidMineDurabilityCheckTask checkTask = new MaidMineDurabilityCheckTask(this, maxVeinSize);
+    MaidMineDurabilityCheckTask checkTask = new MaidMineDurabilityCheckTask();
     MaidMineMoveTask moveTask = new MaidMineMoveTask(this, 0.6f, VERTICAL_SEARCH_RANGE);
     MaidMineBreakTask breakTask = new MaidMineBreakTask(this);
     return Lists.newArrayList(
@@ -407,7 +405,7 @@ public class MaidMineInventoryCheckTask extends MaidCheckRateTask {
 ```java
 @Override
 public List<Pair<Integer, BehaviorControl<? super EntityMaid>>> createBrainTasks(EntityMaid maid) {
-    MaidMineDurabilityCheckTask durabilityTask = new MaidMineDurabilityCheckTask(this, maxVeinSize);
+    MaidMineDurabilityCheckTask durabilityTask = new MaidMineDurabilityCheckTask();
     MaidMineInventoryCheckTask inventoryTask = new MaidMineInventoryCheckTask();
     MaidMineMoveTask moveTask = new MaidMineMoveTask(this, 0.6f, VERTICAL_SEARCH_RANGE);
     MaidMineBreakTask breakTask = new MaidMineBreakTask(this);
@@ -616,9 +614,8 @@ public class MaidMineTorchPlaceTask extends MaidCheckRateTask {
 ```java
 @Override
 public List<Pair<Integer, BehaviorControl<? super EntityMaid>>> createBrainTasks(EntityMaid maid) {
-    int maxVeinSize = Config.MAX_VEIN_SIZE.get();
     return Lists.newArrayList(
-        Pair.of(4, new MaidMineDurabilityCheckTask(this, maxVeinSize)),
+        Pair.of(4, new MaidMineDurabilityCheckTask()),
         Pair.of(4, new MaidMineInventoryCheckTask()),
         Pair.of(4, new MaidMineTorchPlaceTask()),
         Pair.of(5, new MaidMineMoveTask(this, 0.6f, VERTICAL_SEARCH_RANGE)),
@@ -709,7 +706,7 @@ public List<Pair<Integer, BehaviorControl<? super EntityMaid>>> createBrainTasks
 
 #### 接口设计
 
-**`MiningFavorGate.java` 或新建 `MiningToolUtil.java`**：
+**`MiningFavorGate.java` 新增 `isMiningTool()` 和 `MINING_TOOLS` 常量**：
 
 ```java
 public static boolean isMiningTool(ItemStack stack) {
@@ -753,7 +750,7 @@ TaskEquipUtil.tryEquipFromBackpack(maid, stack ->
 | 文件 | 操作 |
 |------|------|
 | `data/.../tags/item/mining_tools.json` | 新建 |
-| `MiningFavorGate.java` 或 `MiningToolUtil.java` | 新增 `isMiningTool()` + `MINING_TOOLS` 常量 |
+| `MiningFavorGate.java` | 新增 `isMiningTool()` + `MINING_TOOLS` 常量 |
 | `TaskMining.java` | `instanceof PickaxeItem` → `isMiningTool()` |
 | `MaidMineDurabilityCheckTask.java` | 同上 |
 | `MaidMineBreakTask.java` | 同上 |
