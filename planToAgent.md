@@ -277,7 +277,7 @@ public class MaidMineDurabilityCheckTask extends MaidCheckRateTask {
             return;
         }
         // 无备用镐 → 取消采矿任务，变回空闲
-        maid.switchTask(null);
+        maid.setTask(null);
     }
 
     private boolean hasDurablePickaxe(EntityMaid maid) {
@@ -386,7 +386,7 @@ public class MaidMineInventoryCheckTask extends MaidCheckRateTask {
                     Component.translatable(FULL_NOTIFY_KEY));
             }
             // 取消采矿任务，变回空闲
-            maid.switchTask(null);
+            maid.setTask(null);
         }
     }
 
@@ -483,11 +483,10 @@ public List<Pair<Integer, BehaviorControl<? super EntityMaid>>> createBrainTasks
 **`MiningLittleMaid.java` 注册配置**：
 
 ```java
-public MiningLittleMaid(IEventBus modEventBus) {
+public MiningLittleMaid(IEventBus modEventBus, ModContainer modContainer) {
     InitSounds.SOUNDS.register(modEventBus);
     modEventBus.addListener(this::registerPayloadHandlers);
-    // 注册配置文件
-    modEventBus.getContainer().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+    modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
 }
 ```
 
@@ -496,19 +495,18 @@ public MiningLittleMaid(IEventBus modEventBus) {
 ```java
 package com.github.lonelygeo.mininglittlemaid.config;
 
-@ModConfigSpec
 public class Config {
-    public static final ConfigSpec SPEC;
+    public static final ModConfigSpec SPEC;
 
     // Feature 2: 矿脉连锁
-    public static final ConfigSpec.IntValue MAX_VEIN_SIZE;
+    public static final ModConfigSpec.IntValue MAX_VEIN_SIZE;
 
     // Feature 5: 火把
-    public static final ConfigSpec.IntValue MIN_LIGHT_LEVEL;
-    public static final ConfigSpec.IntValue TORCH_COOLDOWN_TICKS;
+    public static final ModConfigSpec.IntValue MIN_LIGHT_LEVEL;
+    public static final ModConfigSpec.IntValue TORCH_COOLDOWN_TICKS;
 
     static {
-        Builder builder = new Builder();
+        ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
         builder.comment("Mining Little Maid 配置");
 
         MAX_VEIN_SIZE = builder
@@ -603,8 +601,8 @@ public class MaidMineTorchPlaceTask extends MaidCheckRateTask {
         CombinedInvWrapper inv = maid.getAvailableInv(true);
         for (int i = 0; i < inv.getSlots(); i++) {
             ItemStack stack = inv.getStackInSlot(i);
-            if (stack.is(Items.TORCH)) {
-                stack.shrink(1);
+            if (inv.getStackInSlot(i).is(Items.TORCH)) {
+                inv.extractItem(i, 1, false);
                 return true;
             }
         }
