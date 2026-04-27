@@ -19,7 +19,7 @@ All items below were verified against the current repository contents.
 - Mod platform: **NeoForge** (`net.neoforged.moddev` plugin 2.0.95)
 - **Minecraft 1.21.1** / **NeoForge 21.1.186**
 - **Mod ID**: `mining_little_maid`
-- **Base package**: `com.github.tartaricacid.mininglittlemaid`
+- **Base package**: `com.github.lonelygeo.mininglittlemaid`
 - **Dependency**: Touhou Little Maid (`libs/touhoulittlemaid-1.5.2-neoforge+mc1.21.1-all.jar`)
 
 ## 2) Cursor/Copilot rule files
@@ -60,9 +60,9 @@ Use `.bat` on Windows and non-`.bat` equivalents on macOS/Linux.
 Gradle test filtering is supported via `--tests`.
 
 - Single class:
-  - `./gradlew.bat test --tests "com.github.tartaricacid.mininglittlemaid.ExampleTest"`
+  - `./gradlew.bat test --tests "com.github.lonelygeo.mininglittlemaid.ExampleTest"`
 - Single method:
-  - `./gradlew.bat test --tests "com.github.tartaricacid.mininglittlemaid.ExampleTest.shouldDoThing"`
+  - `./gradlew.bat test --tests "com.github.lonelygeo.mininglittlemaid.ExampleTest.shouldDoThing"`
 - Method wildcard:
   - `./gradlew.bat test --tests "*ExampleTest.should*"`
 

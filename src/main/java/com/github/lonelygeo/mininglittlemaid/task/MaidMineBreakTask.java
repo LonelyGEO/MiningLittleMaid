@@ -1,4 +1,4 @@
-package com.github.tartaricacid.mininglittlemaid.task;
+package com.github.lonelygeo.mininglittlemaid.task;
 
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.init.InitEntities;

@@ -1,7 +1,7 @@
-package com.github.tartaricacid.mininglittlemaid.network;
+package com.github.lonelygeo.mininglittlemaid.network;
 
-import com.github.tartaricacid.mininglittlemaid.MiningLittleMaid;
-import com.github.tartaricacid.mininglittlemaid.task.MaidMineBreakTask;
+import com.github.lonelygeo.mininglittlemaid.MiningLittleMaid;
+import com.github.lonelygeo.mininglittlemaid.task.MaidMineBreakTask;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
