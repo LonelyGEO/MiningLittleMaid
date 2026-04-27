@@ -3,7 +3,8 @@
     "task.mining_little_maid.mining.desc": "女仆跟随主人时自动挖掘周围矿石。\n好感度越高，透过石头的探测范围越远。\n等级0：3×3×3\n等级1：5×5×5\n等级2：5×5×5\n等级3：7×7×7",
     "task.mining_little_maid.mining.condition.has_pickaxe": "背包内有镐子",
     "subtitle.mining_little_maid.maid.mode.mining": "女仆：采矿",
-    "message.mining_little_maid.ore_above_below": "头顶或脚下发现了矿石！",
+    "message.mining_little_maid.ore_above": "头顶上方发现了%s！",
+    "message.mining_little_maid.ore_below": "脚下下方发现了%s！",
     "message.mining_little_maid.inventory_full": "女仆的背包已满，停止采矿",
     "message.mining_little_maid.no_torch": "女仆需要火把，但背包里没有",
     "gui.mining_little_maid.chat_notify": "挖矿提示"

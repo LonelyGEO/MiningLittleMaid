@@ -19,9 +19,13 @@ import org.apache.logging.log4j.Logger;
 public class MaidMineTorchPlaceTask extends MaidCheckRateTask {
     private static final int CHECK_RATE = 60;
     private static final String NO_TORCH_KEY = "message.mining_little_maid.no_torch";
+    private static final int NOTIFY_MIN_INTERVAL = 200;
+    private static final int NOTIFY_MIN_DIST_SQ = 16 * 16;
     private static final Logger LOGGER = LogManager.getLogger();
     private BlockPos lastPos = BlockPos.ZERO;
     private long lastPlaceTime;
+    private long lastNotifyTime;
+    private BlockPos lastNotifyPos = BlockPos.ZERO;
 
     public MaidMineTorchPlaceTask() {
         super(ImmutableMap.of());
@@ -50,14 +54,21 @@ public class MaidMineTorchPlaceTask extends MaidCheckRateTask {
         }
 
         if (!consumeTorch(maid)) {
-            if (maid.getOwner() instanceof ServerPlayer player) {
-                player.sendSystemMessage(Component.translatable(NO_TORCH_KEY));
+            BlockPos currentPos = maid.blockPosition();
+            if (gameTime - lastNotifyTime >= NOTIFY_MIN_INTERVAL
+                    || currentPos.distSqr(lastNotifyPos) > NOTIFY_MIN_DIST_SQ) {
+                if (maid.getOwner() instanceof ServerPlayer player) {
+                    player.sendSystemMessage(Component.translatable(NO_TORCH_KEY));
+                }
+                lastNotifyTime = gameTime;
+                lastNotifyPos = currentPos.immutable();
             }
             return;
         }
 
         world.setBlock(placePos, Blocks.TORCH.defaultBlockState(), 3);
         lastPlaceTime = gameTime;
+        lastNotifyPos = BlockPos.ZERO;
         Config.debugLog(LOGGER,"Placed torch at {}", placePos);
     }
 
