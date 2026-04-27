@@ -6,6 +6,8 @@ import com.google.common.collect.ImmutableMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.ai.behavior.Behavior;
+import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
+import net.minecraft.world.entity.ai.behavior.BlockPosTracker;
 import net.minecraft.world.entity.ai.behavior.PositionTracker;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
@@ -45,7 +47,31 @@ public class MaidMineBreakTask extends Behavior<EntityMaid> {
         maid.getBrain().getMemory(InitEntities.TARGET_POS.get()).ifPresent(posTracker -> {
             BlockPos targetPos = BlockPos.containing(posTracker.currentPosition());
             task.harvest(maid, targetPos, worldIn.getBlockState(targetPos));
-            maid.getBrain().eraseMemory(InitEntities.TARGET_POS.get());
+            BlockPos nextOre = findAdjacentOre(worldIn, maid);
+            if (nextOre != null) {
+                BehaviorUtils.setWalkAndLookTargetMemories(maid, nextOre, 0.6f, 0);
+                maid.getBrain().setMemory(InitEntities.TARGET_POS.get(), new BlockPosTracker(nextOre));
+            } else {
+                maid.getBrain().eraseMemory(InitEntities.TARGET_POS.get());
+            }
         });
+    }
+
+    private BlockPos findAdjacentOre(ServerLevel world, EntityMaid maid) {
+        BlockPos maidPos = maid.blockPosition();
+        BlockPos.MutableBlockPos mutablePos = new BlockPos.MutableBlockPos();
+        for (int x = -3; x <= 3; x++) {
+            for (int y = -2; y <= 2; y++) {
+                for (int z = -3; z <= 3; z++) {
+                    mutablePos.setWithOffset(maidPos, x, y, z);
+                    BlockState state = world.getBlockState(mutablePos);
+                    if (MiningFavorGate.isMineableOre(state)
+                            && task.canHarvest(maid, mutablePos, state)) {
+                        return mutablePos.immutable();
+                    }
+                }
+            }
+        }
+        return null;
     }
 }
