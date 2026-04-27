@@ -1,9 +1,9 @@
-package com.github.tartaricacid.mining_little_maid.task;
+package com.github.tartaricacid.mininglittlemaid.task;
 
 import com.github.tartaricacid.touhoulittlemaid.api.task.FunctionCallSwitchResult;
 import com.github.tartaricacid.touhoulittlemaid.api.task.IFarmTask;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
-import com.github.tartaricacid.mining_little_maid.init.InitSounds;
+import com.github.tartaricacid.mininglittlemaid.init.InitSounds;
 import com.github.tartaricacid.touhoulittlemaid.util.ItemsUtil;
 import com.github.tartaricacid.touhoulittlemaid.util.SoundUtil;
 import com.github.tartaricacid.touhoulittlemaid.util.TaskEquipUtil;

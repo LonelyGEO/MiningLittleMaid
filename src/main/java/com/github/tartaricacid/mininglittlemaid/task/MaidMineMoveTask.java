@@ -1,4 +1,4 @@
-package com.github.tartaricacid.mining_little_maid.task;
+package com.github.tartaricacid.mininglittlemaid.task;
 
 import com.github.tartaricacid.touhoulittlemaid.entity.ai.brain.task.MaidCheckRateTask;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;

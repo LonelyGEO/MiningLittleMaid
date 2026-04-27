@@ -1,4 +1,4 @@
-package com.github.tartaricacid.mining_little_maid.task;
+package com.github.tartaricacid.mininglittlemaid.task;
 
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.block.Blocks;

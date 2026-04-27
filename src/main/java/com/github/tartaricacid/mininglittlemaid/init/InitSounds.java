@@ -1,6 +1,6 @@
-package com.github.tartaricacid.mining_little_maid.init;
+package com.github.tartaricacid.mininglittlemaid.init;
 
-import com.github.tartaricacid.mining_little_maid.MiningLittleMaid;
+import com.github.tartaricacid.mininglittlemaid.MiningLittleMaid;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
