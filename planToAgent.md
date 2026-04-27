@@ -2,7 +2,7 @@
 
 ## Planned features
 
-- [ ] Add configurable ore whitelist via block tag
+- [x] Add configurable ore whitelist via block tag
 
 ### 1) Block Tag 矿石白名单（可配置）
 
@@ -82,7 +82,7 @@ public static boolean isMineableOre(BlockState state) {
 - `replace: false` 确保其他模组自动注册自己的矿石时零配置生效
 - `canMineAtLevel()` 已退化为仅调 `isMineableOre()`→ 删除此方法，调用处直接改 `isMineableOre()`
 
-- [ ] Support vein mining (breaking connected ore blocks in one go)
+- [x] Support vein mining (breaking connected ore blocks in one go)
 
 ### 2) 矿脉连锁挖掘（Vein Mining）
 
@@ -206,7 +206,7 @@ while queue 非空 且 count < maxVeinSize:
 - 好感度 < 3 时行为与当前完全一致（单块挖掘）
 - 连锁完毕后仍调用 `findAdjacentOre()` 寻找下一个矿脉
 
-- [ ] Add tool durability check before breaking
+- [x] Add tool durability check before breaking
 
 ### 3) 工具耐久度预检 + 自动换镐
 
@@ -332,7 +332,7 @@ public List<Pair<Integer, BehaviorControl<? super EntityMaid>>> createBrainTasks
 - 好感度 0（新女仆）不检查耐久，行为与当前完全一致
 - 不影响现有 Move/Break 任务的优先级和执行逻辑
 
-- [ ] Add "stop when inventory full" logic
+- [x] Add "stop when inventory full" logic
 
 ### 4) 背包满时停止 + 通知
 
@@ -444,7 +444,7 @@ public List<Pair<Integer, BehaviorControl<? super EntityMaid>>> createBrainTasks
 - `getAvailableInv(true)` 即使未安装背包模组也返回基础物品栏，行为无变化
 - 独立 Brain Task 不影响现有逻辑
 
-- [ ] Add torch placement while mining (light up dark areas)
+- [x] Add torch placement while mining (light up dark areas)
 
 ### 5) 移动时自动放置火把
 
@@ -657,7 +657,7 @@ public List<Pair<Integer, BehaviorControl<? super EntityMaid>>> createBrainTasks
 | `zh_cn.json` | `message.mining_little_maid.no_torch` |
 | `en_us.json` | `message.mining_little_maid.no_torch` |
 
-- [ ] Support mining tools from other mods via Item Tag
+- [x] Support mining tools from other mods via Item Tag
 
 ### 6) 模组采矿工具兼容（Item Tag 驱动）
 
