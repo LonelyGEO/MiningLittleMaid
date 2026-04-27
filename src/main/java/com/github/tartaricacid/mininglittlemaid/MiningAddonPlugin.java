@@ -1,9 +1,9 @@
-package com.github.tartaricacid.mining_little_maid;
+package com.github.tartaricacid.mininglittlemaid;
 
 import com.github.tartaricacid.touhoulittlemaid.api.ILittleMaid;
 import com.github.tartaricacid.touhoulittlemaid.api.LittleMaidExtension;
 import com.github.tartaricacid.touhoulittlemaid.entity.task.TaskManager;
-import com.github.tartaricacid.mining_little_maid.task.TaskMining;
+import com.github.tartaricacid.mininglittlemaid.task.TaskMining;
 
 @LittleMaidExtension
 public class MiningAddonPlugin implements ILittleMaid {
