@@ -1,8 +1,8 @@
-package com.github.tartaricacid.mininglittlemaid.event;
+package com.github.lonelygeo.mininglittlemaid.event;
 
-import com.github.tartaricacid.mininglittlemaid.MiningLittleMaid;
-import com.github.tartaricacid.mininglittlemaid.network.MiningChatNotifyToggleMessage;
-import com.github.tartaricacid.mininglittlemaid.task.MaidMineBreakTask;
+import com.github.lonelygeo.mininglittlemaid.MiningLittleMaid;
+import com.github.lonelygeo.mininglittlemaid.network.MiningChatNotifyToggleMessage;
+import com.github.lonelygeo.mininglittlemaid.task.MaidMineBreakTask;
 import com.github.tartaricacid.touhoulittlemaid.api.event.client.MaidContainerGuiEvent;
 import com.github.tartaricacid.touhoulittlemaid.client.gui.entity.maid.config.MaidConfigContainerGui;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;

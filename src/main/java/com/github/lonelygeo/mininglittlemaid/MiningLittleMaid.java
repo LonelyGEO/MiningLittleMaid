@@ -1,7 +1,7 @@
-package com.github.tartaricacid.mininglittlemaid;
+package com.github.lonelygeo.mininglittlemaid;
 
-import com.github.tartaricacid.mininglittlemaid.init.InitSounds;
-import com.github.tartaricacid.mininglittlemaid.network.MiningChatNotifyToggleMessage;
+import com.github.lonelygeo.mininglittlemaid.init.InitSounds;
+import com.github.lonelygeo.mininglittlemaid.network.MiningChatNotifyToggleMessage;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
