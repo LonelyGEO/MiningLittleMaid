@@ -45,7 +45,7 @@ Use `.bat` on Windows and non-`.bat` equivalents on macOS/Linux.
 
 ### NeoForge dev commands
 
-- `./gradlew.bat runClient`
+- `./gradlew.bat runClient` — **超时说明**：`runClient` 会阻塞等待游戏窗口关闭（非短暂命令）。Agent 执行时至少用 `timeout=600000`（10分钟），确保用户在游戏内有足够操作时间完成交互测试。
 - `./gradlew.bat runServer`
 - `./gradlew.bat runGameTestServer`
 - `./gradlew.bat runData`
