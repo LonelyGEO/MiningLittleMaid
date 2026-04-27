@@ -661,5 +661,108 @@ public List<Pair<Integer, BehaviorControl<? super EntityMaid>>> createBrainTasks
 | `TaskMining.java` | `createBrainTasks()` 加入优先级 4 |
 | `zh_cn.json` | `message.mining_little_maid.no_torch` |
 | `en_us.json` | `message.mining_little_maid.no_torch` |
-- [ ] Support the "Create" mod's drill tool as a pickaxe alternative
-- [ ] Add custom ambient sound for mining (instead of reusing MAID_FARM sound)
+
+- [ ] Support mining tools from other mods via Item Tag
+
+### 6) 模组采矿工具兼容（Item Tag 驱动）
+
+**目标**：将"可采矿工具"判定从硬编码 `instanceof PickaxeItem` 改为 Item Tag `#mining_little_maid:mining_tools`，使 Create 钻头等第三方工具自动被识别，无需本 mod 修改代码。
+
+> 注：Create 本体没有手持钻头（其 `Mechanical Drill` 是方块实体），但 Create: Crafts & Additions 等附属模组提供手持钻头。Item Tag 方案对此类工具通用。
+
+---
+
+#### 用户选择
+
+| 参数 | 选择 |
+|------|------|
+| 识别方式 | Item Tag 白名单 + 已知类 fallback（fallback 留空待扩展） |
+| 耐久检查 | 通用 API（`getMaxDamage() - getDamageValue()`），不针对特定模组 |
+| 自动装备优先级 | 耐久优先（选剩余耐久最高的工具） |
+
+---
+
+#### Item Tag
+
+**文件**：`src/main/resources/data/mining_little_maid/tags/item/mining_tools.json`
+
+```json
+{
+    "replace": false,
+    "values": [
+        "#minecraft:pickaxes"
+    ]
+}
+```
+
+`#minecraft:pickaxes` 覆盖所有材质（木/石/铁/金/钻石/下界合金）。其他模组追加自己的工具即可：
+
+```json
+// 某个模组的 data/<modid>/tags/item/mining_little_maid/mining_tools.json
+{
+    "values": [
+        "createaddition:drill",
+        "othermod:mining_laser"
+    ]
+}
+```
+
+---
+
+#### 接口设计
+
+**`MiningFavorGate.java` 或新建 `MiningToolUtil.java`**：
+
+```java
+public static boolean isMiningTool(ItemStack stack) {
+    if (stack.is(MINING_TOOLS)) return true;
+    // fallback：已知模组工具类（按需扩展）
+    return false;
+}
+```
+
+**`ItemTags` 常量引用**：
+
+```java
+public static final TagKey<Item> MINING_TOOLS =
+    TagKey.create(Registries.ITEM,
+        ResourceLocation.fromNamespaceAndPath(MiningLittleMaid.MOD_ID, "mining_tools"));
+```
+
+---
+
+#### 涉及修改点（全局替换 `instanceof PickaxeItem`）
+
+| 文件 | 方法 | 变更 |
+|------|------|------|
+| `TaskMining.java` | `hasPickaxe()` | `instanceof PickaxeItem` → `isMiningTool(stack)` |
+| `TaskMining.java` | `onFunctionCallSwitch()` | 同上 |
+| `MaidMineDurabilityCheckTask.java` | `hasDurablePickaxe()` | 同上 |
+| `MaidMineBreakTask.java` | 耐久结算 | 同上 |
+
+**耐久优先换镐（Feature 3 修改）**：
+
+```java
+TaskEquipUtil.tryEquipFromBackpack(maid, stack ->
+    MiningToolUtil.isMiningTool(stack)
+    && (stack.getMaxDamage() - stack.getDamageValue()) >= maxVeinSize);
+```
+
+---
+
+#### 涉及文件
+
+| 文件 | 操作 |
+|------|------|
+| `data/.../tags/item/mining_tools.json` | 新建 |
+| `MiningFavorGate.java` 或 `MiningToolUtil.java` | 新增 `isMiningTool()` + `MINING_TOOLS` 常量 |
+| `TaskMining.java` | `instanceof PickaxeItem` → `isMiningTool()` |
+| `MaidMineDurabilityCheckTask.java` | 同上 |
+| `MaidMineBreakTask.java` | 同上 |
+
+---
+
+#### 向下兼容
+
+- `#minecraft:pickaxes` 包含所有原版镐子，行为完全不变
+- 仅替换判断条件，不影响任何运行时逻辑
