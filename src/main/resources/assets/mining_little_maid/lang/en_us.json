@@ -1,0 +1,5 @@
+{
+    "task.mining_little_maid.mining": "Mining",
+    "task.mining_little_maid.mining.desc": "Maid will mine different ores based on favor level.\nLevel 0: Coal, Copper\nLevel 1: Iron\nLevel 2: Gold, Lapis, Redstone, Nether Quartz\nLevel 3: Diamond, Emerald, Ancient Debris",
+    "task.mining_little_maid.mining.condition.has_pickaxe": "Has pickaxe in backpack"
+}

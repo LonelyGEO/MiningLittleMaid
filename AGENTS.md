@@ -1,0 +1,132 @@
+# AGENTS.md
+
+## Language policy
+
+- Default to simplified Chinese (简体中文).
+- Keep code, commands, error messages, and API names in their original language.
+- Ask questions in Chinese.
+
+## 1) Project snapshot
+
+- **Name**: Mining Little Maid
+- **Type**: Touhou Little Maid 附属模组（Addon mod）
+- **Build system**: Gradle Wrapper (`gradlew`, `gradlew.bat`)
+- **Language toolchain**: Java 21 (`build.gradle`)
+- **Mod platform**: NeoForge (`net.neoforged.moddev` plugin 2.0.95)
+- **Minecraft version**: 1.21.1
+- **NeoForge version**: 21.1.186
+- **Mod ID**: `mining_little_maid`
+- **Mod version**: `1.0.0-neoforge+mc1.21.1`
+- **Base package**: `com.github.tartaricacid.mining_little_maid`
+- **Dependency**: Touhou Little Maid (`touhoulittlemaid-1.5.2-neoforge+mc1.21.1-all.jar`, in `libs/`)
+
+## 2) Build / test / run commands
+
+Run from repository root `G:\CursorProject\Mining-Little-Maid`.
+
+- `./gradlew.bat clean`
+- `./gradlew.bat build`
+- `./gradlew.bat compileJava`
+- `./gradlew.bat assemble`
+- `./gradlew.bat runClient`
+- `./gradlew.bat runServer`
+- `./gradlew.bat tasks --all`
+
+## 3) Architecture
+
+### Entry point
+
+`MiningAddonPlugin.java` — annotated with `@LittleMaidExtension`, implements `ILittleMaid`.
+Registers the mining task via `addMaidTask(TaskManager)`.
+
+### Task system
+
+`TaskMining` implements `IFarmTask` (which extends `IMaidTask`):
+
+| Method | Behavior |
+|---|---|
+| `canHarvest()` | Checks maid has a pickaxe + favor level allows mining the block |
+| `harvest()` | Calls `maid.destroyBlock(pos)` |
+| `createBrainTasks()` | Returns `MaidMineMoveTask` (priority 5) + `MaidMineBreakTask` (priority 6) |
+| `onFunctionCallSwitch()` | Auto-equips pickaxe from backpack via `TaskEquipUtil` |
+| `isSeed()` / `canPlant()` / `plant()` | Return false/no-op (mining doesn't plant) |
+| `getConditionDescription()` | Shows "has_pickaxe" condition in GUI |
+| `checkCropPosAbove()` | Returns false (no above-space check needed for mining) |
+| `getCloseEnoughDist()` | Returns 2.0 (blocks) |
+| `getMaidActionSummary()` | "Mine ores based on favor level" (for LLM tool calling) |
+
+### Custom brain tasks
+
+| Class | Extends | Role |
+|---|---|---|
+| `MaidMineMoveTask` | `MaidMoveToBlockTask` | BFS search for mineable ores in work area |
+| `MaidMineBreakTask` | `Behavior<EntityMaid>` | Arrive → break block → erase TARGET_POS memory |
+
+Search parameters: `verticalSearchStart = -8`, `verticalSearchRange = 16`
+(searches vertical layers: 0, 1, -1, 2, -2, ..., 16, -16)
+
+### Favor gating
+
+`MiningFavorGate` statically maps favor levels to ore tags:
+
+| Favor Level | Ores Unlocked |
+|---|---|
+| 0 (0-63) | Coal (`BlockTags.COAL_ORES`), Copper (`BlockTags.COPPER_ORES`) |
+| 1 (64-191) | +Iron (`BlockTags.IRON_ORES`) |
+| 2 (192-383) | +Gold (`BlockTags.GOLD_ORES`), Lapis (`BlockTags.LAPIS_ORES`), Redstone (`BlockTags.REDSTONE_ORES`), Nether Quartz (`Blocks.NETHER_QUARTZ_ORE`) |
+| 3 (384+) | +Diamond (`BlockTags.DIAMOND_ORES`), Emerald (`BlockTags.EMERALD_ORES`), Ancient Debris (`Blocks.ANCIENT_DEBRIS`) |
+
+`isMineableOre(BlockState)` returns true for any ore regardless of level.
+
+### Key APIs from Touhou Little Maid used
+
+- `ILittleMaid` / `@LittleMaidExtension` — addon entry point
+- `TaskManager.add(IMaidTask)` — register a new task
+- `IFarmTask` — farm-like task interface (move → interact pattern)
+- `MaidMoveToBlockTask` — BFS-driven block search with pathfinding
+- `EntityMaid.destroyBlock(BlockPos)` — break block, auto-collect drops with enchant support
+- `EntityMaid.canDestroyBlock(BlockPos)` — permission check
+- `EntityMaid.getFavorabilityManager().getLevel()` — favor level (0-3)
+- `TaskEquipUtil.tryEquipFromBackpack()` — auto-equip tool from backpack
+- `ItemsUtil.isStackIn()` — check items in inventory
+- `InitEntities.TARGET_POS` — `MemoryModuleType<PositionTracker>`, used as block target pointer
+- `PositionTracker.currentPosition()` → `BlockPos.containing()` — convert target to BlockPos
+
+### Translation keys
+
+```
+task.mining_little_maid.mining
+task.mining_little_maid.mining.desc
+task.mining_little_maid.mining.condition.has_pickaxe
+```
+
+Lang files: `src/main/resources/assets/mining_little_maid/lang/zh_cn.json` and `en_us.json`
+
+### Dependency: Touhou Little Maid
+
+The mod depends on the Touhou Little Maid jar at `libs/touhoulittlemaid-1.5.2-neoforge+mc1.21.1-all.jar`.
+This is declared in `build.gradle` as:
+```groovy
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+}
+```
+
+Note: TouhouLittleMaid's source code lives at `G:\CursorProject\Touhou Little Maid\src\`.
+
+## 4) Code conventions
+
+- Follow TouhouLittleMaid source code style (K&R braces, 4-space indent).
+- Do NOT add unnecessary comments. Chinese comments are OK but keep them concise.
+- Imports: split into project/local → third-party/Minecraft → Java → static.
+
+## 5) Future improvements
+
+- [ ] Add configurable ore whitelist via block tag
+- [ ] Add particle effects / sound when mining
+- [ ] Support vein mining (breaking connected ore blocks in one go)
+- [ ] Add tool durability check before breaking
+- [ ] Add "stop when inventory full" logic
+- [ ] Add torch placement while mining (light up dark areas)
+- [ ] Support the "Create" mod's drill tool as a pickaxe alternative
+- [ ] Add custom ambient sound for mining (instead of reusing MAID_FARM sound)
