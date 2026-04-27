@@ -48,10 +48,9 @@ public class MaidMineMoveTask extends MaidCheckRateTask {
         this.adjacentOrePos = null;
         int sniffRadius = MiningFavorGate.getSniffRadius(maid.getFavorabilityManager().getLevel());
         bfs.find(pos -> {
-            int r = sniffRadius + 1;
-            for (int dx = -r; dx <= r; dx++) {
-                for (int dy = -r; dy <= r; dy++) {
-                    for (int dz = -r; dz <= r; dz++) {
+            for (int dx = -sniffRadius; dx <= sniffRadius; dx++) {
+                for (int dy = -sniffRadius; dy <= sniffRadius; dy++) {
+                    for (int dz = -sniffRadius; dz <= sniffRadius; dz++) {
                         BlockPos checkPos = pos.offset(dx, dy, dz);
                         BlockState state = world.getBlockState(checkPos);
                         if (MiningFavorGate.isMineableOre(state)
