@@ -17,6 +17,7 @@
     "config.mininglittlemaid.section.cooldown": "采矿 - 冷却",
     "config.mininglittlemaid.section.rate": "采矿 - 频率",
     "config.mininglittlemaid.section.range": "采矿 - 范围",
+    "config.mininglittlemaid.section.perception": "采矿 - 感知范围",
     "config.mininglittlemaid.maxVeinSize": "矿脉连锁最大块数",
     "config.mininglittlemaid.minLightLevel": "火把放置亮度阈值",
     "config.mininglittlemaid.torchCooldown": "火把放置冷却时间",
@@ -35,5 +36,9 @@
     "config.mininglittlemaid.bfsVerticalRange": "BFS 垂直搜索范围",
     "config.mininglittlemaid.combatSearchHorizontal": "怪物搜索水平半径",
     "config.mininglittlemaid.combatSearchVertical": "怪物搜索垂直半径",
+    "config.mininglittlemaid.sniffRadiusLevel0": "0级嗅探半径",
+    "config.mininglittlemaid.sniffRadiusLevel1": "1级嗅探半径",
+    "config.mininglittlemaid.sniffRadiusLevel2": "2级嗅探半径",
+    "config.mininglittlemaid.sniffRadiusLevel3": "3级嗅探半径",
     "config.mininglittlemaid.enableDebugLog": "启用 Debug 日志"
 }

@@ -33,6 +33,12 @@ public class Config {
     public static final ModConfigSpec.IntValue COMBAT_SEARCH_HORIZONTAL;
     public static final ModConfigSpec.IntValue COMBAT_SEARCH_VERTICAL;
 
+    // [mining.perception] 感知范围
+    public static final ModConfigSpec.IntValue SNIFF_RADIUS_LEVEL_0;
+    public static final ModConfigSpec.IntValue SNIFF_RADIUS_LEVEL_1;
+    public static final ModConfigSpec.IntValue SNIFF_RADIUS_LEVEL_2;
+    public static final ModConfigSpec.IntValue SNIFF_RADIUS_LEVEL_3;
+
     static {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
         builder.comment("Mining Little Maid 配置");
@@ -132,6 +138,28 @@ public class Config {
         COMBAT_SEARCH_VERTICAL = builder
                 .comment("怪物搜索垂直半径（格）")
                 .defineInRange("combatSearchVertical", 5, 2, 15);
+
+        builder.pop();
+
+        // [mining.perception]
+        builder.push("perception")
+                .translation("config.mininglittlemaid.section.perception");
+
+        SNIFF_RADIUS_LEVEL_0 = builder
+                .comment("好感度 0 级的嗅探半径（格）")
+                .defineInRange("sniffRadiusLevel0", 1, 1, 5);
+
+        SNIFF_RADIUS_LEVEL_1 = builder
+                .comment("好感度 1 级的嗅探半径（格）")
+                .defineInRange("sniffRadiusLevel1", 2, 1, 5);
+
+        SNIFF_RADIUS_LEVEL_2 = builder
+                .comment("好感度 2 级的嗅探半径（格）")
+                .defineInRange("sniffRadiusLevel2", 3, 1, 5);
+
+        SNIFF_RADIUS_LEVEL_3 = builder
+                .comment("好感度 3 级的嗅探半径（格）")
+                .defineInRange("sniffRadiusLevel3", 4, 1, 5);
 
         builder.pop(3);
 

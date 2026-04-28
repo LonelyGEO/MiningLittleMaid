@@ -103,11 +103,12 @@ public class MiningFavorGate {
      * 根据好感度等级获取嗅探半径（透过石头的检测距离）
      */
     public static int getSniffRadius(int favorLevel) {
-        int radius;
-        if (favorLevel >= 3) radius = 3;
-        else if (favorLevel >= 2) radius = 2;
-        else if (favorLevel >= 1) radius = 2;
-        else radius = 1;
+        int radius = switch (favorLevel) {
+            case 0 -> Config.SNIFF_RADIUS_LEVEL_0.get();
+            case 1 -> Config.SNIFF_RADIUS_LEVEL_1.get();
+            case 2 -> Config.SNIFF_RADIUS_LEVEL_2.get();
+            default -> Config.SNIFF_RADIUS_LEVEL_3.get();
+        };
         Config.debugLog(LOGGER,"Sniff radius: favorLevel={} -> radius={}", favorLevel, radius);
         return radius;
     }

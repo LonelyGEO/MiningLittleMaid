@@ -17,6 +17,7 @@
     "config.mininglittlemaid.section.cooldown": "Mining - Cooldown",
     "config.mininglittlemaid.section.rate": "Mining - Rate",
     "config.mininglittlemaid.section.range": "Mining - Range",
+    "config.mininglittlemaid.section.perception": "Mining - Perception",
     "config.mininglittlemaid.maxVeinSize": "Max Vein Mine Size",
     "config.mininglittlemaid.minLightLevel": "Torch Light Threshold",
     "config.mininglittlemaid.torchCooldown": "Torch Cooldown",
@@ -35,5 +36,9 @@
     "config.mininglittlemaid.bfsVerticalRange": "BFS Vertical Search Range",
     "config.mininglittlemaid.combatSearchHorizontal": "Monster Search Horizontal Radius",
     "config.mininglittlemaid.combatSearchVertical": "Monster Search Vertical Radius",
+    "config.mininglittlemaid.sniffRadiusLevel0": "Lv0 Sniff Radius",
+    "config.mininglittlemaid.sniffRadiusLevel1": "Lv1 Sniff Radius",
+    "config.mininglittlemaid.sniffRadiusLevel2": "Lv2 Sniff Radius",
+    "config.mininglittlemaid.sniffRadiusLevel3": "Lv3 Sniff Radius",
     "config.mininglittlemaid.enableDebugLog": "Enable Debug Logging"
 }
