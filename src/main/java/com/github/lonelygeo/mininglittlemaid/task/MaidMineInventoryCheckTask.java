@@ -19,13 +19,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MaidMineInventoryCheckTask extends MaidCheckRateTask {
-    private static final int CHECK_RATE = 60;
     private static final String FULL_NOTIFY_KEY = "message.mininglittlemaid.inventory_full";
     private static final Logger LOGGER = LogManager.getLogger();
 
     public MaidMineInventoryCheckTask() {
         super(ImmutableMap.of());
-        this.setMaxCheckRate(CHECK_RATE);
+        this.setMaxCheckRate(Config.INVENTORY_CHECK_RATE.get());
     }
 
     @Override

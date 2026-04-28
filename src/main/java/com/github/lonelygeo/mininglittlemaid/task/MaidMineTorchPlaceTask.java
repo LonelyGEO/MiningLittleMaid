@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MaidMineTorchPlaceTask extends MaidCheckRateTask {
-    private static final int CHECK_RATE = 60;
     private static final String NO_TORCH_KEY = "message.mininglittlemaid.no_torch";
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -33,7 +32,7 @@ public class MaidMineTorchPlaceTask extends MaidCheckRateTask {
 
     public MaidMineTorchPlaceTask() {
         super(ImmutableMap.of());
-        this.setMaxCheckRate(CHECK_RATE);
+        this.setMaxCheckRate(Config.TORCH_CHECK_RATE.get());
     }
 
     @Override

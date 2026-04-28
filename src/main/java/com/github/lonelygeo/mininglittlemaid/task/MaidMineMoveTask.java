@@ -17,23 +17,19 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class MaidMineMoveTask extends MaidCheckRateTask {
-    private static final int MAX_DELAY_TIME = 120;
-    private static final float DEFAULT_SEARCH_RADIUS = 16.0F;
     private static final Logger LOGGER = LogManager.getLogger();
     private final TaskMining task;
     private final float movementSpeed;
-    private final int verticalSearchRange;
     private BlockPos adjacentOrePos;
 
-    public MaidMineMoveTask(TaskMining task, float movementSpeed, int verticalSearchRange) {
+    public MaidMineMoveTask(TaskMining task, float movementSpeed) {
         super(ImmutableMap.of(
                 MemoryModuleType.WALK_TARGET, MemoryStatus.VALUE_ABSENT,
                 InitEntities.TARGET_POS.get(), MemoryStatus.VALUE_ABSENT
         ));
         this.task = task;
         this.movementSpeed = movementSpeed;
-        this.verticalSearchRange = verticalSearchRange;
-        this.setMaxCheckRate(MAX_DELAY_TIME);
+        this.setMaxCheckRate(Config.BFS_MAX_DELAY.get());
     }
 
     @Override
@@ -44,7 +40,8 @@ public class MaidMineMoveTask extends MaidCheckRateTask {
         if (task.isOrePaused(gameTime)) {
             return;
         }
-        float maxDistance = DEFAULT_SEARCH_RADIUS;
+        float maxDistance = Config.BFS_SEARCH_RADIUS.get();
+        int verticalSearchRange = Config.BFS_VERTICAL_RANGE.get();
         MaidPathFindingBFS bfs = new MaidPathFindingBFS(
                 maid.getNavigation().getNodeEvaluator(),
                 world,

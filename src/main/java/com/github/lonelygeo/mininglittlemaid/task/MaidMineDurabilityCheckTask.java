@@ -11,12 +11,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class MaidMineDurabilityCheckTask extends MaidCheckRateTask {
-    private static final int CHECK_RATE = 60;
     private static final Logger LOGGER = LogManager.getLogger();
 
     public MaidMineDurabilityCheckTask() {
         super(ImmutableMap.of());
-        this.setMaxCheckRate(CHECK_RATE);
+        this.setMaxCheckRate(Config.DURABILITY_CHECK_RATE.get());
     }
 
     @Override

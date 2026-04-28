@@ -31,7 +31,6 @@ import java.util.function.Predicate;
 
 public class TaskMining implements IFarmTask {
     private static final ResourceLocation UID = ResourceLocation.fromNamespaceAndPath(MiningLittleMaid.MOD_ID, "mining");
-    private static final int VERTICAL_SEARCH_RANGE = 16;
     private static final Logger LOGGER = LogManager.getLogger();
     private static final int ORE_ALERT_MIN_DIST_SQ = 8 * 8;
 
@@ -139,7 +138,7 @@ public class TaskMining implements IFarmTask {
         MaidMineInventoryCheckTask inventoryTask = new MaidMineInventoryCheckTask();
         MaidMineTorchPlaceTask torchTask = new MaidMineTorchPlaceTask();
         MaidMineCombatCheckTask combatTask = new MaidMineCombatCheckTask();
-        MaidMineMoveTask moveTask = new MaidMineMoveTask(this, 0.6f, VERTICAL_SEARCH_RANGE);
+        MaidMineMoveTask moveTask = new MaidMineMoveTask(this, 0.6f);
         MaidMineBreakTask breakTask = new MaidMineBreakTask(this);
         return Lists.newArrayList(
                 Pair.of(4, durabilityTask),

@@ -34,9 +34,7 @@ import java.util.Random;
 import java.util.Set;
 
 public class MaidMineBreakTask extends Behavior<EntityMaid> {
-    private static final int CHECK_RATE = 20;
     private static final String CHAT_NOTIFY_KEY = "mining_chat_notify";
-    private static final int CLOSE_ENOUGH_HORIZONTAL = 3;
     private static final Logger LOGGER = LogManager.getLogger();
     private final TaskMining task;
     private long lastCheckTime;
@@ -50,14 +48,14 @@ public class MaidMineBreakTask extends Behavior<EntityMaid> {
 
     @Override
     protected boolean checkExtraStartConditions(ServerLevel worldIn, EntityMaid maid) {
-        if (worldIn.getGameTime() - this.lastCheckTime < CHECK_RATE) {
+        if (worldIn.getGameTime() - this.lastCheckTime < Config.BREAK_CHECK_RATE.get()) {
             return false;
         }
         return maid.getBrain().getMemory(InitEntities.TARGET_POS.get())
                 .map(PositionTracker::currentPosition)
                 .map(BlockPos::containing)
                 .filter(pos -> Math.abs(pos.getX() - maid.blockPosition().getX())
-                        + Math.abs(pos.getZ() - maid.blockPosition().getZ()) <= CLOSE_ENOUGH_HORIZONTAL)
+                        + Math.abs(pos.getZ() - maid.blockPosition().getZ()) <= Config.BREAK_CLOSE_ENOUGH.get())
                 .filter(pos -> task.canHarvest(maid, pos, worldIn.getBlockState(pos)))
                 .isPresent();
     }

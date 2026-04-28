@@ -17,16 +17,14 @@ import org.apache.logging.log4j.Logger;
 import java.util.List;
 
 public class MaidMineCombatCheckTask extends MaidCheckRateTask {
-    private static final int CHECK_RATE = 60;
     private static final String ATTACK_TASK_ID = "touhou_little_maid:attack";
     private static final String RESUME_KEY = "mining_resume";
     private static final String COOLDOWN_KEY = "mining_combat_cooldown";
-    private static final long COOLDOWN_TICKS = 200;
     private static final Logger LOGGER = LogManager.getLogger();
 
     public MaidMineCombatCheckTask() {
         super(ImmutableMap.of());
-        this.setMaxCheckRate(CHECK_RATE);
+        this.setMaxCheckRate(Config.COMBAT_CHECK_RATE.get());
     }
 
     @Override
@@ -36,11 +34,14 @@ public class MaidMineCombatCheckTask extends MaidCheckRateTask {
         }
 
         long cooldown = maid.getPersistentData().getLong(COOLDOWN_KEY);
-        if (gameTime - cooldown < COOLDOWN_TICKS) {
+        if (gameTime - cooldown < Config.COMBAT_COOLDOWN_TICKS.get()) {
             return;
         }
 
-        AABB searchArea = maid.getBoundingBox().inflate(10.0, 5.0, 10.0);
+        AABB searchArea = maid.getBoundingBox().inflate(
+                Config.COMBAT_SEARCH_HORIZONTAL.get(),
+                Config.COMBAT_SEARCH_VERTICAL.get(),
+                Config.COMBAT_SEARCH_HORIZONTAL.get());
         List<Monster> monsters = world.getEntitiesOfClass(Monster.class, searchArea,
                 m -> m.isAlive() && maid.canAttack(m));
         if (monsters.isEmpty()) {
