@@ -48,10 +48,12 @@ Use `.bat` on Windows and non-`.bat` equivalents on macOS/Linux.
 
 ### NeoForge dev commands
 
-- `./gradlew.bat runClient` — **超时说明**：`runClient` 会阻塞等待游戏窗口关闭（非短暂命令）。Agent 执行时至少用 `timeout=600000`（10分钟），确保用户在游戏内有足够操作时间完成交互测试。
+- `./gradlew.bat runClient`
 - `./gradlew.bat runServer`
 - `./gradlew.bat runGameTestServer`
 - `./gradlew.bat runData`
+
+> **runClient 超时说明**：`runClient` 会阻塞等待游戏窗口关闭（非短暂命令）。Agent 执行时至少用 `timeout=600000`（10分钟），确保用户在游戏内有足够操作时间完成交互测试。
 
 ### Task discovery
 
@@ -264,7 +266,7 @@ For changes under `network`:
 
 ## 11) Git commit workflow
 
-- 仓库地址：`https://github.com/LonelyGEO/MiningLittleMaid.git`
+- 仓库地址：`https://github.com/LonelyGEO/EnhancedLittleMaidAI.git`
 - **Agent 主动负责提交**：每次代码改动完成后，Agent 应主动执行 `git add` + `git commit`，不等待用户提醒。提交信息用中文，简洁描述改动目的。
 - **SSH / 连接报错先诊断再提问**：遇到 SSH 权限、认证失败、远程连接等问题时，先自行排查（检查 remote、分支状态等），无法解决再向用户提问协助。
 - **不可逆操作必须征得用户同意**：以下操作**绝对禁止**不经用户明确同意就执行：
@@ -274,26 +276,9 @@ For changes under `network`:
   - `git branch -D` 删除分支
   - `git commit --amend`（已推送的 commit）
   - 以及其他会修改已推送历史或破坏工作区的操作
-- **`.gitignore` 修改必须征得用户同意**：Agent 不得自行增删 `.gitignore` 条目。如确需修改，先向用户说明理由并取得确认。
+- **修改 `.gitignore` 必须征得用户同意**：Agent 不得自行增删 `.gitignore` 条目。如确需修改，先向用户说明理由并取得确认。
 - 每次提交前检查 `git status` 和 `git diff`，确保不包含敏感信息（密钥、token 等）。
-- **提交前主动提出版本变更建议**：每次完成代码改动后，Agent 应主动根据 §12 的版本位规则进行判断。PATCH 级别（Bug 修复、小调整）可自行决定并变更版本号；MINOR 及以上（新功能、架构重写）必须向用户确认后变更。
-
-Keep this file updated when tooling/rules/project conventions change.
-
-## 12) Versioning
-
-- 当前版本: `0.5.6-neoforge+mc1.21.1`
-- 后缀 `-neoforge+mc1.21.1` 为平台标识，保持不变
-
-| 版本位 | 触发条件 |
-|--------|---------|
-| PATCH (`0.5.x`) | Bug 修复、参数微调、语言文件补充 |
-| MINOR (`0.x.0`) | 新增功能（每完成 planToAgent.md 中一项） |
-| MAJOR (`x.0.0`) | 功能基本完整时升至 `1.0.0`；架构重写或 MC 版本升级 |
-
-规则：
-- 版本号变更单独一条 commit，格式 `release: x.y.z`
-- **PATCH 版本 Agent 可自行决定并变更**；MINOR/MAJOR 版本迭代前必须向用户确认，不得自行决定发版
+- **提交前主动提出版本变更建议**：每次完成代码改动后，Agent 应主动根据 §13 的版本位规则进行判断。PATCH 级别（Bug 修复、小调整）可自行决定并变更版本号；MINOR 及以上（新功能、架构重写）必须向用户确认后变更。
 
 ### GitHub Release 发布
 
@@ -303,3 +288,22 @@ Keep this file updated when tooling/rules/project conventions change.
   gh release create v0.x.x build/libs/*.jar --title "v0.x.x-beta" --prerelease
   ```
 - 版本号达 1.0.0 后默认改为正式 Release。
+
+## 12) Versioning
+
+- 当前版本: `0.5.1-neoforge+mc1.21.1`
+- 后缀 `-neoforge+mc1.21.1` 为平台标识，保持不变
+
+| 版本位 | 触发条件 |
+|--------|---------|
+| PATCH (`0.1.x`) | Bug 修复、参数微调、语言文件补充 |
+| MINOR (`0.x.0`) | 新增功能（每完成 ROADMAP 中一项） |
+| MAJOR (`x.0.0`) | 功能基本完整时升至 `1.0.0`；架构重写或 MC 版本升级 |
+
+规则：
+- 版本号变更单独一条 commit，格式 `release: 0.x.y`
+- PATCH、MINOR 级别（Bug 修复、参数微调、语言文件补充）Agent 可自行决定并变更，无需等待确认
+- MAJOR 版本迭代前**必须向用户确认**，不得自行决定发版
+- 发版时在 `WorkingPlan.md` 记录该版本已完成的功能
+
+Keep this file updated when tooling/rules/project conventions change.
