@@ -42,9 +42,7 @@ public class MaidMineMoveTask extends MaidCheckRateTask {
             return;
         }
         if (task.isOrePaused(gameTime)) {
-            if (maid.getOwner() != null && maid.distanceToSqr(maid.getOwner()) > 25) {
-                return;
-            }
+            return;
         }
         float maxDistance = DEFAULT_SEARCH_RADIUS;
         MaidPathFindingBFS bfs = new MaidPathFindingBFS(

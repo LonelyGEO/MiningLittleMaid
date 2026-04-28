@@ -8,6 +8,7 @@ import com.github.tartaricacid.touhoulittlemaid.client.gui.widget.button.MaidCon
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -18,18 +19,20 @@ public class MiningTaskConfigGui extends MaidTaskConfigGui<MiningTaskConfigConta
     private static final ResourceLocation BG =
             ResourceLocation.fromNamespaceAndPath("touhou_little_maid",
                     "textures/gui/attack_task_config.png");
+    private static final int BG_HEIGHT = 137;
+    private static final int BG_OFFSET_Y = 28;
     private static final int ROW_HEIGHT = 20;
-    private static final int SCROLL_AREA_TITLE_Y = 76;
-    private static final int SCROLL_AREA_START_Y = 96;
-    private static final int SCROLL_AREA_HEIGHT = 80;
+    private static final int SCROLL_AREA_TITLE_Y = 74;
+    private static final int SCROLL_AREA_START_Y = 94;
+    private static final int SCROLL_AREA_HEIGHT = 60;
     private static final int BUTTON_X = 86;
+    private static final int CHAT_BUTTON_Y = 52;
 
     private final List<OreToggleManager.OreGroup> oreGroups = new ArrayList<>();
     private final List<MaidConfigButton> oreButtons = new ArrayList<>();
     private int scrollOffset;
     private int maxScroll;
     private int visibleRows;
-    private boolean needsRefresh;
 
     public MiningTaskConfigGui(MiningTaskConfigContainer container, Inventory inventory, Component title) {
         super(container, inventory, title);
@@ -38,12 +41,13 @@ public class MiningTaskConfigGui extends MaidTaskConfigGui<MiningTaskConfigConta
     @Override
     protected void renderBg(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
         super.renderBg(graphics, partialTicks, mouseX, mouseY);
-        graphics.blit(BG, leftPos + 80, topPos + 28, 0, 0, imageWidth, 137);
+        graphics.blit(BG, leftPos + 80, topPos + BG_OFFSET_Y, 0, 0, imageWidth, BG_HEIGHT);
     }
 
     @Override
     protected void initAdditionWidgets() {
         EntityMaid maid = getMaid();
+        oreButtons.clear();
         oreGroups.clear();
         oreGroups.addAll(OreToggleManager.getOreGroups());
 
@@ -51,25 +55,21 @@ public class MiningTaskConfigGui extends MaidTaskConfigGui<MiningTaskConfigConta
         maxScroll = Math.max(0, oreGroups.size() - visibleRows);
         scrollOffset = Math.min(scrollOffset, maxScroll);
 
-        // 聊天通知开关（现有）
         boolean enabled = MaidMineBreakTask.isChatNotifyEnabled(maid);
         Component label = Component.translatable("gui.mininglittlemaid.chat_notify");
-        Component value = Component.translatable(enabled
-                ? "gui.mininglittlemaid.option.on"
-                : "gui.mininglittlemaid.option.off");
+        Component value = getToggleComponent(enabled);
         MaidConfigButton toggleBtn = new MaidConfigButton(
-                leftPos + BUTTON_X, topPos + 52, label, value,
+                leftPos + BUTTON_X, topPos + CHAT_BUTTON_Y, label, value,
                 btn -> {
                     MaidMineBreakTask.toggleChatNotify(maid);
                     boolean newState = MaidMineBreakTask.isChatNotifyEnabled(maid);
-                    btn.setValue(Component.translatable(newState
-                            ? "gui.mininglittlemaid.option.on"
-                            : "gui.mininglittlemaid.option.off"));
+                    btn.setValue(getToggleComponent(newState));
                 });
         addRenderableWidget(toggleBtn);
 
-        // 矿石开关列表
-        createOreButtons(maid);
+        if (!oreGroups.isEmpty()) {
+            createOreButtons(maid);
+        }
     }
 
     private void createOreButtons(EntityMaid maid) {
@@ -82,18 +82,13 @@ public class MiningTaskConfigGui extends MaidTaskConfigGui<MiningTaskConfigConta
 
             boolean isEnabled = OreToggleManager.isOreGroupEnabled(maid, group.groupKey());
             Component btnLabel = group.representativeBlock().getName();
-            Component btnValue = Component.translatable(isEnabled
-                    ? "gui.mininglittlemaid.option.on"
-                    : "gui.mininglittlemaid.option.off");
 
             MaidConfigButton btn = new MaidConfigButton(
-                    leftPos + BUTTON_X, y, btnLabel, btnValue,
+                    leftPos + BUTTON_X, y, btnLabel, getToggleComponent(isEnabled),
                     b -> {
                         OreToggleManager.toggleOreGroup(maid, group.groupKey());
                         boolean newState = OreToggleManager.isOreGroupEnabled(maid, group.groupKey());
-                        b.setValue(Component.translatable(newState
-                                ? "gui.mininglittlemaid.option.on"
-                                : "gui.mininglittlemaid.option.off"));
+                        b.setValue(getToggleComponent(newState));
                     });
             oreButtons.add(btn);
             addRenderableWidget(btn);
@@ -102,12 +97,10 @@ public class MiningTaskConfigGui extends MaidTaskConfigGui<MiningTaskConfigConta
     }
 
     private void refreshOreButtons() {
-        EntityMaid maid = getMaid();
         int startY = topPos + SCROLL_AREA_START_Y - scrollOffset * ROW_HEIGHT;
 
         for (int i = 0; i < oreButtons.size(); i++) {
-            int y = startY + i * ROW_HEIGHT;
-            oreButtons.get(i).setY(y);
+            oreButtons.get(i).setY(startY + i * ROW_HEIGHT);
         }
         updateButtonVisibility();
     }
@@ -116,8 +109,7 @@ public class MiningTaskConfigGui extends MaidTaskConfigGui<MiningTaskConfigConta
         int scrollAreaTop = topPos + SCROLL_AREA_START_Y;
         int scrollAreaBottom = scrollAreaTop + SCROLL_AREA_HEIGHT;
 
-        for (int i = 0; i < oreButtons.size(); i++) {
-            MaidConfigButton btn = oreButtons.get(i);
+        for (MaidConfigButton btn : oreButtons) {
             int btnBottom = btn.getY() + ROW_HEIGHT;
             btn.visible = btn.getY() >= scrollAreaTop && btnBottom <= scrollAreaBottom;
         }
@@ -125,6 +117,9 @@ public class MiningTaskConfigGui extends MaidTaskConfigGui<MiningTaskConfigConta
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        if (oreGroups.isEmpty()) {
+            return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+        }
         int scrollAreaTop = topPos + SCROLL_AREA_START_Y;
         int scrollAreaBottom = scrollAreaTop + SCROLL_AREA_HEIGHT;
 
@@ -139,19 +134,30 @@ public class MiningTaskConfigGui extends MaidTaskConfigGui<MiningTaskConfigConta
 
     @Override
     protected void renderAddition(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+        if (oreGroups.isEmpty()) {
+            return;
+        }
         Component title = Component.translatable("gui.mininglittlemaid.ore_toggles");
-        graphics.drawString(font, title, leftPos + BUTTON_X, topPos + SCROLL_AREA_TITLE_Y, 0x404040, false);
+        graphics.drawString(font, title, leftPos + BUTTON_X, topPos + SCROLL_AREA_TITLE_Y, 0xE0E0E0, false);
 
-        if (maxScroll > 0) {
+        if (maxScroll > 0 && !oreButtons.isEmpty()) {
             int barWidth = 4;
+            int barX = leftPos + 80 + imageWidth - barWidth - 4;
             int scrollAreaTopPixel = topPos + SCROLL_AREA_START_Y;
-            int thumbHeight = Math.max(8, visibleRows * SCROLL_AREA_HEIGHT / oreGroups.size());
+            int totalRows = oreGroups.size();
+            int thumbHeight = Math.max(8, visibleRows * SCROLL_AREA_HEIGHT / totalRows);
             int trackHeight = SCROLL_AREA_HEIGHT - thumbHeight;
             int thumbY = trackHeight == 0 ? scrollAreaTopPixel
                     : scrollAreaTopPixel + scrollOffset * trackHeight / maxScroll;
-            int barX = leftPos + BUTTON_X + 110;
-            graphics.fill(barX, scrollAreaTopPixel, barX + barWidth, scrollAreaTopPixel + SCROLL_AREA_HEIGHT, 0x33FFFFFF);
+            graphics.fill(barX, scrollAreaTopPixel, barX + barWidth,
+                    scrollAreaTopPixel + SCROLL_AREA_HEIGHT, 0x33FFFFFF);
             graphics.fill(barX, thumbY, barX + barWidth, thumbY + thumbHeight, 0x99FFFFFF);
         }
+    }
+
+    private static MutableComponent getToggleComponent(boolean enabled) {
+        return Component.translatable(enabled
+                ? "gui.mininglittlemaid.option.on"
+                : "gui.mininglittlemaid.option.off");
     }
 }

@@ -35,7 +35,7 @@ public class TaskMining implements IFarmTask {
     private static final Logger LOGGER = LogManager.getLogger();
     private static final int ORE_ALERT_COOLDOWN = 200;
     private static final int ORE_ALERT_MIN_DIST_SQ = 16 * 16;
-    private static final int ORE_PAUSE_TICKS = 100;
+    private static final int ORE_PAUSE_TICKS = 200;
 
     private BlockPos lastOreAlertPos = BlockPos.ZERO;
     private long lastOreAlertTime;
