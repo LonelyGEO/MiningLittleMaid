@@ -21,7 +21,7 @@ public class MiningTaskConfigGui extends MaidTaskConfigGui<MiningTaskConfigConta
                     "textures/gui/attack_task_config.png");
     private static final int BG_HEIGHT = 137;
     private static final int BG_OFFSET_Y = 28;
-    private static final int ROW_HEIGHT = 20;
+    private static final int ROW_HEIGHT = 15;
     private static final int SCROLL_AREA_TITLE_Y = 74;
     private static final int SCROLL_AREA_START_Y = 94;
     private static final int SCROLL_AREA_HEIGHT = 60;
