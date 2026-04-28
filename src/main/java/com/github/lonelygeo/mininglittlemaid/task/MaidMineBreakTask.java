@@ -83,7 +83,8 @@ public class MaidMineBreakTask extends Behavior<EntityMaid> {
                 String directionKey = yDiff > 3
                         ? "message.mining_little_maid.ore_above"
                         : "message.mining_little_maid.ore_below";
-                Component msg = Component.translatable(directionKey, oreName)
+                Component msg = Component.translatable(directionKey,
+                        maid.getDisplayName(), oreName)
                         .append(Component.literal(" " + kaomoji));
                 if (isChatNotifyEnabled(maid) && maid.getOwner() instanceof ServerPlayer player) {
                     player.sendSystemMessage(msg);
@@ -92,6 +93,12 @@ public class MaidMineBreakTask extends Behavior<EntityMaid> {
                 return;
             }
             Config.debugLog(LOGGER,"Mining ore at {}", targetPos);
+            BlockPos aboveOre = targetPos.above();
+            BlockState aboveState = worldIn.getBlockState(aboveOre);
+            if (!aboveState.isAir() && !aboveState.canBeReplaced()) {
+                maid.getBrain().eraseMemory(InitEntities.TARGET_POS.get());
+                return;
+            }
             BlockState targetState = worldIn.getBlockState(targetPos);
             int count;
             if (MiningFavorGate.canVeinMine(maid.getFavorabilityManager().getLevel())) {

@@ -33,8 +33,8 @@ public class MiningTaskConfigGui extends MaidTaskConfigGui<MiningTaskConfigConta
                                     ? "gui.mining_little_maid.option.on"
                                     : "gui.mining_little_maid.option.off")));
                 })
-                .pos(leftPos + 80, topPos + 52)
-                .size(160, 20)
+                .pos(leftPos + 86, topPos + 52)
+                .size(164, 20)
                 .build();
         addRenderableWidget(toggleBtn);
     }

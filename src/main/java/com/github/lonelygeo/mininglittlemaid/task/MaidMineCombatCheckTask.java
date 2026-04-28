@@ -20,6 +20,8 @@ public class MaidMineCombatCheckTask extends MaidCheckRateTask {
     private static final int CHECK_RATE = 60;
     private static final String ATTACK_TASK_ID = "touhou_little_maid:attack";
     private static final String RESUME_KEY = "mining_resume";
+    private static final String COOLDOWN_KEY = "mining_combat_cooldown";
+    private static final long COOLDOWN_TICKS = 200;
     private static final Logger LOGGER = LogManager.getLogger();
 
     public MaidMineCombatCheckTask() {
@@ -30,6 +32,11 @@ public class MaidMineCombatCheckTask extends MaidCheckRateTask {
     @Override
     protected void start(ServerLevel world, EntityMaid maid, long gameTime) {
         if (maid.getFavorabilityManager().getLevel() < 1) {
+            return;
+        }
+
+        long cooldown = maid.getPersistentData().getLong(COOLDOWN_KEY);
+        if (gameTime - cooldown < COOLDOWN_TICKS) {
             return;
         }
 

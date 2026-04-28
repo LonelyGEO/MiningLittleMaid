@@ -27,7 +27,7 @@ public class MaidMineInventoryCheckTask extends MaidCheckRateTask {
         if (isInventoryFull(maid)) {
             Config.debugLog(LOGGER,"Maid inventory full, cancelling mining task");
             if (maid.getOwner() instanceof ServerPlayer player) {
-                player.sendSystemMessage(Component.translatable(FULL_NOTIFY_KEY));
+                player.sendSystemMessage(Component.translatable(FULL_NOTIFY_KEY, maid.getDisplayName()));
             }
             maid.setTask(null);
         }
