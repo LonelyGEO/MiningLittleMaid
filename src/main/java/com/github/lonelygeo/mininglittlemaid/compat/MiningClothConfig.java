@@ -7,7 +7,6 @@ import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import net.minecraft.network.chat.Component;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.common.NeoForge;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.GAME)
 public class MiningClothConfig {
@@ -55,15 +54,6 @@ public class MiningClothConfig {
                 .build());
 
         mining.addEntry(entryBuilder
-                .startBooleanToggle(
-                        Component.translatable("config.mininglittlemaid.enableDebugLog"),
-                        Config.DEBUG_LOGGING.get())
-                .setDefaultValue(false)
-                .setSaveConsumer(val -> Config.DEBUG_LOGGING.set(val))
-                .setTooltip(Component.literal("需重启生效"))
-                .build());
-
-        mining.addEntry(entryBuilder
                 .startIntSlider(
                         Component.translatable("config.mininglittlemaid.orePauseTicks"),
                         Config.ORE_PAUSE_TICKS.get() / 20, 5, 30)
@@ -88,6 +78,15 @@ public class MiningClothConfig {
                 .setDefaultValue(300)
                 .setSaveConsumer(val -> Config.TORCH_NOTIFY_COOLDOWN_TICKS.set(val * 20))
                 .setTooltip(Component.literal("无火把通知的冷却时间（秒）"))
+                .build());
+
+        mining.addEntry(entryBuilder
+                .startBooleanToggle(
+                        Component.translatable("config.mininglittlemaid.enableDebugLog"),
+                        Config.DEBUG_LOGGING.get())
+                .setDefaultValue(false)
+                .setSaveConsumer(val -> Config.DEBUG_LOGGING.set(val))
+                .setTooltip(Component.literal("需重启生效"))
                 .build());
     }
 }
