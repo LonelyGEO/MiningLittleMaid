@@ -89,7 +89,7 @@ public class MaidMineBreakTask extends Behavior<EntityMaid> {
                 if (isChatNotifyEnabled(maid) && maid.getOwner() instanceof ServerPlayer player) {
                     player.sendSystemMessage(msg);
                 }
-                task.setOrePauseEndTime(worldIn.getGameTime() + 100);
+                task.setOrePauseEndTime(worldIn.getGameTime() + Config.ORE_PAUSE_TICKS.get());
                 return;
             }
             Config.debugLog(LOGGER,"Mining ore at {}", targetPos);

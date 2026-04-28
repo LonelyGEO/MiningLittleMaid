@@ -18,5 +18,8 @@
     "config.mininglittlemaid.minLightLevel": "火把放置亮度阈值",
     "config.mininglittlemaid.torchCooldown": "火把放置冷却时间 (tick)",
     "config.mininglittlemaid.combatReturnDelay": "战斗切回延迟 (tick)",
-    "config.mininglittlemaid.enableDebugLog": "启用 Debug 日志"
+    "config.mininglittlemaid.enableDebugLog": "启用 Debug 日志",
+    "config.mininglittlemaid.orePauseTicks": "矿石暂停搜索冷却时间 (tick)",
+    "config.mininglittlemaid.oreAlertCooldownTicks": "矿石通知冷却时间 (tick)",
+    "config.mininglittlemaid.torchNotifyCooldownTicks": "无火把提示冷却时间 (tick)"
 }

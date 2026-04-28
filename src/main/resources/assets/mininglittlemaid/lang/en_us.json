@@ -18,5 +18,8 @@
     "config.mininglittlemaid.minLightLevel": "Torch Light Threshold",
     "config.mininglittlemaid.torchCooldown": "Torch Cooldown (ticks)",
     "config.mininglittlemaid.combatReturnDelay": "Combat Return Delay (ticks)",
-    "config.mininglittlemaid.enableDebugLog": "Enable Debug Logging"
+    "config.mininglittlemaid.enableDebugLog": "Enable Debug Logging",
+    "config.mininglittlemaid.orePauseTicks": "Ore Search Pause Cooldown (ticks)",
+    "config.mininglittlemaid.oreAlertCooldownTicks": "Ore Alert Cooldown (ticks)",
+    "config.mininglittlemaid.torchNotifyCooldownTicks": "Torch Notification Cooldown (ticks)"
 }

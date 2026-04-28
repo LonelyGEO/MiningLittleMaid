@@ -10,6 +10,9 @@ public class Config {
     public static final ModConfigSpec.IntValue MIN_LIGHT_LEVEL;
     public static final ModConfigSpec.IntValue TORCH_COOLDOWN_TICKS;
     public static final ModConfigSpec.IntValue COMBAT_RETURN_DELAY_TICKS;
+    public static final ModConfigSpec.IntValue ORE_PAUSE_TICKS;
+    public static final ModConfigSpec.IntValue ORE_ALERT_COOLDOWN_TICKS;
+    public static final ModConfigSpec.IntValue TORCH_NOTIFY_COOLDOWN_TICKS;
     public static final ModConfigSpec.BooleanValue DEBUG_LOGGING;
 
     static {
@@ -33,6 +36,18 @@ public class Config {
         COMBAT_RETURN_DELAY_TICKS = builder
                 .comment("战斗结束后等多久切回采矿（tick，20 tick = 1 秒）")
                 .defineInRange("combatReturnDelayTicks", 100, 20, 600);
+
+        ORE_PAUSE_TICKS = builder
+                .comment("检测到不可达矿石后暂停搜索的时长（tick）")
+                .defineInRange("orePauseTicks", 200, 100, 600);
+
+        ORE_ALERT_COOLDOWN_TICKS = builder
+                .comment("同一区域矿石通知的冷却时间（tick）")
+                .defineInRange("oreAlertCooldownTicks", 12000, 2400, 72000);
+
+        TORCH_NOTIFY_COOLDOWN_TICKS = builder
+                .comment("无火把通知的冷却时间（tick）")
+                .defineInRange("torchNotifyCooldownTicks", 6000, 200, 72000);
 
         DEBUG_LOGGING = builder
                 .comment("启用 Debug 日志输出（需重启生效）")

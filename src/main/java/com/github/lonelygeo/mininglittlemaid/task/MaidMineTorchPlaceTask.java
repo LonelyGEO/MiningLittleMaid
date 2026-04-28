@@ -19,7 +19,7 @@ import org.apache.logging.log4j.Logger;
 public class MaidMineTorchPlaceTask extends MaidCheckRateTask {
     private static final int CHECK_RATE = 60;
     private static final String NO_TORCH_KEY = "message.mininglittlemaid.no_torch";
-    private static final long TORCH_NOTIFY_COOLDOWN = 600;
+
     private static final Logger LOGGER = LogManager.getLogger();
     private BlockPos lastPos = BlockPos.ZERO;
     private long lastPlaceTime;
@@ -52,7 +52,7 @@ public class MaidMineTorchPlaceTask extends MaidCheckRateTask {
         }
 
         if (!consumeTorch(maid)) {
-            if (gameTime - lastTorchNotifyTime >= TORCH_NOTIFY_COOLDOWN) {
+            if (gameTime - lastTorchNotifyTime >= Config.TORCH_NOTIFY_COOLDOWN_TICKS.get()) {
                 if (maid.getOwner() instanceof ServerPlayer player) {
                     player.sendSystemMessage(Component.translatable(NO_TORCH_KEY, maid.getDisplayName()));
                 }
@@ -63,7 +63,6 @@ public class MaidMineTorchPlaceTask extends MaidCheckRateTask {
 
         world.setBlock(placePos, Blocks.TORCH.defaultBlockState(), 3);
         lastPlaceTime = gameTime;
-        lastTorchNotifyTime = 0;
         Config.debugLog(LOGGER,"Placed torch at {}", placePos);
     }
 
