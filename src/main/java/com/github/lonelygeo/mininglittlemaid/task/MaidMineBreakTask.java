@@ -55,7 +55,7 @@ public class MaidMineBreakTask extends Behavior<EntityMaid> {
                 .map(PositionTracker::currentPosition)
                 .map(BlockPos::containing)
                 .filter(pos -> Math.abs(pos.getX() - maid.blockPosition().getX())
-                        + Math.abs(pos.getZ() - maid.blockPosition().getZ()) <= Config.BREAK_CLOSE_ENOUGH.get())
+                        + Math.abs(pos.getZ() - maid.blockPosition().getZ()) <= MiningFavorGate.getBreakCloseEnough(maid.getFavorabilityManager().getLevel()))
                 .filter(pos -> task.canHarvest(maid, pos, worldIn.getBlockState(pos)))
                 .isPresent();
     }

@@ -32,7 +32,6 @@ public class Config {
     public static final ModConfigSpec.IntValue BFS_VERTICAL_RANGE;
     public static final ModConfigSpec.IntValue COMBAT_SEARCH_HORIZONTAL;
     public static final ModConfigSpec.IntValue COMBAT_SEARCH_VERTICAL;
-    public static final ModConfigSpec.IntValue BREAK_CLOSE_ENOUGH;
 
     static {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
@@ -133,10 +132,6 @@ public class Config {
         COMBAT_SEARCH_VERTICAL = builder
                 .comment("怪物搜索垂直半径（格）")
                 .defineInRange("combatSearchVertical", 5, 2, 15);
-
-        BREAK_CLOSE_ENOUGH = builder
-                .comment("女仆认为已到达目标的水平距离（格）")
-                .defineInRange("breakCloseEnough", 1, 1, 3);
 
         builder.pop(3);
 

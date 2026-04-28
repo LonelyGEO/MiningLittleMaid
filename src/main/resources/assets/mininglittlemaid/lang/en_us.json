@@ -35,6 +35,5 @@
     "config.mininglittlemaid.bfsVerticalRange": "BFS Vertical Search Range",
     "config.mininglittlemaid.combatSearchHorizontal": "Monster Search Horizontal Radius",
     "config.mininglittlemaid.combatSearchVertical": "Monster Search Vertical Radius",
-    "config.mininglittlemaid.breakCloseEnough": "Close-Enough Distance",
     "config.mininglittlemaid.enableDebugLog": "Enable Debug Logging"
 }

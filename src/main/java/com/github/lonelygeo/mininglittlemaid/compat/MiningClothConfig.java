@@ -201,14 +201,5 @@ public class MiningClothConfig {
                 .setSaveConsumer(val -> Config.COMBAT_SEARCH_VERTICAL.set(val))
                 .setTooltip(Component.literal("战斗检测的垂直范围（格）"))
                 .build());
-
-        range.addEntry(entryBuilder
-                .startIntSlider(
-                        Component.translatable("config.mininglittlemaid.breakCloseEnough"),
-                        Config.BREAK_CLOSE_ENOUGH.get(), 1, 3)
-                .setDefaultValue(1)
-                .setSaveConsumer(val -> Config.BREAK_CLOSE_ENOUGH.set(val))
-                .setTooltip(Component.literal("女仆认为已到达目标的水平距离（格）。值越大越容易远程采矿"))
-                .build());
     }
 }

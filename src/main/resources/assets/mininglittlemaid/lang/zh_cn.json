@@ -35,6 +35,5 @@
     "config.mininglittlemaid.bfsVerticalRange": "BFS 垂直搜索范围",
     "config.mininglittlemaid.combatSearchHorizontal": "怪物搜索水平半径",
     "config.mininglittlemaid.combatSearchVertical": "怪物搜索垂直半径",
-    "config.mininglittlemaid.breakCloseEnough": "接近判定距离",
     "config.mininglittlemaid.enableDebugLog": "启用 Debug 日志"
 }

@@ -57,6 +57,15 @@ public class MiningFavorGate {
     }
 
     /**
+     * 好感度对应的接近判定距离（水平面曼哈顿距离）
+     */
+    public static int getBreakCloseEnough(int favorLevel) {
+        if (favorLevel >= 3) return 3;
+        if (favorLevel >= 2) return 2;
+        return 1;
+    }
+
+    /**
      * 同种矿石判定（iron_ore 与 deepslate_iron_ore 算同种）
      */
     public static boolean isSameOreType(BlockState a, BlockState b) {
