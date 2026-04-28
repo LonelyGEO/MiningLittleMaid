@@ -62,9 +62,11 @@ public class MaidMineBreakTask extends Behavior<EntityMaid> {
         this.lastCheckTime = worldIn.getGameTime();
         maid.getBrain().getMemory(InitEntities.TARGET_POS.get()).ifPresent(posTracker -> {
             BlockPos targetPos = BlockPos.containing(posTracker.currentPosition());
+            BlockState targetState = worldIn.getBlockState(targetPos);
+            String oreGroupKey = MiningFavorGate.getOreGroupKey(targetState);
             int yDiff = targetPos.getY() - maid.blockPosition().getY();
             if (yDiff >= 3 || yDiff < -1) {
-                if (!task.canAlertOre(targetPos, worldIn.getGameTime())) {
+                if (!task.canAlertOre(targetPos, worldIn.getGameTime(), oreGroupKey)) {
                     maid.getBrain().eraseMemory(InitEntities.TARGET_POS.get());
                     maid.getBrain().eraseMemory(MemoryModuleType.WALK_TARGET);
                     return;
@@ -74,7 +76,6 @@ public class MaidMineBreakTask extends Behavior<EntityMaid> {
                 maid.getBrain().eraseMemory(MemoryModuleType.WALK_TARGET);
                 worldIn.sendParticles(ParticleTypes.HAPPY_VILLAGER, maid.getX(), maid.getY() + 1.5, maid.getZ(),
                         3, 0.3, 0.3, 0.3, 0);
-                BlockState targetState = worldIn.getBlockState(targetPos);
                 Component oreName = targetState.getBlock().getName();
                 String kaomoji = randomKaomoji();
                 String directionHint = yDiff > 0 ? "↑" : "↓";
@@ -95,8 +96,7 @@ public class MaidMineBreakTask extends Behavior<EntityMaid> {
             Config.debugLog(LOGGER,"Mining ore at {}", targetPos);
             if (!MiningFavorGate.hasReachableExposedFace(worldIn, maid.blockPosition(), targetPos)) {
                 Config.debugLog(LOGGER,"Ore at {} not reachable from maid position, clearing target", targetPos);
-                if (task.canAlertOre(targetPos, worldIn.getGameTime())) {
-                    BlockState targetState = worldIn.getBlockState(targetPos);
+                if (task.canAlertOre(targetPos, worldIn.getGameTime(), oreGroupKey)) {
                     String kaomoji = randomKaomoji();
                     Component oreName = targetState.getBlock().getName();
                     Component msg = Component.translatable("message.mininglittlemaid.ore_unreachable",
@@ -109,7 +109,6 @@ public class MaidMineBreakTask extends Behavior<EntityMaid> {
                 maid.getBrain().eraseMemory(InitEntities.TARGET_POS.get());
                 return;
             }
-            BlockState targetState = worldIn.getBlockState(targetPos);
             int count;
             if (MiningFavorGate.canVeinMine(maid.getFavorabilityManager().getLevel())) {
                 count = veinMineBFS(worldIn, maid, targetPos, targetState);

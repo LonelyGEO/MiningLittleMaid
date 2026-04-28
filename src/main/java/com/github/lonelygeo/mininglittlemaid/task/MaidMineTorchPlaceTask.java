@@ -41,6 +41,10 @@ public class MaidMineTorchPlaceTask extends MaidCheckRateTask {
             return;
         }
 
+        if (world.canSeeSky(maid.blockPosition())) {
+            return;
+        }
+
         long cooldown = Config.TORCH_COOLDOWN_TICKS.get();
         if (gameTime - lastPlaceTime < cooldown) {
             return;
