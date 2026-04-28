@@ -93,16 +93,8 @@ public class MaidMineBreakTask extends Behavior<EntityMaid> {
                 return;
             }
             Config.debugLog(LOGGER,"Mining ore at {}", targetPos);
-            boolean hasAccess = false;
-            for (Direction dir : Direction.values()) {
-                BlockPos accessPos = targetPos.relative(dir);
-                BlockState accessState = worldIn.getBlockState(accessPos);
-                if (accessState.isAir() || accessState.canBeReplaced()) {
-                    hasAccess = true;
-                    break;
-                }
-            }
-            if (!hasAccess) {
+            if (!MiningFavorGate.hasReachableExposedFace(worldIn, maid.blockPosition(), targetPos)) {
+                Config.debugLog(LOGGER,"Ore at {} not reachable from maid position, clearing target", targetPos);
                 maid.getBrain().eraseMemory(InitEntities.TARGET_POS.get());
                 return;
             }
