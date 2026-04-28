@@ -127,6 +127,19 @@ public class MaidMineBreakTask extends Behavior<EntityMaid> {
 
         while (!queue.isEmpty() && count < maxVeinSize) {
             BlockPos current = queue.poll();
+
+            for (Direction dir : Direction.values()) {
+                neighborPos.setWithOffset(current, dir);
+                if (!visited.contains(neighborPos)) {
+                    visited.add(neighborPos.immutable());
+                    BlockState neighborState = world.getBlockState(neighborPos);
+                    if (MiningFavorGate.isMineableOre(neighborState)
+                            && MiningFavorGate.isSameOreType(firstState, neighborState)) {
+                        queue.add(neighborPos.immutable());
+                    }
+                }
+            }
+
             BlockState currentState = world.getBlockState(current);
             if (!MiningFavorGate.isMineableOre(currentState) || !maid.canDestroyBlock(current)) {
                 continue;
@@ -135,17 +148,6 @@ public class MaidMineBreakTask extends Behavior<EntityMaid> {
                 continue;
             }
             count++;
-            for (Direction dir : Direction.values()) {
-                neighborPos.setWithOffset(current, dir);
-                if (!visited.contains(neighborPos)) {
-                    BlockState neighborState = world.getBlockState(neighborPos);
-                    if (MiningFavorGate.isMineableOre(neighborState)
-                            && MiningFavorGate.isSameOreType(firstState, neighborState)) {
-                        visited.add(neighborPos.immutable());
-                        queue.add(neighborPos.immutable());
-                    }
-                }
-            }
         }
         return count;
     }

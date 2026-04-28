@@ -17,6 +17,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
 import com.github.lonelygeo.mininglittlemaid.config.Config;
+import com.github.lonelygeo.mininglittlemaid.inventory.container.MiningTaskConfigContainer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.SimpleMenuProvider;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -130,6 +133,15 @@ public class TaskMining implements IFarmTask {
     @Override
     public List<Pair<String, Predicate<EntityMaid>>> getConditionDescription(EntityMaid maid) {
         return Collections.singletonList(Pair.of("has_pickaxe", this::hasPickaxe));
+    }
+
+    @Override
+    public net.minecraft.world.MenuProvider getTaskConfigGuiProvider(EntityMaid maid) {
+        int entityId = maid.getId();
+        return new SimpleMenuProvider(
+                (containerId, inventory, player) ->
+                        new MiningTaskConfigContainer(containerId, inventory, entityId),
+                Component.translatable("task.mining_little_maid.mining.config"));
     }
 
     private boolean hasPickaxe(EntityMaid maid) {

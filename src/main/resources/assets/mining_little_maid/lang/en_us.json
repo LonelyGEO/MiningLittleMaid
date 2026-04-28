@@ -2,10 +2,14 @@
     "task.mining_little_maid.mining": "Mining",
     "task.mining_little_maid.mining.desc": "Maid mines ores while following owner.\nHigher favor increases detection range through stone.\nLevel 0: 3×3×3\nLevel 1: 5×5×5\nLevel 2: 5×5×5\nLevel 3: 7×7×7",
     "task.mining_little_maid.mining.condition.has_pickaxe": "Has pickaxe in backpack",
+    "task.mining_little_maid.mining.config": "Mining Config",
     "subtitle.mining_little_maid.maid.mode.mining": "Maid: Mining",
     "message.mining_little_maid.ore_above": "Found %s above!",
     "message.mining_little_maid.ore_below": "Found %s below!",
     "message.mining_little_maid.inventory_full": "Maid's inventory is full, mining stopped",
     "message.mining_little_maid.no_torch": "Maid needs a torch, but none in inventory",
-    "gui.mining_little_maid.chat_notify": "Mining Alert"
+    "gui.mining_little_maid.chat_notify": "Show Mining Alert",
+    "gui.mining_little_maid.option.on": "ON",
+    "gui.mining_little_maid.option.off": "OFF",
+    "config.mining_little_maid.section.mining": "Mining"
 }
