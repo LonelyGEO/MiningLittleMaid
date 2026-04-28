@@ -6,10 +6,16 @@
     "subtitle.mininglittlemaid.maid.mode.mining": "女仆：采矿",
     "message.mininglittlemaid.ore_above": "%s: 头顶上方发现了%s！",
     "message.mininglittlemaid.ore_below": "%s: 脚下下方发现了%s！",
+    "message.mininglittlemaid.ore_unreachable": "%s: 发现了%s，但无法到达！",
     "message.mininglittlemaid.inventory_full": "%s: 背包已满，停止采矿",
     "message.mininglittlemaid.no_torch": "%s: 需要火把，但背包里没有",
     "gui.mininglittlemaid.chat_notify": "显示挖矿提示",
     "gui.mininglittlemaid.option.on": "开启",
     "gui.mininglittlemaid.option.off": "关闭",
-    "config.mininglittlemaid.section.mining": "采矿"
+    "config.mininglittlemaid.section.mining": "采矿",
+    "config.mininglittlemaid.maxVeinSize": "矿脉连锁最大块数",
+    "config.mininglittlemaid.minLightLevel": "火把放置亮度阈值",
+    "config.mininglittlemaid.torchCooldown": "火把放置冷却时间 (tick)",
+    "config.mininglittlemaid.combatReturnDelay": "战斗切回延迟 (tick)",
+    "config.mininglittlemaid.enableDebugLog": "启用 Debug 日志"
 }

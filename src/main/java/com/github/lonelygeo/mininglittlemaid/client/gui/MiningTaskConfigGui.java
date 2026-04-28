@@ -7,12 +7,22 @@ import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
 public class MiningTaskConfigGui extends MaidTaskConfigGui<MiningTaskConfigContainer> {
+    private static final ResourceLocation BG =
+            ResourceLocation.fromNamespaceAndPath("touhou_little_maid",
+                    "textures/gui/attack_task_config.png");
 
     public MiningTaskConfigGui(MiningTaskConfigContainer container, Inventory inventory, Component title) {
         super(container, inventory, title);
+    }
+
+    @Override
+    protected void renderBg(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
+        super.renderBg(graphics, partialTicks, mouseX, mouseY);
+        graphics.blit(BG, leftPos + 80, topPos + 28, 0, 0, imageWidth, 137);
     }
 
     @Override

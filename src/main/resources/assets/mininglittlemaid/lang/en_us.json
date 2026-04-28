@@ -6,10 +6,16 @@
     "subtitle.mininglittlemaid.maid.mode.mining": "Maid: Mining",
     "message.mininglittlemaid.ore_above": "%s: Found %s above!",
     "message.mininglittlemaid.ore_below": "%s: Found %s below!",
+    "message.mininglittlemaid.ore_unreachable": "%s: Found %s, but cannot reach it!",
     "message.mininglittlemaid.inventory_full": "%s: Inventory full, mining stopped",
     "message.mininglittlemaid.no_torch": "%s: Needs a torch, but none in inventory",
     "gui.mininglittlemaid.chat_notify": "Show Mining Alert",
     "gui.mininglittlemaid.option.on": "ON",
     "gui.mininglittlemaid.option.off": "OFF",
-    "config.mininglittlemaid.section.mining": "Mining"
+    "config.mininglittlemaid.section.mining": "Mining",
+    "config.mininglittlemaid.maxVeinSize": "Max Vein Mine Size",
+    "config.mininglittlemaid.minLightLevel": "Torch Light Threshold",
+    "config.mininglittlemaid.torchCooldown": "Torch Cooldown (ticks)",
+    "config.mininglittlemaid.combatReturnDelay": "Combat Return Delay (ticks)",
+    "config.mininglittlemaid.enableDebugLog": "Enable Debug Logging"
 }

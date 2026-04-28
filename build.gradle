@@ -30,6 +30,10 @@ repositories {
             includeGroup "maven.modrinth"
         }
     }
+    maven {
+        name = "Shedaniel"
+        url = "https://maven.shedaniel.me/"
+    }
 }
 
 neoForge {
@@ -69,6 +73,8 @@ neoForge {
 dependencies {
     // TouhouLittleMaid 主体模组，从 libs 目录加载
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    // Cloth Config API（游戏内配置 GUI）
+    implementation "me.shedaniel.cloth:cloth-config-neoforge:15.0.140"
 }
 
 tasks.withType(ProcessResources).configureEach {

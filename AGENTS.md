@@ -21,6 +21,7 @@ All items below were verified against the current repository contents.
 - **Mod ID**: `mininglittlemaid`
 - **Base package**: `com.github.lonelygeo.mininglittlemaid`
 - **Dependency**: Touhou Little Maid (`libs/touhoulittlemaid-1.5.2-neoforge+mc1.21.1-all.jar`)
+- **Cloth Config API**: `me.shedaniel.cloth:cloth-config-neoforge:15.0.140`（游戏内配置 GUI）
 - **Parent mod repo**: `https://github.com/TartaricAcid/TouhouLittleMaid`（API 查考）
 - **联动模组仓库**：`https://github.com/LonelyGEO/EnhancedLittleMaidAI.git`
 
@@ -145,7 +146,7 @@ Avoid reordering imports unless required by your edit.
 
 ### Entry points
 
-- `MiningLittleMaid` — `@Mod` 主类，注册音效、网络包、MenuType（任务配置 Tab）
+- `MiningLittleMaid` — `@Mod` 主类，注册音效、网络包、MenuType（任务配置 Tab）、IConfigScreenFactory（Cloth Config GUI）
 - `MiningAddonPlugin` — `@LittleMaidExtension` 扩展入口，注册 `TaskMining`
 
 ### Package roles
@@ -159,6 +160,8 @@ Avoid reordering imports unless required by your edit.
 | `config.*` | Mod 配置（Config.java，NeoForge Common Config） |
 | `client.*` | 客户端（MiningLittleMaidClient 屏幕注册，gui 子包含 MiningTaskConfigGui） |
 | `inventory.container.*` | 容器（MiningTaskConfigContainer，任务配置 Tab） |
+| `compat.*` | Cloth Config 兼容（MiningClothConfig，游戏内配置 GUI） |
+| `docs/` | 技术文档（config-system.md） |
 
 ### Task system
 
@@ -207,12 +210,18 @@ task.mininglittlemaid.mining.config
 subtitle.mininglittlemaid.maid.mode.mining
 message.mininglittlemaid.ore_above
 message.mininglittlemaid.ore_below
+message.mininglittlemaid.ore_unreachable
 message.mininglittlemaid.inventory_full
 message.mininglittlemaid.no_torch
 gui.mininglittlemaid.chat_notify
 gui.mininglittlemaid.option.on
 gui.mininglittlemaid.option.off
 config.mininglittlemaid.section.mining
+config.mininglittlemaid.maxVeinSize
+config.mininglittlemaid.minLightLevel
+config.mininglittlemaid.torchCooldown
+config.mininglittlemaid.combatReturnDelay
+config.mininglittlemaid.enableDebugLog
 ```
 
 ## 7) Agent workflow checklist
@@ -273,7 +282,7 @@ Keep this file updated when tooling/rules/project conventions change.
 
 ## 12) Versioning
 
-- 当前版本: `0.4.0-neoforge+mc1.21.1`
+- 当前版本: `0.4.2-neoforge+mc1.21.1`
 - 后缀 `-neoforge+mc1.21.1` 为平台标识，保持不变
 
 | 版本位 | 触发条件 |

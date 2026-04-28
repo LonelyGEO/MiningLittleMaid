@@ -63,7 +63,7 @@ public class MaidMineBreakTask extends Behavior<EntityMaid> {
         maid.getBrain().getMemory(InitEntities.TARGET_POS.get()).ifPresent(posTracker -> {
             BlockPos targetPos = BlockPos.containing(posTracker.currentPosition());
             int yDiff = targetPos.getY() - maid.blockPosition().getY();
-            if (yDiff > 3 || yDiff < -2) {
+            if (yDiff >= 3 || yDiff < -1) {
                 if (!task.canAlertOre(targetPos, worldIn.getGameTime())) {
                     maid.getBrain().eraseMemory(InitEntities.TARGET_POS.get());
                     maid.getBrain().eraseMemory(MemoryModuleType.WALK_TARGET);
@@ -95,6 +95,17 @@ public class MaidMineBreakTask extends Behavior<EntityMaid> {
             Config.debugLog(LOGGER,"Mining ore at {}", targetPos);
             if (!MiningFavorGate.hasReachableExposedFace(worldIn, maid.blockPosition(), targetPos)) {
                 Config.debugLog(LOGGER,"Ore at {} not reachable from maid position, clearing target", targetPos);
+                if (task.canAlertOre(targetPos, worldIn.getGameTime())) {
+                    BlockState targetState = worldIn.getBlockState(targetPos);
+                    String kaomoji = randomKaomoji();
+                    Component oreName = targetState.getBlock().getName();
+                    Component msg = Component.translatable("message.mininglittlemaid.ore_unreachable",
+                            maid.getDisplayName(), oreName)
+                            .append(Component.literal(" " + kaomoji));
+                    if (isChatNotifyEnabled(maid) && maid.getOwner() instanceof ServerPlayer player) {
+                        player.sendSystemMessage(msg);
+                    }
+                }
                 maid.getBrain().eraseMemory(InitEntities.TARGET_POS.get());
                 return;
             }

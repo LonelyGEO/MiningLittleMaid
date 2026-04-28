@@ -60,6 +60,17 @@ public class TaskMining implements IFarmTask {
     }
 
     @Override
+    public float searchRadius(EntityMaid maid) {
+        return MiningFavorGate.getSniffRadius(maid.getFavorabilityManager().getLevel());
+    }
+
+    @Override
+    public net.minecraft.world.phys.AABB searchDimension(EntityMaid maid) {
+        float radius = searchRadius(maid);
+        return maid.getBoundingBox().inflate(radius, 4, radius);
+    }
+
+    @Override
     public ResourceLocation getUid() {
         return UID;
     }
