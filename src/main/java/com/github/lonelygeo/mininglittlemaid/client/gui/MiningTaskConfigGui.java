@@ -3,9 +3,9 @@ package com.github.lonelygeo.mininglittlemaid.client.gui;
 import com.github.lonelygeo.mininglittlemaid.inventory.container.MiningTaskConfigContainer;
 import com.github.lonelygeo.mininglittlemaid.task.MaidMineBreakTask;
 import com.github.tartaricacid.touhoulittlemaid.client.gui.entity.maid.task.MaidTaskConfigGui;
+import com.github.tartaricacid.touhoulittlemaid.client.gui.widget.button.MaidConfigButton;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -29,23 +29,19 @@ public class MiningTaskConfigGui extends MaidTaskConfigGui<MiningTaskConfigConta
     protected void initAdditionWidgets() {
         EntityMaid maid = getMaid();
         boolean enabled = MaidMineBreakTask.isChatNotifyEnabled(maid);
-        Component btnText = Component.translatable("gui.mininglittlemaid.chat_notify")
-                .append(": ")
-                .append(Component.translatable(enabled
-                        ? "gui.mininglittlemaid.option.on"
-                        : "gui.mininglittlemaid.option.off"));
-        Button toggleBtn = Button.builder(btnText, btn -> {
+        Component label = Component.translatable("gui.mininglittlemaid.chat_notify");
+        Component value = Component.translatable(enabled
+                ? "gui.mininglittlemaid.option.on"
+                : "gui.mininglittlemaid.option.off");
+        MaidConfigButton toggleBtn = new MaidConfigButton(
+                leftPos + 86, topPos + 52, label, value,
+                btn -> {
                     MaidMineBreakTask.toggleChatNotify(maid);
                     boolean newState = MaidMineBreakTask.isChatNotifyEnabled(maid);
-                    btn.setMessage(Component.translatable("gui.mininglittlemaid.chat_notify")
-                            .append(": ")
-                            .append(Component.translatable(newState
-                                    ? "gui.mininglittlemaid.option.on"
-                                    : "gui.mininglittlemaid.option.off")));
-                })
-                .pos(leftPos + 86, topPos + 52)
-                .size(164, 20)
-                .build();
+                    btn.setValue(Component.translatable(newState
+                            ? "gui.mininglittlemaid.option.on"
+                            : "gui.mininglittlemaid.option.off"));
+                });
         addRenderableWidget(toggleBtn);
     }
 

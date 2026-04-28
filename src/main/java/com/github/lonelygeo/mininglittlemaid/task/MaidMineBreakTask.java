@@ -77,10 +77,10 @@ public class MaidMineBreakTask extends Behavior<EntityMaid> {
                 BlockState targetState = worldIn.getBlockState(targetPos);
                 Component oreName = targetState.getBlock().getName();
                 String kaomoji = randomKaomoji();
-                String directionHint = yDiff > 3 ? "↑" : "↓";
+                String directionHint = yDiff > 0 ? "↑" : "↓";
                 String bubbleText = directionHint + " " + oreName.getString() + " " + kaomoji;
                 maid.getChatBubbleManager().addTextChatBubble(bubbleText);
-                String directionKey = yDiff > 3
+                String directionKey = yDiff > 0
                         ? "message.mininglittlemaid.ore_above"
                         : "message.mininglittlemaid.ore_below";
                 Component msg = Component.translatable(directionKey,
