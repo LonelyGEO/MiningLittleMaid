@@ -19,10 +19,11 @@ import org.apache.logging.log4j.Logger;
 public class MaidMineTorchPlaceTask extends MaidCheckRateTask {
     private static final int CHECK_RATE = 60;
     private static final String NO_TORCH_KEY = "message.mininglittlemaid.no_torch";
+    private static final long TORCH_NOTIFY_COOLDOWN = 600;
     private static final Logger LOGGER = LogManager.getLogger();
     private BlockPos lastPos = BlockPos.ZERO;
     private long lastPlaceTime;
-    private boolean notifiedInCurrentDarkSession;
+    private long lastTorchNotifyTime;
 
     public MaidMineTorchPlaceTask() {
         super(ImmutableMap.of());
@@ -37,7 +38,6 @@ public class MaidMineTorchPlaceTask extends MaidCheckRateTask {
         lastPos = maid.blockPosition().immutable();
 
         if (world.getMaxLocalRawBrightness(maid.blockPosition()) >= Config.MIN_LIGHT_LEVEL.get()) {
-            notifiedInCurrentDarkSession = false;
             return;
         }
 
@@ -52,18 +52,18 @@ public class MaidMineTorchPlaceTask extends MaidCheckRateTask {
         }
 
         if (!consumeTorch(maid)) {
-            if (!notifiedInCurrentDarkSession) {
+            if (gameTime - lastTorchNotifyTime >= TORCH_NOTIFY_COOLDOWN) {
                 if (maid.getOwner() instanceof ServerPlayer player) {
                     player.sendSystemMessage(Component.translatable(NO_TORCH_KEY, maid.getDisplayName()));
                 }
-                notifiedInCurrentDarkSession = true;
+                lastTorchNotifyTime = gameTime;
             }
             return;
         }
 
         world.setBlock(placePos, Blocks.TORCH.defaultBlockState(), 3);
         lastPlaceTime = gameTime;
-        notifiedInCurrentDarkSession = false;
+        lastTorchNotifyTime = 0;
         Config.debugLog(LOGGER,"Placed torch at {}", placePos);
     }
 
