@@ -1,6 +1,5 @@
 package com.github.lonelygeo.mininglittlemaid;
 
-import com.github.lonelygeo.mininglittlemaid.compat.MiningClothConfig;
 import com.github.lonelygeo.mininglittlemaid.config.Config;
 import com.github.lonelygeo.mininglittlemaid.init.InitSounds;
 import com.github.lonelygeo.mininglittlemaid.inventory.container.MiningTaskConfigContainer;
@@ -11,7 +10,6 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
-import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -33,9 +31,6 @@ public class MiningLittleMaid {
         MENU_TYPES.register(modEventBus);
         modEventBus.addListener(this::registerPayloadHandlers);
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
-        modContainer.registerExtensionPoint(IConfigScreenFactory.class,
-                (container, parent) -> MiningClothConfig.createConfigScreen()
-                        .setParentScreen(parent).build());
     }
 
     private void registerPayloadHandlers(RegisterPayloadHandlersEvent event) {
