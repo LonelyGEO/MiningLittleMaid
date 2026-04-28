@@ -25,6 +25,7 @@ build
 eclipse
 runs
 run
+planToAgent.md
 src/generated/resources/.cache
 src/test
 
