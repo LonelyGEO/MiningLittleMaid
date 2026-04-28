@@ -18,7 +18,7 @@ import org.apache.logging.log4j.Logger;
 
 public class MaidMineTorchPlaceTask extends MaidCheckRateTask {
     private static final int CHECK_RATE = 60;
-    private static final String NO_TORCH_KEY = "message.mining_little_maid.no_torch";
+    private static final String NO_TORCH_KEY = "message.mininglittlemaid.no_torch";
     private static final Logger LOGGER = LogManager.getLogger();
     private BlockPos lastPos = BlockPos.ZERO;
     private long lastPlaceTime;

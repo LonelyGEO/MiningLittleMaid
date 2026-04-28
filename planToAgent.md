@@ -13,8 +13,8 @@
 #### 接口设计
 
 **自定义 Tag**：
-- Tag 路径：`mining_little_maid:mineable_ores`
-- 文件位置：`src/main/resources/data/mining_little_maid/tags/block/mineable_ores.json`
+- Tag 路径：`mininglittlemaid:mineable_ores`
+- 文件位置：`src/main/resources/data/mininglittlemaid/tags/block/mineable_ores.json`
 - 默认值：`replace: false`（合并模式），包含所有原版矿石
 
 ```json
@@ -58,7 +58,7 @@ public static boolean isMineableOre(BlockState state) {
 
 #### 实现步骤
 
-1. 新建 `src/main/resources/data/mining_little_maid/tags/block/mineable_ores.json`
+1. 新建 `src/main/resources/data/mininglittlemaid/tags/block/mineable_ores.json`
 2. 修改 `MiningFavorGate.java`：
    - 新增 import：`TagKey`、`Registries`、`MiningLittleMaid`
    - 新增静态常量 `MINEABLE_ORES`
@@ -368,7 +368,7 @@ public List<Pair<Integer, BehaviorControl<? super EntityMaid>>> createBrainTasks
 ```java
 public class MaidMineInventoryCheckTask extends MaidCheckRateTask {
     private static final int CHECK_RATE = 60; // 每 3 秒一次
-    private static final String FULL_NOTIFY_KEY = "message.mining_little_maid.inventory_full";
+    private static final String FULL_NOTIFY_KEY = "message.mininglittlemaid.inventory_full";
 
     public MaidMineInventoryCheckTask() {
         super(ImmutableMap.of()); // 无需特定 memory 条件
@@ -424,7 +424,7 @@ public List<Pair<Integer, BehaviorControl<? super EntityMaid>>> createBrainTasks
 
 | 键 | zh_cn | en_us |
 |---|-------|-------|
-| `message.mining_little_maid.inventory_full` | `女仆的背包已满，停止采矿` | `Maid's inventory is full, mining stopped` |
+| `message.mininglittlemaid.inventory_full` | `女仆的背包已满，停止采矿` | `Maid's inventory is full, mining stopped` |
 
 ---
 
@@ -524,7 +524,7 @@ public class Config {
 }
 ```
 
-**运行时生成文件**：`config/mining_little_maid-common.toml`
+**运行时生成文件**：`config/mininglittlemaid-common.toml`
 
 ```toml
 [Mining Little Maid 配置]
@@ -544,7 +544,7 @@ torchCooldownTicks = 120
 ```java
 public class MaidMineTorchPlaceTask extends MaidCheckRateTask {
     private static final int CHECK_RATE = 60; // 每 3 秒
-    private static final String NO_TORCH_KEY = "message.mining_little_maid.no_torch";
+    private static final String NO_TORCH_KEY = "message.mininglittlemaid.no_torch";
     private BlockPos lastPos = BlockPos.ZERO;
     private long lastPlaceTime; // 冷却计时
 
@@ -630,7 +630,7 @@ public List<Pair<Integer, BehaviorControl<? super EntityMaid>>> createBrainTasks
 
 | 键 | zh_cn | en_us |
 |---|-------|-------|
-| `message.mining_little_maid.no_torch` | `女仆需要火把，但背包里没有` | `Maid needs a torch, but none in inventory` |
+| `message.mininglittlemaid.no_torch` | `女仆需要火把，但背包里没有` | `Maid needs a torch, but none in inventory` |
 
 ---
 
@@ -654,14 +654,14 @@ public List<Pair<Integer, BehaviorControl<? super EntityMaid>>> createBrainTasks
 | `MiningLittleMaid.java` | `registerConfig` 一行 |
 | `MaidMineTorchPlaceTask.java` | 新建 |
 | `TaskMining.java` | `createBrainTasks()` 加入优先级 4 |
-| `zh_cn.json` | `message.mining_little_maid.no_torch` |
-| `en_us.json` | `message.mining_little_maid.no_torch` |
+| `zh_cn.json` | `message.mininglittlemaid.no_torch` |
+| `en_us.json` | `message.mininglittlemaid.no_torch` |
 
 - [x] Support mining tools from other mods via Item Tag
 
 ### 6) 模组采矿工具兼容（Item Tag 驱动）
 
-**目标**：将"可采矿工具"判定从硬编码 `instanceof PickaxeItem` 改为 Item Tag `#mining_little_maid:mining_tools`，使 Create 钻头等第三方工具自动被识别，无需本 mod 修改代码。
+**目标**：将"可采矿工具"判定从硬编码 `instanceof PickaxeItem` 改为 Item Tag `#mininglittlemaid:mining_tools`，使 Create 钻头等第三方工具自动被识别，无需本 mod 修改代码。
 
 > 注：Create 本体没有手持钻头（其 `Mechanical Drill` 是方块实体），但 Create: Crafts & Additions 等附属模组提供手持钻头。Item Tag 方案对此类工具通用。
 
@@ -679,7 +679,7 @@ public List<Pair<Integer, BehaviorControl<? super EntityMaid>>> createBrainTasks
 
 #### Item Tag
 
-**文件**：`src/main/resources/data/mining_little_maid/tags/item/mining_tools.json`
+**文件**：`src/main/resources/data/mininglittlemaid/tags/item/mining_tools.json`
 
 ```json
 {
@@ -693,7 +693,7 @@ public List<Pair<Integer, BehaviorControl<? super EntityMaid>>> createBrainTasks
 `#minecraft:pickaxes` 覆盖所有材质（木/石/铁/金/钻石/下界合金）。其他模组追加自己的工具即可：
 
 ```json
-// 某个模组的 data/<modid>/tags/item/mining_little_maid/mining_tools.json
+// 某个模组的 data/<modid>/tags/item/mininglittlemaid/mining_tools.json
 {
     "values": [
         "createaddition:drill",
@@ -778,7 +778,7 @@ TaskEquipUtil.tryEquipFromBackpack(maid, stack ->
 |------|------|
 | 检测方式 | 被动 `maid.getTarget()`（信任主 mod 战斗 AI） |
 | 切换目标 | 主 mod `TaskAttack`（UID: `touhou_little_maid:attack`） |
-| 武器判定 | Item Tag `#mining_little_maid:weapons` |
+| 武器判定 | Item Tag `#mininglittlemaid:weapons` |
 | 战斗结束延迟 | 可配置，默认 100 ticks（5 秒） |
 | 好感度门控 | 等级 1+（好感度 ≥ 64） |
 | 无武器 | 静默跳过，保持采矿 |
@@ -810,7 +810,7 @@ TaskEquipUtil.tryEquipFromBackpack(maid, stack ->
 [采矿中] → 每3秒 Brain Task 检查
   → 好感度 ≥ 1?                          ✗ → 跳过
   → maid.getTarget() instanceof Monster?  ✗ → 跳过
-  → 背包有武器（#mining_little_maid:weapons）?
+  → 背包有武器（#mininglittlemaid:weapons）?
       ✗ → 跳过（继续挖矿）
   → 自动装备武器到主手
   → persistentData["mining_resume"] = currentTask
@@ -830,7 +830,7 @@ TaskEquipUtil.tryEquipFromBackpack(maid, stack ->
 
 #### 接口设计
 
-**新增 Item Tag**：`data/mining_little_maid/tags/item/weapons.json`
+**新增 Item Tag**：`data/mininglittlemaid/tags/item/weapons.json`
 
 ```json
 {

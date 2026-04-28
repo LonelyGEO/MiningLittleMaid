@@ -1,7 +1,7 @@
 {
     "maid.mode.mining": {
         "category": "neutral",
-        "subtitle": "subtitle.mining_little_maid.maid.mode.mining",
+        "subtitle": "subtitle.mininglittlemaid.maid.mode.mining",
         "sounds": [
             "touhou_little_maid:maid/empty"
         ]

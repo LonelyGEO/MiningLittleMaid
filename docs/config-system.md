@@ -13,7 +13,7 @@ Config.java (ModConfigSpec 定义)
     ↓
 @Mod 构造函数 → modContainer.registerConfig(Type, SPEC)
     ↓
-运行时生成: config/mining_little_maid-common.toml
+运行时生成: config/mininglittlemaid-common.toml
     ↓
 游戏内可通过 "Mods → Mining Little Maid → Config" 修改
 ```
@@ -80,7 +80,7 @@ public class Config {
 生成的 TOML 文件：
 
 ```toml
-# config/mining_little_maid-common.toml
+# config/mininglittlemaid-common.toml
 [mining]
     # 矿脉连锁最大块数（仅好感度等级 3 生效）
     # 范围: 2 ~ 64

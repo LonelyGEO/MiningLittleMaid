@@ -18,7 +18,7 @@ All items below were verified against the current repository contents.
 - Language toolchain: **Java 21** (`build.gradle`)
 - Mod platform: **NeoForge** (`net.neoforged.moddev` plugin 2.0.95)
 - **Minecraft 1.21.1** / **NeoForge 21.1.186**
-- **Mod ID**: `mining_little_maid`
+- **Mod ID**: `mininglittlemaid`
 - **Base package**: `com.github.lonelygeo.mininglittlemaid`
 - **Dependency**: Touhou Little Maid (`libs/touhoulittlemaid-1.5.2-neoforge+mc1.21.1-all.jar`)
 - **Parent mod repo**: `https://github.com/TartaricAcid/TouhouLittleMaid`（API 查考）
@@ -200,19 +200,19 @@ Avoid reordering imports unless required by your edit.
 ### Translation keys
 
 ```
-task.mining_little_maid.mining
-task.mining_little_maid.mining.desc
-task.mining_little_maid.mining.condition.has_pickaxe
-task.mining_little_maid.mining.config
-subtitle.mining_little_maid.maid.mode.mining
-message.mining_little_maid.ore_above
-message.mining_little_maid.ore_below
-message.mining_little_maid.inventory_full
-message.mining_little_maid.no_torch
-gui.mining_little_maid.chat_notify
-gui.mining_little_maid.option.on
-gui.mining_little_maid.option.off
-config.mining_little_maid.section.mining
+task.mininglittlemaid.mining
+task.mininglittlemaid.mining.desc
+task.mininglittlemaid.mining.condition.has_pickaxe
+task.mininglittlemaid.mining.config
+subtitle.mininglittlemaid.maid.mode.mining
+message.mininglittlemaid.ore_above
+message.mininglittlemaid.ore_below
+message.mininglittlemaid.inventory_full
+message.mininglittlemaid.no_torch
+gui.mininglittlemaid.chat_notify
+gui.mininglittlemaid.option.on
+gui.mininglittlemaid.option.off
+config.mininglittlemaid.section.mining
 ```
 
 ## 7) Agent workflow checklist
