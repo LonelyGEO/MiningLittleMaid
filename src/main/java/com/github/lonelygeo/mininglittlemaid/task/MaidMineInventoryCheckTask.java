@@ -16,7 +16,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.HashMap;
-import java.util.Map;
 
 public class MaidMineInventoryCheckTask extends MaidCheckRateTask {
     private static final String FULL_NOTIFY_KEY = "message.mininglittlemaid.inventory_full";
