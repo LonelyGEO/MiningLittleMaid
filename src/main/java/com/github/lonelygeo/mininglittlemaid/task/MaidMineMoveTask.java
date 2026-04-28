@@ -35,9 +35,11 @@ public class MaidMineMoveTask extends MaidCheckRateTask {
     @Override
     protected void start(ServerLevel world, EntityMaid maid, long gameTime) {
         if (maid.isHomeModeEnable()) {
+            Config.debugLog(LOGGER,"Move: skip, home mode enabled");
             return;
         }
         if (task.isOrePaused(gameTime)) {
+            Config.debugLog(LOGGER,"Move: skip, ore search paused");
             return;
         }
         float maxDistance = Config.BFS_SEARCH_RADIUS.get();
@@ -82,7 +84,7 @@ public class MaidMineMoveTask extends MaidCheckRateTask {
                 BehaviorUtils.setWalkAndLookTargetMemories(maid, ceilingOre, movementSpeed, 2);
                 maid.getBrain().setMemory(InitEntities.TARGET_POS.get(), new BlockPosTracker(ceilingOre));
             } else {
-                Config.debugLog(LOGGER,"No ore in BFS range, wandering near owner");
+                Config.debugLog(LOGGER,"No ore from BFS or ceiling scan, wandering near owner");
                 BlockPos ownerPos = maid.getOwner().blockPosition();
                 int x = ownerPos.getX() + maid.getRandom().nextInt(12) - 6;
                 int y = ownerPos.getY() + maid.getRandom().nextInt(4) - 2;

@@ -38,30 +38,36 @@ public class MaidMineTorchPlaceTask extends MaidCheckRateTask {
     @Override
     protected void start(ServerLevel world, EntityMaid maid, long gameTime) {
         if (maid.blockPosition().equals(lastPos)) {
+            Config.debugLog(LOGGER,"Torch: skip, position unchanged");
             return;
         }
         lastPos = maid.blockPosition().immutable();
 
         if (world.getMaxLocalRawBrightness(maid.blockPosition()) >= Config.MIN_LIGHT_LEVEL.get()) {
+            Config.debugLog(LOGGER,"Torch: light level sufficient (>= {})", Config.MIN_LIGHT_LEVEL.get());
             return;
         }
 
         if (world.canSeeSky(maid.blockPosition())) {
+            Config.debugLog(LOGGER,"Torch: skip, surface (canSeeSky)");
             return;
         }
 
         long cooldown = Config.TORCH_COOLDOWN_TICKS.get();
         if (gameTime - lastPlaceTime < cooldown) {
+            Config.debugLog(LOGGER,"Torch: skip, place cooldown active");
             return;
         }
 
         BlockPos placePos = findPlaceableSurface(world, maid.blockPosition());
         if (placePos == null) {
+            Config.debugLog(LOGGER,"Torch: no placeable surface found");
             return;
         }
 
         if (!consumeTorch(maid)) {
             if (gameTime - lastTorchNotifyTime >= Config.TORCH_NOTIFY_COOLDOWN_TICKS.get()) {
+                Config.debugLog(LOGGER,"Torch: no torch in inventory, sending notify");
                 Component msg = Component.translatable(NO_TORCH_KEY, maid.getDisplayName());
                 MiningMessageEvent event = new MiningMessageEvent(maid,
                         MiningMessageType.NO_TORCH, null,

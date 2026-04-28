@@ -49,15 +49,32 @@ public class MaidMineBreakTask extends Behavior<EntityMaid> {
     @Override
     protected boolean checkExtraStartConditions(ServerLevel worldIn, EntityMaid maid) {
         if (worldIn.getGameTime() - this.lastCheckTime < Config.BREAK_CHECK_RATE.get()) {
+            Config.debugLog(LOGGER,"Break: not starting, check rate cooldown ({}t)", Config.BREAK_CHECK_RATE.get());
             return false;
         }
-        return maid.getBrain().getMemory(InitEntities.TARGET_POS.get())
+        boolean result = maid.getBrain().getMemory(InitEntities.TARGET_POS.get())
                 .map(PositionTracker::currentPosition)
                 .map(BlockPos::containing)
-                .filter(pos -> Math.abs(pos.getX() - maid.blockPosition().getX())
-                        + Math.abs(pos.getZ() - maid.blockPosition().getZ()) <= Config.BREAK_CLOSE_ENOUGH_H.get())
-                .filter(pos -> task.canHarvest(maid, pos, worldIn.getBlockState(pos)))
+                .filter(pos -> {
+                    boolean close = Math.abs(pos.getX() - maid.blockPosition().getX())
+                            + Math.abs(pos.getZ() - maid.blockPosition().getZ()) <= Config.BREAK_CLOSE_ENOUGH_H.get();
+                    if (!close) {
+                        Config.debugLog(LOGGER,"Break: not close enough to target {} (maid={})", pos, maid.blockPosition());
+                    }
+                    return close;
+                })
+                .filter(pos -> {
+                    boolean can = task.canHarvest(maid, pos, worldIn.getBlockState(pos));
+                    if (!can) {
+                        Config.debugLog(LOGGER,"Break: cannot harvest at {}", pos);
+                    }
+                    return can;
+                })
                 .isPresent();
+        if (result) {
+            Config.debugLog(LOGGER,"Break: conditions met, starting mining");
+        }
+        return result;
     }
 
     @Override
@@ -70,6 +87,7 @@ public class MaidMineBreakTask extends Behavior<EntityMaid> {
             int yDiff = targetPos.getY() - maid.blockPosition().getY();
             if (yDiff > Config.BREAK_CLOSE_ENOUGH_ABOVE.get() || yDiff < -Config.BREAK_CLOSE_ENOUGH_BELOW.get()) {
                 if (!task.canAlertOre(targetPos, worldIn.getGameTime(), oreGroupKey)) {
+                    Config.debugLog(LOGGER,"Break: yDiff={} out of range but alert suppressed, clearing target", yDiff);
                     maid.getBrain().eraseMemory(InitEntities.TARGET_POS.get());
                     maid.getBrain().eraseMemory(MemoryModuleType.WALK_TARGET);
                     return;
@@ -113,7 +131,7 @@ public class MaidMineBreakTask extends Behavior<EntityMaid> {
             }
             Config.debugLog(LOGGER,"Mining ore at {}", targetPos);
             if (!MiningFavorGate.hasReachableExposedFace(worldIn, maid.blockPosition(), targetPos)) {
-                Config.debugLog(LOGGER,"Ore at {} not reachable from maid position, clearing target", targetPos);
+                Config.debugLog(LOGGER,"Break: ore at {} not reachable (no exposed face path)", targetPos);
                 if (task.canAlertOre(targetPos, worldIn.getGameTime(), oreGroupKey)) {
                     String kaomoji = randomKaomoji();
                     Component oreName = targetState.getBlock().getName();
@@ -140,8 +158,10 @@ public class MaidMineBreakTask extends Behavior<EntityMaid> {
             }
             int count;
             if (MiningFavorGate.canVeinMine(maid.getFavorabilityManager().getLevel())) {
+                Config.debugLog(LOGGER,"Break: vein mining at {}", targetPos);
                 count = veinMineBFS(worldIn, maid, targetPos, targetState);
             } else {
+                Config.debugLog(LOGGER,"Break: single mining at {}", targetPos);
                 task.harvest(maid, targetPos, targetState);
                 count = 1;
             }

@@ -30,11 +30,14 @@ public class MaidMineCombatCheckTask extends MaidCheckRateTask {
     @Override
     protected void start(ServerLevel world, EntityMaid maid, long gameTime) {
         if (maid.getFavorabilityManager().getLevel() < 1) {
+            Config.debugLog(LOGGER,"Combat: skip, favor level < 1");
             return;
         }
 
         long cooldown = maid.getPersistentData().getLong(COOLDOWN_KEY);
         if (gameTime - cooldown < Config.COMBAT_COOLDOWN_TICKS.get()) {
+            Config.debugLog(LOGGER,"Combat: skip, cooldown active ({}t remaining)",
+                    Config.COMBAT_COOLDOWN_TICKS.get() - (gameTime - cooldown));
             return;
         }
 
@@ -45,15 +48,20 @@ public class MaidMineCombatCheckTask extends MaidCheckRateTask {
         List<Monster> monsters = world.getEntitiesOfClass(Monster.class, searchArea,
                 m -> m.isAlive() && maid.canAttack(m));
         if (monsters.isEmpty()) {
+            Config.debugLog(LOGGER,"Combat: no monsters in range H={}, V={}",
+                    Config.COMBAT_SEARCH_HORIZONTAL.get(), Config.COMBAT_SEARCH_VERTICAL.get());
             return;
         }
+        Config.debugLog(LOGGER,"Combat: {} monster(s) detected", monsters.size());
 
         IMaidTask currentTask = maid.getTask();
         if (currentTask != null && ATTACK_TASK_ID.equals(currentTask.getUid().toString())) {
+            Config.debugLog(LOGGER,"Combat: already in attack task, skip");
             return;
         }
 
         if (!TaskEquipUtil.tryEquipFromBackpack(maid, MiningFavorGate::isWeapon)) {
+            Config.debugLog(LOGGER,"Combat: no weapon found, skip");
             return;
         }
         Config.debugLog(LOGGER,"Combat detected, equipping weapon and switching to attack task");

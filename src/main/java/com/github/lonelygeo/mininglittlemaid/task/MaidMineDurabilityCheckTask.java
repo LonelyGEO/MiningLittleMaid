@@ -22,9 +22,11 @@ public class MaidMineDurabilityCheckTask extends MaidCheckRateTask {
     protected void start(ServerLevel world, EntityMaid maid, long gameTime) {
         int favorLevel = maid.getFavorabilityManager().getLevel();
         if (favorLevel < 1) {
+            Config.debugLog(LOGGER,"Durability: skip, favor level < 1");
             return;
         }
         if (hasDurableTool(maid)) {
+            Config.debugLog(LOGGER,"Durability: tool durability OK");
             return;
         }
         int minDurability = Config.MAX_VEIN_SIZE.get();

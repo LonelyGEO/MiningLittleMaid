@@ -38,10 +38,12 @@ public class MaidMineCombatEventHandler {
 
         if (maid.getTarget() != null) {
             IDLE_COUNTER.remove(id);
+            Config.debugLog(LOGGER,"CombatEvent: maid has target, resetting idle counter");
             return;
         }
 
         int ticks = IDLE_COUNTER.getOrDefault(id, 0) + 1;
+        Config.debugLog(LOGGER,"CombatEvent: idle ticks={}", ticks);
         if (ticks >= Config.COMBAT_RETURN_DELAY_TICKS.get()) {
             TaskManager.findTask(ResourceLocation.parse(taskId)).ifPresent(task -> {
                 maid.setTask(task);
