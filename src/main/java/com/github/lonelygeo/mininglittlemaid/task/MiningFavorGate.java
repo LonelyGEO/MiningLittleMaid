@@ -1,6 +1,7 @@
 package com.github.lonelygeo.mininglittlemaid.task;
 
 import com.github.lonelygeo.mininglittlemaid.MiningLittleMaid;
+import com.github.lonelygeo.mininglittlemaid.config.Config;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -13,7 +14,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import com.github.lonelygeo.mininglittlemaid.config.Config;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

@@ -1,26 +1,26 @@
 package com.github.lonelygeo.mininglittlemaid.task;
 
+import com.github.lonelygeo.mininglittlemaid.MiningLittleMaid;
+import com.github.lonelygeo.mininglittlemaid.config.Config;
+import com.github.lonelygeo.mininglittlemaid.init.InitSounds;
+import com.github.lonelygeo.mininglittlemaid.inventory.container.MiningTaskConfigContainer;
 import com.github.tartaricacid.touhoulittlemaid.api.task.FunctionCallSwitchResult;
 import com.github.tartaricacid.touhoulittlemaid.api.task.IFarmTask;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
-import com.github.lonelygeo.mininglittlemaid.init.InitSounds;
 import com.github.tartaricacid.touhoulittlemaid.util.ItemsUtil;
 import com.github.tartaricacid.touhoulittlemaid.util.SoundUtil;
 import com.github.tartaricacid.touhoulittlemaid.util.TaskEquipUtil;
 import com.google.common.collect.Lists;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.ai.behavior.BehaviorControl;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
-import com.github.lonelygeo.mininglittlemaid.config.Config;
-import com.github.lonelygeo.mininglittlemaid.MiningLittleMaid;
-import com.github.lonelygeo.mininglittlemaid.inventory.container.MiningTaskConfigContainer;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.SimpleMenuProvider;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

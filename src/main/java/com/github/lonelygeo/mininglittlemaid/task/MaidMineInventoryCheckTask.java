@@ -1,5 +1,8 @@
 package com.github.lonelygeo.mininglittlemaid.task;
 
+import com.github.lonelygeo.mininglittlemaid.api.event.MiningMessageEvent;
+import com.github.lonelygeo.mininglittlemaid.api.event.MiningMessageType;
+import com.github.lonelygeo.mininglittlemaid.config.Config;
 import com.github.tartaricacid.touhoulittlemaid.entity.ai.brain.task.MaidCheckRateTask;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.google.common.collect.ImmutableMap;
@@ -7,11 +10,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.wrapper.CombinedInvWrapper;
 import net.neoforged.neoforge.common.NeoForge;
-import com.github.lonelygeo.mininglittlemaid.api.event.MiningMessageEvent;
-import com.github.lonelygeo.mininglittlemaid.api.event.MiningMessageType;
-import com.github.lonelygeo.mininglittlemaid.config.Config;
+import net.neoforged.neoforge.items.wrapper.CombinedInvWrapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
