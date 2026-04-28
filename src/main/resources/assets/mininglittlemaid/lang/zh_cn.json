@@ -5,7 +5,7 @@
     "task.mininglittlemaid.mining.config": "采矿配置",
     "subtitle.mininglittlemaid.maid.mode.mining": "女仆：采矿",
     "message.mininglittlemaid.ore_above": "%s: 头上！%s就在那儿闪闪发光呢",
-    "message.mininglittlemaid.ore_below": "%s: 脚下踩到%s了诶！快挖快挖",
+    "message.mininglittlemaid.ore_below": "%s: 脚下感觉踩到%s了诶！快挖快挖",
     "message.mininglittlemaid.ore_unreachable": "%s: 发现%s了但是过不去啦！绕个路吧",
     "message.mininglittlemaid.inventory_full": "%s: 背包塞爆了啦！快来找我收菜 (╯°□°)╯",
     "message.mininglittlemaid.no_torch": "%s: 好黑好暗！主人给点火把嘛 (´；ω；`),
