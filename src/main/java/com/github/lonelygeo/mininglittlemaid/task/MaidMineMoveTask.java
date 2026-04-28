@@ -50,12 +50,13 @@ public class MaidMineMoveTask extends MaidCheckRateTask {
                 verticalSearchRange
         );
         this.adjacentOrePos = null;
-        int sniffRadius = MiningFavorGate.getSniffRadius(maid.getFavorabilityManager().getLevel());
-        Config.debugLog(LOGGER,"BFS search started, sniffRadius={}, maxDistance={}, verticalRange={}", sniffRadius, maxDistance, verticalSearchRange);
+        int sniffRadiusH = MiningFavorGate.getSniffRadiusHorizontal(maid.getFavorabilityManager().getLevel());
+        int sniffRadiusV = MiningFavorGate.getSniffRadiusVertical(maid.getFavorabilityManager().getLevel());
+        Config.debugLog(LOGGER,"BFS search started, sniffH={}, sniffV={}, maxDistance={}, verticalRange={}", sniffRadiusH, sniffRadiusV, maxDistance, verticalSearchRange);
         bfs.find(pos -> {
-            for (int dx = -sniffRadius; dx <= sniffRadius; dx++) {
-                for (int dy = -sniffRadius; dy <= sniffRadius; dy++) {
-                    for (int dz = -sniffRadius; dz <= sniffRadius; dz++) {
+            for (int dx = -sniffRadiusH; dx <= sniffRadiusH; dx++) {
+                for (int dy = -sniffRadiusV; dy <= sniffRadiusV; dy++) {
+                    for (int dz = -sniffRadiusH; dz <= sniffRadiusH; dz++) {
                         BlockPos checkPos = pos.offset(dx, dy, dz);
                         BlockState state = world.getBlockState(checkPos);
                         if (MiningFavorGate.isMineableOre(maid, state)

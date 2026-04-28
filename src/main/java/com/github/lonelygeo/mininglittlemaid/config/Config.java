@@ -34,10 +34,14 @@ public class Config {
     public static final ModConfigSpec.IntValue COMBAT_SEARCH_VERTICAL;
 
     // [mining.perception] 感知范围
-    public static final ModConfigSpec.IntValue SNIFF_RADIUS_LEVEL_0;
-    public static final ModConfigSpec.IntValue SNIFF_RADIUS_LEVEL_1;
-    public static final ModConfigSpec.IntValue SNIFF_RADIUS_LEVEL_2;
-    public static final ModConfigSpec.IntValue SNIFF_RADIUS_LEVEL_3;
+    public static final ModConfigSpec.IntValue SNIFF_RADIUS_H_LEVEL_0;
+    public static final ModConfigSpec.IntValue SNIFF_RADIUS_H_LEVEL_1;
+    public static final ModConfigSpec.IntValue SNIFF_RADIUS_H_LEVEL_2;
+    public static final ModConfigSpec.IntValue SNIFF_RADIUS_H_LEVEL_3;
+    public static final ModConfigSpec.IntValue SNIFF_RADIUS_V_LEVEL_0;
+    public static final ModConfigSpec.IntValue SNIFF_RADIUS_V_LEVEL_1;
+    public static final ModConfigSpec.IntValue SNIFF_RADIUS_V_LEVEL_2;
+    public static final ModConfigSpec.IntValue SNIFF_RADIUS_V_LEVEL_3;
 
     static {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
@@ -145,21 +149,37 @@ public class Config {
         builder.push("perception")
                 .translation("config.mininglittlemaid.section.perception");
 
-        SNIFF_RADIUS_LEVEL_0 = builder
-                .comment("好感度 0 级的嗅探半径（格）")
-                .defineInRange("sniffRadiusLevel0", 1, 1, 5);
+        SNIFF_RADIUS_H_LEVEL_0 = builder
+                .comment("好感度 0 级水平嗅探半径（格）")
+                .defineInRange("sniffRadiusHorizontalLevel0", 1, 1, 5);
 
-        SNIFF_RADIUS_LEVEL_1 = builder
-                .comment("好感度 1 级的嗅探半径（格）")
-                .defineInRange("sniffRadiusLevel1", 2, 1, 5);
+        SNIFF_RADIUS_H_LEVEL_1 = builder
+                .comment("好感度 1 级水平嗅探半径（格）")
+                .defineInRange("sniffRadiusHorizontalLevel1", 2, 1, 5);
 
-        SNIFF_RADIUS_LEVEL_2 = builder
-                .comment("好感度 2 级的嗅探半径（格）")
-                .defineInRange("sniffRadiusLevel2", 3, 1, 5);
+        SNIFF_RADIUS_H_LEVEL_2 = builder
+                .comment("好感度 2 级水平嗅探半径（格）")
+                .defineInRange("sniffRadiusHorizontalLevel2", 3, 1, 5);
 
-        SNIFF_RADIUS_LEVEL_3 = builder
-                .comment("好感度 3 级的嗅探半径（格）")
-                .defineInRange("sniffRadiusLevel3", 4, 1, 5);
+        SNIFF_RADIUS_H_LEVEL_3 = builder
+                .comment("好感度 3 级水平嗅探半径（格）")
+                .defineInRange("sniffRadiusHorizontalLevel3", 4, 1, 5);
+
+        SNIFF_RADIUS_V_LEVEL_0 = builder
+                .comment("好感度 0 级垂直嗅探半径（格）")
+                .defineInRange("sniffRadiusVerticalLevel0", 1, 1, 5);
+
+        SNIFF_RADIUS_V_LEVEL_1 = builder
+                .comment("好感度 1 级垂直嗅探半径（格）")
+                .defineInRange("sniffRadiusVerticalLevel1", 2, 1, 5);
+
+        SNIFF_RADIUS_V_LEVEL_2 = builder
+                .comment("好感度 2 级垂直嗅探半径（格）")
+                .defineInRange("sniffRadiusVerticalLevel2", 3, 1, 5);
+
+        SNIFF_RADIUS_V_LEVEL_3 = builder
+                .comment("好感度 3 级垂直嗅探半径（格）")
+                .defineInRange("sniffRadiusVerticalLevel3", 4, 1, 5);
 
         builder.pop(3);
 

@@ -36,9 +36,13 @@
     "config.mininglittlemaid.bfsVerticalRange": "BFS Vertical Search Range",
     "config.mininglittlemaid.combatSearchHorizontal": "Monster Search Horizontal Radius",
     "config.mininglittlemaid.combatSearchVertical": "Monster Search Vertical Radius",
-    "config.mininglittlemaid.sniffRadiusLevel0": "Lv0 Sniff Radius",
-    "config.mininglittlemaid.sniffRadiusLevel1": "Lv1 Sniff Radius",
-    "config.mininglittlemaid.sniffRadiusLevel2": "Lv2 Sniff Radius",
-    "config.mininglittlemaid.sniffRadiusLevel3": "Lv3 Sniff Radius",
+    "config.mininglittlemaid.sniffRadiusHorizontalLevel0": "Lv0 Horizontal Sniff",
+    "config.mininglittlemaid.sniffRadiusHorizontalLevel1": "Lv1 Horizontal Sniff",
+    "config.mininglittlemaid.sniffRadiusHorizontalLevel2": "Lv2 Horizontal Sniff",
+    "config.mininglittlemaid.sniffRadiusHorizontalLevel3": "Lv3 Horizontal Sniff",
+    "config.mininglittlemaid.sniffRadiusVerticalLevel0": "Lv0 Vertical Sniff",
+    "config.mininglittlemaid.sniffRadiusVerticalLevel1": "Lv1 Vertical Sniff",
+    "config.mininglittlemaid.sniffRadiusVerticalLevel2": "Lv2 Vertical Sniff",
+    "config.mininglittlemaid.sniffRadiusVerticalLevel3": "Lv3 Vertical Sniff",
     "config.mininglittlemaid.enableDebugLog": "Enable Debug Logging"
 }

@@ -100,17 +100,39 @@ public class MiningFavorGate {
     }
 
     /**
-     * 根据好感度等级获取嗅探半径（透过石头的检测距离）
+     * 根据好感度等级获取水平嗅探半径（XZ 方向透过石头探测的距离）
      */
-    public static int getSniffRadius(int favorLevel) {
+    public static int getSniffRadiusHorizontal(int favorLevel) {
         int radius = switch (favorLevel) {
-            case 0 -> Config.SNIFF_RADIUS_LEVEL_0.get();
-            case 1 -> Config.SNIFF_RADIUS_LEVEL_1.get();
-            case 2 -> Config.SNIFF_RADIUS_LEVEL_2.get();
-            default -> Config.SNIFF_RADIUS_LEVEL_3.get();
+            case 0 -> Config.SNIFF_RADIUS_H_LEVEL_0.get();
+            case 1 -> Config.SNIFF_RADIUS_H_LEVEL_1.get();
+            case 2 -> Config.SNIFF_RADIUS_H_LEVEL_2.get();
+            default -> Config.SNIFF_RADIUS_H_LEVEL_3.get();
         };
-        Config.debugLog(LOGGER,"Sniff radius: favorLevel={} -> radius={}", favorLevel, radius);
+        Config.debugLog(LOGGER,"Sniff radius H: favorLevel={} -> radius={}", favorLevel, radius);
         return radius;
+    }
+
+    /**
+     * 根据好感度等级获取垂直嗅探半径（Y 方向透过石头探测的距离）
+     */
+    public static int getSniffRadiusVertical(int favorLevel) {
+        int radius = switch (favorLevel) {
+            case 0 -> Config.SNIFF_RADIUS_V_LEVEL_0.get();
+            case 1 -> Config.SNIFF_RADIUS_V_LEVEL_1.get();
+            case 2 -> Config.SNIFF_RADIUS_V_LEVEL_2.get();
+            default -> Config.SNIFF_RADIUS_V_LEVEL_3.get();
+        };
+        Config.debugLog(LOGGER,"Sniff radius V: favorLevel={} -> radius={}", favorLevel, radius);
+        return radius;
+    }
+
+    /**
+     * @deprecated 使用 {@link #getSniffRadiusHorizontal(int)} 或 {@link #getSniffRadiusVertical(int)}
+     */
+    @Deprecated
+    public static int getSniffRadius(int favorLevel) {
+        return getSniffRadiusHorizontal(favorLevel);
     }
 
     public static boolean isMineableOre(BlockState state) {

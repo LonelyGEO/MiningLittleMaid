@@ -208,38 +208,74 @@ public class MiningClothConfig {
 
         perception.addEntry(entryBuilder
                 .startIntSlider(
-                        Component.translatable("config.mininglittlemaid.sniffRadiusLevel0"),
-                        Config.SNIFF_RADIUS_LEVEL_0.get(), 1, 5)
+                        Component.translatable("config.mininglittlemaid.sniffRadiusHorizontalLevel0"),
+                        Config.SNIFF_RADIUS_H_LEVEL_0.get(), 1, 5)
                 .setDefaultValue(1)
-                .setSaveConsumer(val -> Config.SNIFF_RADIUS_LEVEL_0.set(val))
-                .setTooltip(Component.literal("好感度 0 级（0-63）的嗅探半径（格）"))
+                .setSaveConsumer(val -> Config.SNIFF_RADIUS_H_LEVEL_0.set(val))
+                .setTooltip(Component.literal("好感度 0 级（0-63）水平嗅探半径（格）"))
                 .build());
 
         perception.addEntry(entryBuilder
                 .startIntSlider(
-                        Component.translatable("config.mininglittlemaid.sniffRadiusLevel1"),
-                        Config.SNIFF_RADIUS_LEVEL_1.get(), 1, 5)
+                        Component.translatable("config.mininglittlemaid.sniffRadiusHorizontalLevel1"),
+                        Config.SNIFF_RADIUS_H_LEVEL_1.get(), 1, 5)
                 .setDefaultValue(2)
-                .setSaveConsumer(val -> Config.SNIFF_RADIUS_LEVEL_1.set(val))
-                .setTooltip(Component.literal("好感度 1 级（64-191）的嗅探半径（格）"))
+                .setSaveConsumer(val -> Config.SNIFF_RADIUS_H_LEVEL_1.set(val))
+                .setTooltip(Component.literal("好感度 1 级（64-191）水平嗅探半径（格）"))
                 .build());
 
         perception.addEntry(entryBuilder
                 .startIntSlider(
-                        Component.translatable("config.mininglittlemaid.sniffRadiusLevel2"),
-                        Config.SNIFF_RADIUS_LEVEL_2.get(), 1, 5)
+                        Component.translatable("config.mininglittlemaid.sniffRadiusHorizontalLevel2"),
+                        Config.SNIFF_RADIUS_H_LEVEL_2.get(), 1, 5)
                 .setDefaultValue(3)
-                .setSaveConsumer(val -> Config.SNIFF_RADIUS_LEVEL_2.set(val))
-                .setTooltip(Component.literal("好感度 2 级（192-383）的嗅探半径（格）"))
+                .setSaveConsumer(val -> Config.SNIFF_RADIUS_H_LEVEL_2.set(val))
+                .setTooltip(Component.literal("好感度 2 级（192-383）水平嗅探半径（格）"))
                 .build());
 
         perception.addEntry(entryBuilder
                 .startIntSlider(
-                        Component.translatable("config.mininglittlemaid.sniffRadiusLevel3"),
-                        Config.SNIFF_RADIUS_LEVEL_3.get(), 1, 5)
+                        Component.translatable("config.mininglittlemaid.sniffRadiusHorizontalLevel3"),
+                        Config.SNIFF_RADIUS_H_LEVEL_3.get(), 1, 5)
                 .setDefaultValue(4)
-                .setSaveConsumer(val -> Config.SNIFF_RADIUS_LEVEL_3.set(val))
-                .setTooltip(Component.literal("好感度 3 级（384+）的嗅探半径（格）"))
+                .setSaveConsumer(val -> Config.SNIFF_RADIUS_H_LEVEL_3.set(val))
+                .setTooltip(Component.literal("好感度 3 级（384+）水平嗅探半径（格）"))
+                .build());
+
+        perception.addEntry(entryBuilder
+                .startIntSlider(
+                        Component.translatable("config.mininglittlemaid.sniffRadiusVerticalLevel0"),
+                        Config.SNIFF_RADIUS_V_LEVEL_0.get(), 1, 5)
+                .setDefaultValue(1)
+                .setSaveConsumer(val -> Config.SNIFF_RADIUS_V_LEVEL_0.set(val))
+                .setTooltip(Component.literal("好感度 0 级（0-63）垂直嗅探半径（格）"))
+                .build());
+
+        perception.addEntry(entryBuilder
+                .startIntSlider(
+                        Component.translatable("config.mininglittlemaid.sniffRadiusVerticalLevel1"),
+                        Config.SNIFF_RADIUS_V_LEVEL_1.get(), 1, 5)
+                .setDefaultValue(2)
+                .setSaveConsumer(val -> Config.SNIFF_RADIUS_V_LEVEL_1.set(val))
+                .setTooltip(Component.literal("好感度 1 级（64-191）垂直嗅探半径（格）"))
+                .build());
+
+        perception.addEntry(entryBuilder
+                .startIntSlider(
+                        Component.translatable("config.mininglittlemaid.sniffRadiusVerticalLevel2"),
+                        Config.SNIFF_RADIUS_V_LEVEL_2.get(), 1, 5)
+                .setDefaultValue(3)
+                .setSaveConsumer(val -> Config.SNIFF_RADIUS_V_LEVEL_2.set(val))
+                .setTooltip(Component.literal("好感度 2 级（192-383）垂直嗅探半径（格）"))
+                .build());
+
+        perception.addEntry(entryBuilder
+                .startIntSlider(
+                        Component.translatable("config.mininglittlemaid.sniffRadiusVerticalLevel3"),
+                        Config.SNIFF_RADIUS_V_LEVEL_3.get(), 1, 5)
+                .setDefaultValue(4)
+                .setSaveConsumer(val -> Config.SNIFF_RADIUS_V_LEVEL_3.set(val))
+                .setTooltip(Component.literal("好感度 3 级（384+）垂直嗅探半径（格）"))
                 .build());
     }
 }
