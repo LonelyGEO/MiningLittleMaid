@@ -66,6 +66,20 @@ public class MiningFavorGate {
     }
 
     /**
+     * 轻量暴露面检查：矿石六方向是否有空气/可替换方块。
+     * 区别于 {@link #hasReachableExposedFace}，本方法不验证可达性。
+     */
+    public static boolean hasExposedFace(Level world, BlockPos orePos) {
+        for (Direction dir : Direction.values()) {
+            BlockState state = world.getBlockState(orePos.relative(dir));
+            if (state.isAir() || state.canBeReplaced()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * 同种矿石判定（iron_ore 与 deepslate_iron_ore 算同种）
      */
     public static boolean isSameOreType(BlockState a, BlockState b) {
