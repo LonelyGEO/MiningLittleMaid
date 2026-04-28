@@ -201,7 +201,7 @@ public class Config {
                 .comment("好感度 3 级垂直嗅探半径（格）")
                 .defineInRange("sniffRadiusVerticalLevel3", 4, 1, 5);
 
-        builder.pop(3);
+        builder.pop(2);
 
         SPEC = builder.build();
     }
