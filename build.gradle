@@ -15,7 +15,7 @@ version = mod_version
 group = mod_group_id
 
 base {
-    archivesName = 'mining_little_maid'
+    archivesName = 'mininglittlemaid'
 }
 
 repositories {
