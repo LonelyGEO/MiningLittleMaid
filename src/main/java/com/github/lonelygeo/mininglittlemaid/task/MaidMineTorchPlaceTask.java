@@ -73,7 +73,7 @@ public class MaidMineTorchPlaceTask extends MaidCheckRateTask {
                         MiningMessageType.NO_TORCH, null,
                         Component.empty(), msg, new HashMap<>());
                 NeoForge.EVENT_BUS.post(event);
-                if (!event.isCanceled() && maid.getOwner() instanceof ServerPlayer player) {
+                if (!event.isCanceled() && MaidMineBreakTask.isChatNotifyEnabled(maid) && maid.getOwner() instanceof ServerPlayer player) {
                     player.sendSystemMessage(msg);
                 }
                 lastTorchNotifyTime = gameTime;
