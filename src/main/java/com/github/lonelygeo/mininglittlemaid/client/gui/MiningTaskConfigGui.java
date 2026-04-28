@@ -183,6 +183,7 @@ public class MiningTaskConfigGui extends MaidTaskConfigGui<MiningTaskConfigConta
             if (!hasData) {
                 return;
             }
+            graphics.enableScissor(getX(), getY(), getX() + width, getY() + height);
             if (isHovered) {
                 graphics.fill(getX(), getY(), getX() + width, getY() + height, 0x20FFFFFF);
             }
@@ -194,6 +195,7 @@ public class MiningTaskConfigGui extends MaidTaskConfigGui<MiningTaskConfigConta
             int valueColor = toggled ? 0x55FF55 : 0xFF5555;
             graphics.drawCenteredString(Minecraft.getInstance().font, value,
                     getX() + 142, getY() + 3, valueColor);
+            graphics.disableScissor();
         }
 
         @Override
