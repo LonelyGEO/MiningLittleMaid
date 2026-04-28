@@ -226,9 +226,9 @@ public class MaidMineBreakTask extends Behavior<EntityMaid> {
     private BlockPos findAdjacentOre(ServerLevel world, EntityMaid maid) {
         BlockPos maidPos = maid.blockPosition();
         BlockPos.MutableBlockPos mutablePos = new BlockPos.MutableBlockPos();
-        for (int x = -3; x <= 3; x++) {
-            for (int y = -2; y <= 2; y++) {
-                for (int z = -3; z <= 3; z++) {
+        for (int x = -Config.ADJACENT_ORE_SEARCH_H.get(); x <= Config.ADJACENT_ORE_SEARCH_H.get(); x++) {
+            for (int y = -Config.ADJACENT_ORE_SEARCH_V.get(); y <= Config.ADJACENT_ORE_SEARCH_V.get(); y++) {
+                for (int z = -Config.ADJACENT_ORE_SEARCH_H.get(); z <= Config.ADJACENT_ORE_SEARCH_H.get(); z++) {
                     mutablePos.setWithOffset(maidPos, x, y, z);
                     BlockState state = world.getBlockState(mutablePos);
                     if (MiningFavorGate.isMineableOre(maid, state)

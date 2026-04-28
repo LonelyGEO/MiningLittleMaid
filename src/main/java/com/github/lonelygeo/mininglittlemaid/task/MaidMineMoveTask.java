@@ -86,9 +86,11 @@ public class MaidMineMoveTask extends MaidCheckRateTask {
             } else {
                 Config.debugLog(LOGGER,"No ore from BFS or ceiling scan, wandering near owner");
                 BlockPos ownerPos = maid.getOwner().blockPosition();
-                int x = ownerPos.getX() + maid.getRandom().nextInt(12) - 6;
-                int y = ownerPos.getY() + maid.getRandom().nextInt(4) - 2;
-                int z = ownerPos.getZ() + maid.getRandom().nextInt(12) - 6;
+            int wanderH = Config.WANDER_RADIUS_H.get();
+            int wanderV = Config.WANDER_RADIUS_V.get();
+            int x = ownerPos.getX() + maid.getRandom().nextInt(wanderH) - wanderH / 2;
+            int y = ownerPos.getY() + maid.getRandom().nextInt(wanderV) - wanderV / 2;
+            int z = ownerPos.getZ() + maid.getRandom().nextInt(wanderH) - wanderH / 2;
                 BehaviorUtils.setWalkAndLookTargetMemories(maid, new BlockPos(x, y, z), movementSpeed * 0.5f, 2);
             }
         }
@@ -98,11 +100,12 @@ public class MaidMineMoveTask extends MaidCheckRateTask {
     private BlockPos scanCeilingOres(ServerLevel world, EntityMaid maid) {
         BlockPos maidPos = maid.blockPosition();
         BlockPos.MutableBlockPos checkPos = new BlockPos.MutableBlockPos();
-        int startY = maidPos.getY() + 3;
-        int endY = maidPos.getY() + 16;
+        int startY = maidPos.getY() + Config.CEILING_SCAN_Y_START.get();
+        int endY = maidPos.getY() + Config.CEILING_SCAN_Y_END.get();
+        int hRange = Config.CEILING_SCAN_HORIZONTAL.get();
         for (int y = startY; y <= endY; y++) {
-            for (int dx = -1; dx <= 1; dx++) {
-                for (int dz = -1; dz <= 1; dz++) {
+            for (int dx = -hRange; dx <= hRange; dx++) {
+                for (int dz = -hRange; dz <= hRange; dz++) {
                     checkPos.set(maidPos.getX() + dx, y, maidPos.getZ() + dz);
                     BlockState state = world.getBlockState(checkPos);
                     if (MiningFavorGate.isMineableOre(maid, state)

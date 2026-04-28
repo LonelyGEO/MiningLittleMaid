@@ -86,7 +86,8 @@ public class MaidMineTorchPlaceTask extends MaidCheckRateTask {
 
     private BlockPos findPlaceableSurface(ServerLevel world, BlockPos maidPos) {
         BlockPos.MutableBlockPos check = new BlockPos.MutableBlockPos();
-        for (int dy = 0; dy >= -3; dy--) {
+        int depth = Config.TORCH_SEARCH_DEPTH.get();
+        for (int dy = 0; dy >= -depth; dy--) {
             check.set(maidPos.getX(), maidPos.getY() + dy, maidPos.getZ());
             if (world.getBlockState(check).isFaceSturdy(world, check, Direction.UP)
                     && world.getBlockState(check.above()).isAir()) {

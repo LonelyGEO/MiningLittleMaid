@@ -36,6 +36,14 @@ public class Config {
     public static final ModConfigSpec.IntValue BREAK_CLOSE_ENOUGH_ABOVE;
     public static final ModConfigSpec.IntValue BREAK_CLOSE_ENOUGH_BELOW;
     public static final ModConfigSpec.IntValue ORE_ALERT_MIN_DIST;
+    public static final ModConfigSpec.IntValue ADJACENT_ORE_SEARCH_H;
+    public static final ModConfigSpec.IntValue ADJACENT_ORE_SEARCH_V;
+    public static final ModConfigSpec.IntValue CEILING_SCAN_Y_START;
+    public static final ModConfigSpec.IntValue CEILING_SCAN_Y_END;
+    public static final ModConfigSpec.IntValue CEILING_SCAN_HORIZONTAL;
+    public static final ModConfigSpec.IntValue WANDER_RADIUS_H;
+    public static final ModConfigSpec.IntValue WANDER_RADIUS_V;
+    public static final ModConfigSpec.IntValue TORCH_SEARCH_DEPTH;
 
     // [mining.perception] 感知范围
     public static final ModConfigSpec.IntValue SNIFF_RADIUS_H_LEVEL_0;
@@ -162,6 +170,38 @@ public class Config {
         ORE_ALERT_MIN_DIST = builder
                 .comment("矿石通知的同区域判定距离（格）")
                 .defineInRange("oreAlertMinDist", 6, 2, 32);
+
+        ADJACENT_ORE_SEARCH_H = builder
+                .comment("挖完一块后近邻水平搜索范围（格）")
+                .defineInRange("adjacentOreSearchH", 3, 1, 6);
+
+        ADJACENT_ORE_SEARCH_V = builder
+                .comment("挖完一块后近邻垂直搜索范围（格）")
+                .defineInRange("adjacentOreSearchV", 2, 1, 4);
+
+        CEILING_SCAN_Y_START = builder
+                .comment("天花板扫描起始偏移（格）")
+                .defineInRange("ceilingScanYStart", 3, 1, 8);
+
+        CEILING_SCAN_Y_END = builder
+                .comment("天花板扫描终止偏移（格）")
+                .defineInRange("ceilingScanYEnd", 16, 8, 24);
+
+        CEILING_SCAN_HORIZONTAL = builder
+                .comment("天花板扫描水平半径（格）")
+                .defineInRange("ceilingScanHorizontal", 1, 0, 2);
+
+        WANDER_RADIUS_H = builder
+                .comment("闲逛水平半径（格）")
+                .defineInRange("wanderRadiusH", 12, 4, 32);
+
+        WANDER_RADIUS_V = builder
+                .comment("闲逛垂直半径（格）")
+                .defineInRange("wanderRadiusV", 4, 2, 16);
+
+        TORCH_SEARCH_DEPTH = builder
+                .comment("火把搜索放置面的向下深度（格）")
+                .defineInRange("torchSearchDepth", 3, 1, 5);
 
         builder.pop();
 

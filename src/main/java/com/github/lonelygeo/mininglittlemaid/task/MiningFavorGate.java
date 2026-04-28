@@ -75,11 +75,7 @@ public class MiningFavorGate {
      */
     public static boolean isSameOreType(BlockState a, BlockState b) {
         if (a.getBlock() == b.getBlock()) return true;
-        return getBaseOreName(a).equals(getBaseOreName(b));
-    }
-
-    private static String getBaseOreName(BlockState state) {
-        return getOreGroupKey(state);
+        return getOreGroupKey(a).equals(getOreGroupKey(b));
     }
 
     public static String getOreGroupKey(BlockState state) {

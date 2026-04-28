@@ -244,6 +244,78 @@ public class MiningClothConfig {
                 .setTooltip(Component.literal("两次矿石通知视为同区域的距离（格）。超过此距离必定重新提示"))
                 .build());
 
+        rangeSub.add(entryBuilder
+                .startIntSlider(
+                        Component.translatable("config.mininglittlemaid.adjacentOreSearchH"),
+                        Config.ADJACENT_ORE_SEARCH_H.get(), 1, 6)
+                .setDefaultValue(3)
+                .setSaveConsumer(val -> Config.ADJACENT_ORE_SEARCH_H.set(val))
+                .setTooltip(Component.literal("挖完一块后在水平范围找下一块（格）"))
+                .build());
+
+        rangeSub.add(entryBuilder
+                .startIntSlider(
+                        Component.translatable("config.mininglittlemaid.adjacentOreSearchV"),
+                        Config.ADJACENT_ORE_SEARCH_V.get(), 1, 4)
+                .setDefaultValue(2)
+                .setSaveConsumer(val -> Config.ADJACENT_ORE_SEARCH_V.set(val))
+                .setTooltip(Component.literal("挖完一块后在垂直范围找下一块（格）"))
+                .build());
+
+        rangeSub.add(entryBuilder
+                .startIntSlider(
+                        Component.translatable("config.mininglittlemaid.ceilingScanYStart"),
+                        Config.CEILING_SCAN_Y_START.get(), 1, 8)
+                .setDefaultValue(3)
+                .setSaveConsumer(val -> Config.CEILING_SCAN_Y_START.set(val))
+                .setTooltip(Component.literal("天花板扫描的起始偏移（头顶第几格开始检查）"))
+                .build());
+
+        rangeSub.add(entryBuilder
+                .startIntSlider(
+                        Component.translatable("config.mininglittlemaid.ceilingScanYEnd"),
+                        Config.CEILING_SCAN_Y_END.get(), 8, 24)
+                .setDefaultValue(16)
+                .setSaveConsumer(val -> Config.CEILING_SCAN_Y_END.set(val))
+                .setTooltip(Component.literal("天花板扫描的终止偏移（头顶多少格停止）"))
+                .build());
+
+        rangeSub.add(entryBuilder
+                .startIntSlider(
+                        Component.translatable("config.mininglittlemaid.ceilingScanHorizontal"),
+                        Config.CEILING_SCAN_HORIZONTAL.get(), 0, 2)
+                .setDefaultValue(1)
+                .setSaveConsumer(val -> Config.CEILING_SCAN_HORIZONTAL.set(val))
+                .setTooltip(Component.literal("天花板扫描的水平半径（0=仅正上方，1=3×3）"))
+                .build());
+
+        rangeSub.add(entryBuilder
+                .startIntSlider(
+                        Component.translatable("config.mininglittlemaid.wanderRadiusH"),
+                        Config.WANDER_RADIUS_H.get(), 4, 32)
+                .setDefaultValue(12)
+                .setSaveConsumer(val -> Config.WANDER_RADIUS_H.set(val))
+                .setTooltip(Component.literal("找不到矿时在主人旁水平闲逛范围（格）"))
+                .build());
+
+        rangeSub.add(entryBuilder
+                .startIntSlider(
+                        Component.translatable("config.mininglittlemaid.wanderRadiusV"),
+                        Config.WANDER_RADIUS_V.get(), 2, 16)
+                .setDefaultValue(4)
+                .setSaveConsumer(val -> Config.WANDER_RADIUS_V.set(val))
+                .setTooltip(Component.literal("找不到矿时在主人旁垂直闲逛范围（格）"))
+                .build());
+
+        rangeSub.add(entryBuilder
+                .startIntSlider(
+                        Component.translatable("config.mininglittlemaid.torchSearchDepth"),
+                        Config.TORCH_SEARCH_DEPTH.get(), 1, 5)
+                .setDefaultValue(3)
+                .setSaveConsumer(val -> Config.TORCH_SEARCH_DEPTH.set(val))
+                .setTooltip(Component.literal("放置火把时向下搜索固体面的深度（格）"))
+                .build());
+
         mining.addEntry(rangeSub.build());
 
         // 采矿 - 感知范围
