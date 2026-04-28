@@ -294,7 +294,6 @@ Keep this file updated when tooling/rules/project conventions change.
 规则：
 - 版本号变更单独一条 commit，格式 `release: x.y.z`
 - **PATCH 版本 Agent 可自行决定并变更**；MINOR/MAJOR 版本迭代前必须向用户确认，不得自行决定发版
-- 发版时在 `planToAgent.md` 记录该版本已完成的功能
 
 ### GitHub Release 发布
 
