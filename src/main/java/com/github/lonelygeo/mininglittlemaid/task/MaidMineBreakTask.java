@@ -93,9 +93,16 @@ public class MaidMineBreakTask extends Behavior<EntityMaid> {
                 return;
             }
             Config.debugLog(LOGGER,"Mining ore at {}", targetPos);
-            BlockPos aboveOre = targetPos.above();
-            BlockState aboveState = worldIn.getBlockState(aboveOre);
-            if (!aboveState.isAir() && !aboveState.canBeReplaced()) {
+            boolean hasAccess = false;
+            for (Direction dir : Direction.values()) {
+                BlockPos accessPos = targetPos.relative(dir);
+                BlockState accessState = worldIn.getBlockState(accessPos);
+                if (accessState.isAir() || accessState.canBeReplaced()) {
+                    hasAccess = true;
+                    break;
+                }
+            }
+            if (!hasAccess) {
                 maid.getBrain().eraseMemory(InitEntities.TARGET_POS.get());
                 return;
             }
