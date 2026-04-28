@@ -202,6 +202,24 @@ public class MiningClothConfig {
                 .setTooltip(Component.literal("战斗检测的垂直范围（格）"))
                 .build());
 
+        range.addEntry(entryBuilder
+                .startIntSlider(
+                        Component.translatable("config.mininglittlemaid.breakCloseEnoughHorizontal"),
+                        Config.BREAK_CLOSE_ENOUGH_H.get(), 1, 6)
+                .setDefaultValue(3)
+                .setSaveConsumer(val -> Config.BREAK_CLOSE_ENOUGH_H.set(val))
+                .setTooltip(Component.literal("女仆认为水平面已接近目标的距离（格）。值越大越容易远程采矿"))
+                .build());
+
+        range.addEntry(entryBuilder
+                .startIntSlider(
+                        Component.translatable("config.mininglittlemaid.breakCloseEnoughVertical"),
+                        Config.BREAK_CLOSE_ENOUGH_V.get(), 1, 4)
+                .setDefaultValue(2)
+                .setSaveConsumer(val -> Config.BREAK_CLOSE_ENOUGH_V.set(val))
+                .setTooltip(Component.literal("女仆允许挖掘的头顶高度差上限（格）。超过此差会通知玩家"))
+                .build());
+
         // 采矿 - 感知范围
         ConfigCategory perception = event.getRoot().getOrCreateCategory(
                 Component.translatable("config.mininglittlemaid.section.perception"));

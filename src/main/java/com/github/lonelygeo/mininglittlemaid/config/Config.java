@@ -32,6 +32,8 @@ public class Config {
     public static final ModConfigSpec.IntValue BFS_VERTICAL_RANGE;
     public static final ModConfigSpec.IntValue COMBAT_SEARCH_HORIZONTAL;
     public static final ModConfigSpec.IntValue COMBAT_SEARCH_VERTICAL;
+    public static final ModConfigSpec.IntValue BREAK_CLOSE_ENOUGH_H;
+    public static final ModConfigSpec.IntValue BREAK_CLOSE_ENOUGH_V;
 
     // [mining.perception] 感知范围
     public static final ModConfigSpec.IntValue SNIFF_RADIUS_H_LEVEL_0;
@@ -142,6 +144,14 @@ public class Config {
         COMBAT_SEARCH_VERTICAL = builder
                 .comment("怪物搜索垂直半径（格）")
                 .defineInRange("combatSearchVertical", 5, 2, 15);
+
+        BREAK_CLOSE_ENOUGH_H = builder
+                .comment("接近判定水平距离（格）")
+                .defineInRange("breakCloseEnoughHorizontal", 3, 1, 6);
+
+        BREAK_CLOSE_ENOUGH_V = builder
+                .comment("接近判定垂直高度差（格）")
+                .defineInRange("breakCloseEnoughVertical", 2, 1, 4);
 
         builder.pop();
 

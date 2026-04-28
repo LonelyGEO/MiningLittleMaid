@@ -55,7 +55,7 @@ public class MaidMineBreakTask extends Behavior<EntityMaid> {
                 .map(PositionTracker::currentPosition)
                 .map(BlockPos::containing)
                 .filter(pos -> Math.abs(pos.getX() - maid.blockPosition().getX())
-                        + Math.abs(pos.getZ() - maid.blockPosition().getZ()) <= MiningFavorGate.getBreakCloseEnough(maid.getFavorabilityManager().getLevel()))
+                        + Math.abs(pos.getZ() - maid.blockPosition().getZ()) <= Config.BREAK_CLOSE_ENOUGH_H.get())
                 .filter(pos -> task.canHarvest(maid, pos, worldIn.getBlockState(pos)))
                 .isPresent();
     }
@@ -68,7 +68,7 @@ public class MaidMineBreakTask extends Behavior<EntityMaid> {
             BlockState targetState = worldIn.getBlockState(targetPos);
             String oreGroupKey = MiningFavorGate.getOreGroupKey(targetState);
             int yDiff = targetPos.getY() - maid.blockPosition().getY();
-            if (yDiff >= 3 || yDiff < -1) {
+            if (yDiff > Config.BREAK_CLOSE_ENOUGH_V.get() || yDiff < -1) {
                 if (!task.canAlertOre(targetPos, worldIn.getGameTime(), oreGroupKey)) {
                     maid.getBrain().eraseMemory(InitEntities.TARGET_POS.get());
                     maid.getBrain().eraseMemory(MemoryModuleType.WALK_TARGET);

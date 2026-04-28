@@ -57,15 +57,6 @@ public class MiningFavorGate {
     }
 
     /**
-     * 好感度对应的接近判定距离（水平面曼哈顿距离）
-     */
-    public static int getBreakCloseEnough(int favorLevel) {
-        if (favorLevel >= 3) return 3;
-        if (favorLevel >= 2) return 2;
-        return 1;
-    }
-
-    /**
      * 轻量暴露面检查：矿石六方向是否有空气/可替换方块。
      * 区别于 {@link #hasReachableExposedFace}，本方法不验证可达性。
      */
