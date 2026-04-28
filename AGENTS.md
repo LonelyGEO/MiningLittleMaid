@@ -282,12 +282,12 @@ Keep this file updated when tooling/rules/project conventions change.
 
 ## 12) Versioning
 
-- 当前版本: `0.4.2-neoforge+mc1.21.1`
+- 当前版本: `0.5.0-neoforge+mc1.21.1`
 - 后缀 `-neoforge+mc1.21.1` 为平台标识，保持不变
 
 | 版本位 | 触发条件 |
 |--------|---------|
-| PATCH (`0.4.x`) | Bug 修复、参数微调、语言文件补充 |
+| PATCH (`0.5.x`) | Bug 修复、参数微调、语言文件补充 |
 | MINOR (`0.x.0`) | 新增功能（每完成 planToAgent.md 中一项） |
 | MAJOR (`x.0.0`) | 功能基本完整时升至 `1.0.0`；架构重写或 MC 版本升级 |
 
