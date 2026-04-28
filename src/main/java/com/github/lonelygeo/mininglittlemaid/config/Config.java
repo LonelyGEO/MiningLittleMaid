@@ -57,7 +57,7 @@ public class Config {
 
         MAX_VEIN_SIZE = builder
                 .comment("矿脉连锁最大块数（仅好感度等级 3 生效）")
-                .defineInRange("maxVeinSize", 8, 2, 64);
+                .defineInRange("maxVeinSize", 9, 1, 64);
 
         MIN_LIGHT_LEVEL = builder
                 .comment("亮度低于此值时女仆放置火把")
@@ -77,7 +77,7 @@ public class Config {
 
         TORCH_NOTIFY_COOLDOWN_TICKS = builder
                 .comment("无火把通知的冷却时间")
-                .defineInRange("torchNotifyCooldownTicks", 6000, 200, 72000);
+                .defineInRange("torchNotifyCooldownTicks", 12000, 200, 72000);
 
         COMBAT_RETURN_DELAY_TICKS = builder
                 .comment("战斗结束后等多久切回采矿")
@@ -153,15 +153,15 @@ public class Config {
 
         BREAK_CLOSE_ENOUGH_ABOVE = builder
                 .comment("接近判定向上高度差（格）")
-                .defineInRange("breakCloseEnoughAbove", 2, 1, 4);
+                .defineInRange("breakCloseEnoughAbove", 3, 2, 5);
 
         BREAK_CLOSE_ENOUGH_BELOW = builder
                 .comment("接近判定向下高度差（格）")
-                .defineInRange("breakCloseEnoughBelow", 1, 1, 3);
+                .defineInRange("breakCloseEnoughBelow", 2, 1, 3);
 
         ORE_ALERT_MIN_DIST = builder
                 .comment("矿石通知的同区域判定距离（格）")
-                .defineInRange("oreAlertMinDist", 8, 4, 32);
+                .defineInRange("oreAlertMinDist", 6, 2, 32);
 
         builder.pop();
 
