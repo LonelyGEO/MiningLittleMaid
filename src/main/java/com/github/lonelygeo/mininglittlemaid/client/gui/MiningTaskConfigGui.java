@@ -22,6 +22,7 @@ public class MiningTaskConfigGui extends MaidTaskConfigGui<MiningTaskConfigConta
     private static final ResourceLocation BG =
             ResourceLocation.fromNamespaceAndPath("touhou_little_maid",
                     "textures/gui/attack_task_config.png");
+    private static final int BG_HEIGHT = 137;
     private static final int PANEL_X_OFFSET = 80;
     private static final int PANEL_Y_OFFSET = 28;
     private static final int CHAT_BUTTON_X = 86;
@@ -44,10 +45,7 @@ public class MiningTaskConfigGui extends MaidTaskConfigGui<MiningTaskConfigConta
     @Override
     protected void renderBg(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
         super.renderBg(graphics, partialTicks, mouseX, mouseY);
-        graphics.blit(BG, leftPos + PANEL_X_OFFSET, topPos + PANEL_Y_OFFSET, 0, 0, imageWidth, imageHeight);
-        graphics.fillGradient(leftPos + PANEL_X_OFFSET, topPos + PANEL_Y_OFFSET,
-                leftPos + PANEL_X_OFFSET + imageWidth, topPos + PANEL_Y_OFFSET + 14,
-                0xFFA09172, 0xFFA09172);
+        graphics.blit(BG, leftPos + PANEL_X_OFFSET, topPos + PANEL_Y_OFFSET, 0, 0, imageWidth, BG_HEIGHT);
     }
 
     @Override
