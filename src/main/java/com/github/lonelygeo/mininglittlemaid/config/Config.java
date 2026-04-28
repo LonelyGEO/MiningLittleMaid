@@ -136,7 +136,7 @@ public class Config {
 
         BREAK_CLOSE_ENOUGH = builder
                 .comment("女仆认为已到达目标的水平距离（格）")
-                .defineInRange("breakCloseEnough", 3, 1, 6);
+                .defineInRange("breakCloseEnough", 1, 1, 3);
 
         builder.pop(3);
 
