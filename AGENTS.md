@@ -267,7 +267,7 @@ For changes under `network`:
   - 以及其他会修改已推送历史或破坏工作区的操作
 - **`.gitignore` 修改必须征得用户同意**：Agent 不得自行增删 `.gitignore` 条目。如确需修改，先向用户说明理由并取得确认。
 - 每次提交前检查 `git status` 和 `git diff`，确保不包含敏感信息（密钥、token 等）。
-- **提交前主动提出版本变更建议**：每次完成代码改动后，Agent 应主动根据 §12 的版本位规则进行判断。PATCH 级别（Bug 修复、小调整）可自行决定并变更版本号；MINOR 及以上（新功能、架构重写、MC 版本升级）必须向用户确认后再变更。
+- **提交前主动提出版本变更建议**：每次完成代码改动后，Agent 应主动根据 §12 的版本位规则进行判断。PATCH 级别（Bug 修复、小调整）可自行决定并变更版本号；MINOR 及以上（新功能、架构重写）必须向用户确认后变更。
 
 Keep this file updated when tooling/rules/project conventions change.
 
@@ -286,3 +286,12 @@ Keep this file updated when tooling/rules/project conventions change.
 - 版本号变更单独一条 commit，格式 `release: x.y.z`
 - **PATCH 版本 Agent 可自行决定并变更**；MINOR/MAJOR 版本迭代前必须向用户确认，不得自行决定发版
 - 发版时在 `planToAgent.md` 记录该版本已完成的功能
+
+### GitHub Release 发布
+
+- Agent **不得自行发布任何 Release**（包括 Beta 和正式版），必须先向用户提出并取得确认。
+- 当前版本号 < 1.0.0 时，发布一律标记为 **Pre-release（Beta）**：
+  ```
+  gh release create v0.x.x build/libs/*.jar --title "v0.x.x-beta" --prerelease
+  ```
+- 版本号达 1.0.0 后默认改为正式 Release。
