@@ -22,6 +22,7 @@ All items below were verified against the current repository contents.
 - **Base package**: `com.github.lonelygeo.mininglittlemaid`
 - **Dependency**: Touhou Little Maid (`libs/touhoulittlemaid-1.5.2-neoforge+mc1.21.1-all.jar`)
 - **Parent mod repo**: `https://github.com/TartaricAcid/TouhouLittleMaid`（API 查考）
+- **联动模组仓库**：`https://github.com/LonelyGEO/EnhancedLittleMaidAI.git`
 
 ## 2) Cursor/Copilot rule files
 
