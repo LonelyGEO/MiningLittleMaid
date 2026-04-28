@@ -6,7 +6,6 @@ import com.github.lonelygeo.mininglittlemaid.task.OreToggleManager;
 import com.github.tartaricacid.touhoulittlemaid.client.gui.entity.maid.task.MaidTaskConfigGui;
 import com.github.tartaricacid.touhoulittlemaid.client.gui.widget.button.MaidConfigButton;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -26,8 +25,6 @@ public class MiningTaskConfigGui extends MaidTaskConfigGui<MiningTaskConfigConta
     private static final int BG_HEIGHT = 137;
     private static final int PANEL_X_OFFSET = 80;
     private static final int PANEL_Y_OFFSET = 28;
-    private static final int TITLE_X_OFFSET = 88;
-    private static final int TITLE_Y_OFFSET = 38;
     private static final int CHAT_BUTTON_X = 86;
     private static final int CHAT_BUTTON_Y = 52;
     private static final int ORE_ROW_X = 86;
@@ -49,6 +46,9 @@ public class MiningTaskConfigGui extends MaidTaskConfigGui<MiningTaskConfigConta
     protected void renderBg(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
         super.renderBg(graphics, partialTicks, mouseX, mouseY);
         graphics.blit(BG, leftPos + PANEL_X_OFFSET, topPos + PANEL_Y_OFFSET, 0, 0, imageWidth, BG_HEIGHT);
+        graphics.fillGradient(leftPos + PANEL_X_OFFSET, topPos + PANEL_Y_OFFSET,
+                leftPos + PANEL_X_OFFSET + imageWidth, topPos + PANEL_Y_OFFSET + 14,
+                0xbf_090909, 0xbf_090909);
     }
 
     @Override
@@ -131,8 +131,7 @@ public class MiningTaskConfigGui extends MaidTaskConfigGui<MiningTaskConfigConta
             return;
         }
         Component title = Component.translatable("gui.mininglittlemaid.ore_toggles");
-        graphics.drawString(font, title, leftPos + TITLE_X_OFFSET, topPos + TITLE_Y_OFFSET,
-                ChatFormatting.WHITE.getColor(), false);
+        graphics.drawCenteredString(font, title, leftPos + 168, topPos + 41, 0xFFFFFF);
 
         if (maxScroll > 0) {
             int barWidth = 4;
