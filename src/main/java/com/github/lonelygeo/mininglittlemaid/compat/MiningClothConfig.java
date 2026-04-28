@@ -213,11 +213,20 @@ public class MiningClothConfig {
 
         range.addEntry(entryBuilder
                 .startIntSlider(
-                        Component.translatable("config.mininglittlemaid.breakCloseEnoughVertical"),
-                        Config.BREAK_CLOSE_ENOUGH_V.get(), 1, 4)
+                        Component.translatable("config.mininglittlemaid.breakCloseEnoughAbove"),
+                        Config.BREAK_CLOSE_ENOUGH_ABOVE.get(), 1, 4)
                 .setDefaultValue(2)
-                .setSaveConsumer(val -> Config.BREAK_CLOSE_ENOUGH_V.set(val))
+                .setSaveConsumer(val -> Config.BREAK_CLOSE_ENOUGH_ABOVE.set(val))
                 .setTooltip(Component.literal("女仆允许挖掘的头顶高度差上限（格）。超过此差会通知玩家"))
+                .build());
+
+        range.addEntry(entryBuilder
+                .startIntSlider(
+                        Component.translatable("config.mininglittlemaid.breakCloseEnoughBelow"),
+                        Config.BREAK_CLOSE_ENOUGH_BELOW.get(), 1, 3)
+                .setDefaultValue(1)
+                .setSaveConsumer(val -> Config.BREAK_CLOSE_ENOUGH_BELOW.set(val))
+                .setTooltip(Component.literal("女仆允许挖掘的脚下高度差下限（格）。超过此差会通知玩家"))
                 .build());
 
         range.addEntry(entryBuilder

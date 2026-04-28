@@ -33,7 +33,8 @@ public class Config {
     public static final ModConfigSpec.IntValue COMBAT_SEARCH_HORIZONTAL;
     public static final ModConfigSpec.IntValue COMBAT_SEARCH_VERTICAL;
     public static final ModConfigSpec.IntValue BREAK_CLOSE_ENOUGH_H;
-    public static final ModConfigSpec.IntValue BREAK_CLOSE_ENOUGH_V;
+    public static final ModConfigSpec.IntValue BREAK_CLOSE_ENOUGH_ABOVE;
+    public static final ModConfigSpec.IntValue BREAK_CLOSE_ENOUGH_BELOW;
     public static final ModConfigSpec.IntValue ORE_ALERT_MIN_DIST;
 
     // [mining.perception] 感知范围
@@ -150,9 +151,13 @@ public class Config {
                 .comment("接近判定水平距离（格）")
                 .defineInRange("breakCloseEnoughHorizontal", 3, 1, 6);
 
-        BREAK_CLOSE_ENOUGH_V = builder
-                .comment("接近判定垂直高度差（格）")
-                .defineInRange("breakCloseEnoughVertical", 2, 1, 4);
+        BREAK_CLOSE_ENOUGH_ABOVE = builder
+                .comment("接近判定向上高度差（格）")
+                .defineInRange("breakCloseEnoughAbove", 2, 1, 4);
+
+        BREAK_CLOSE_ENOUGH_BELOW = builder
+                .comment("接近判定向下高度差（格）")
+                .defineInRange("breakCloseEnoughBelow", 1, 1, 3);
 
         ORE_ALERT_MIN_DIST = builder
                 .comment("矿石通知的同区域判定距离（格）")

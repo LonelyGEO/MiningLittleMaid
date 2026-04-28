@@ -68,7 +68,7 @@ public class MaidMineBreakTask extends Behavior<EntityMaid> {
             BlockState targetState = worldIn.getBlockState(targetPos);
             String oreGroupKey = MiningFavorGate.getOreGroupKey(targetState);
             int yDiff = targetPos.getY() - maid.blockPosition().getY();
-            if (yDiff > Config.BREAK_CLOSE_ENOUGH_V.get() || yDiff < -1) {
+            if (yDiff > Config.BREAK_CLOSE_ENOUGH_ABOVE.get() || yDiff < -Config.BREAK_CLOSE_ENOUGH_BELOW.get()) {
                 if (!task.canAlertOre(targetPos, worldIn.getGameTime(), oreGroupKey)) {
                     maid.getBrain().eraseMemory(InitEntities.TARGET_POS.get());
                     maid.getBrain().eraseMemory(MemoryModuleType.WALK_TARGET);
