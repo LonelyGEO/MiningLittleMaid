@@ -1,6 +1,9 @@
 package com.github.lonelygeo.mininglittlemaid.task;
 
 import com.github.lonelygeo.mininglittlemaid.config.Config;
+import com.github.lonelygeo.mininglittlemaid.api.event.MiningMessageEvent;
+import com.github.lonelygeo.mininglittlemaid.api.event.MiningMessageType;
+import net.neoforged.neoforge.common.NeoForge;
 import com.github.tartaricacid.touhoulittlemaid.entity.ai.brain.task.MaidCheckRateTask;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.google.common.collect.ImmutableMap;
@@ -15,6 +18,9 @@ import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.items.wrapper.CombinedInvWrapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class MaidMineTorchPlaceTask extends MaidCheckRateTask {
     private static final int CHECK_RATE = 60;
@@ -57,8 +63,13 @@ public class MaidMineTorchPlaceTask extends MaidCheckRateTask {
 
         if (!consumeTorch(maid)) {
             if (gameTime - lastTorchNotifyTime >= Config.TORCH_NOTIFY_COOLDOWN_TICKS.get()) {
-                if (maid.getOwner() instanceof ServerPlayer player) {
-                    player.sendSystemMessage(Component.translatable(NO_TORCH_KEY, maid.getDisplayName()));
+                Component msg = Component.translatable(NO_TORCH_KEY, maid.getDisplayName());
+                MiningMessageEvent event = new MiningMessageEvent(maid,
+                        MiningMessageType.NO_TORCH, null,
+                        Component.empty(), msg, new HashMap<>());
+                NeoForge.EVENT_BUS.post(event);
+                if (!event.isCanceled() && maid.getOwner() instanceof ServerPlayer player) {
+                    player.sendSystemMessage(msg);
                 }
                 lastTorchNotifyTime = gameTime;
             }

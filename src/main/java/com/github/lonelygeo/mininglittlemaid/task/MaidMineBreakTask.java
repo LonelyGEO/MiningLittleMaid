@@ -1,6 +1,8 @@
 package com.github.lonelygeo.mininglittlemaid.task;
 
 import com.github.lonelygeo.mininglittlemaid.config.Config;
+import com.github.lonelygeo.mininglittlemaid.api.event.MiningMessageEvent;
+import com.github.lonelygeo.mininglittlemaid.api.event.MiningMessageType;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.init.InitEntities;
 import com.google.common.collect.ImmutableMap;
@@ -19,11 +21,14 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.common.NeoForge;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayDeque;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Queue;
 import java.util.Random;
 import java.util.Set;
@@ -80,15 +85,30 @@ public class MaidMineBreakTask extends Behavior<EntityMaid> {
                 String kaomoji = randomKaomoji();
                 String directionHint = yDiff > 0 ? "↑" : "↓";
                 String bubbleText = directionHint + " " + oreName.getString() + " " + kaomoji;
-                maid.getChatBubbleManager().addTextChatBubble(bubbleText);
+                Component bubbleComponent = Component.literal(bubbleText);
                 String directionKey = yDiff > 0
                         ? "message.mininglittlemaid.ore_above"
                         : "message.mininglittlemaid.ore_below";
                 Component msg = Component.translatable(directionKey,
                         maid.getDisplayName(), oreName)
                         .append(Component.literal(" " + kaomoji));
-                if (isChatNotifyEnabled(maid) && maid.getOwner() instanceof ServerPlayer player) {
-                    player.sendSystemMessage(msg);
+
+                Map<String, Object> context = new HashMap<>();
+                context.put("target_pos", targetPos);
+                context.put("y_diff", yDiff);
+                context.put("block_state", targetState);
+                context.put("kaomoji", kaomoji);
+                MiningMessageType messageType = yDiff > 0
+                        ? MiningMessageType.ORE_ABOVE : MiningMessageType.ORE_BELOW;
+                MiningMessageEvent event = new MiningMessageEvent(maid, messageType,
+                        oreName.getString(), bubbleComponent, msg, context);
+                NeoForge.EVENT_BUS.post(event);
+
+                if (!event.isCanceled()) {
+                    maid.getChatBubbleManager().addTextChatBubble(bubbleText);
+                    if (isChatNotifyEnabled(maid) && maid.getOwner() instanceof ServerPlayer player) {
+                        player.sendSystemMessage(msg);
+                    }
                 }
                 task.setOrePauseEndTime(worldIn.getGameTime() + Config.ORE_PAUSE_TICKS.get());
                 return;
@@ -102,7 +122,18 @@ public class MaidMineBreakTask extends Behavior<EntityMaid> {
                     Component msg = Component.translatable("message.mininglittlemaid.ore_unreachable",
                             maid.getDisplayName(), oreName)
                             .append(Component.literal(" " + kaomoji));
-                    if (isChatNotifyEnabled(maid) && maid.getOwner() instanceof ServerPlayer player) {
+
+                    Map<String, Object> context = new HashMap<>();
+                    context.put("target_pos", targetPos);
+                    context.put("block_state", targetState);
+                    context.put("kaomoji", kaomoji);
+                    MiningMessageEvent event = new MiningMessageEvent(maid,
+                            MiningMessageType.ORE_UNREACHABLE, oreName.getString(),
+                            Component.empty(), msg, context);
+                    NeoForge.EVENT_BUS.post(event);
+
+                    if (!event.isCanceled() && isChatNotifyEnabled(maid)
+                            && maid.getOwner() instanceof ServerPlayer player) {
                         player.sendSystemMessage(msg);
                     }
                 }
