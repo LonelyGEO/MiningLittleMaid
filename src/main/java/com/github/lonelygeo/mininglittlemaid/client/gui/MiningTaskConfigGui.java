@@ -1,5 +1,6 @@
 package com.github.lonelygeo.mininglittlemaid.client.gui;
 
+import com.github.lonelygeo.mininglittlemaid.client.MiningLittleMaidClient;
 import com.github.lonelygeo.mininglittlemaid.inventory.container.MiningTaskConfigContainer;
 import com.github.lonelygeo.mininglittlemaid.task.MaidMineBreakTask;
 import com.github.lonelygeo.mininglittlemaid.task.OreToggleManager;
@@ -44,12 +45,13 @@ public class MiningTaskConfigGui extends MaidTaskConfigGui<MiningTaskConfigConta
 
     @Override
     public void init() {
-        long window = Minecraft.getInstance().getWindow().getWindow();
-        double[] mx = new double[1];
-        double[] my = new double[1];
-        org.lwjgl.glfw.GLFW.glfwGetCursorPos(window, mx, my);
         super.init();
-        org.lwjgl.glfw.GLFW.glfwSetCursorPos(window, mx[0], my[0]);
+        if (MiningLittleMaidClient.hasSaved) {
+            long w = Minecraft.getInstance().getWindow().getWindow();
+            org.lwjgl.glfw.GLFW.glfwSetCursorPos(w,
+                    MiningLittleMaidClient.savedMouseX, MiningLittleMaidClient.savedMouseY);
+            MiningLittleMaidClient.hasSaved = false;
+        }
     }
 
     @Override
