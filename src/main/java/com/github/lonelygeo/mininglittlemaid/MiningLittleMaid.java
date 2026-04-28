@@ -12,7 +12,6 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
-import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -27,7 +26,7 @@ public class MiningLittleMaid {
             DeferredRegister.create(Registries.MENU, MOD_ID);
     public static final Supplier<MenuType<MiningTaskConfigContainer>> MINING_TASK_CONFIG =
             MENU_TYPES.register("mining_task_config",
-                    () -> IMenuTypeExtension.create(MiningTaskConfigContainer::new));
+                    () -> MiningTaskConfigContainer.TYPE);
 
     public MiningLittleMaid(IEventBus modEventBus, ModContainer modContainer) {
         InitSounds.SOUNDS.register(modEventBus);
