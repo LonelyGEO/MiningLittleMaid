@@ -32,6 +32,31 @@ public class TaskMining implements IFarmTask {
     private static final ResourceLocation UID = ResourceLocation.fromNamespaceAndPath("mining_little_maid", "mining");
     private static final int VERTICAL_SEARCH_RANGE = 16;
     private static final Logger LOGGER = LogManager.getLogger();
+    private static final int ORE_ALERT_COOLDOWN = 200;
+    private static final int ORE_ALERT_MIN_DIST_SQ = 16 * 16;
+    private static final int ORE_PAUSE_TICKS = 100;
+
+    private BlockPos lastOreAlertPos = BlockPos.ZERO;
+    private long lastOreAlertTime;
+    private long orePauseEndTime;
+
+    public boolean canAlertOre(BlockPos pos, long gameTime) {
+        if (gameTime - lastOreAlertTime < ORE_ALERT_COOLDOWN
+                && pos.distSqr(lastOreAlertPos) <= ORE_ALERT_MIN_DIST_SQ) {
+            return false;
+        }
+        lastOreAlertPos = pos.immutable();
+        lastOreAlertTime = gameTime;
+        return true;
+    }
+
+    public void setOrePauseEndTime(long endTime) {
+        orePauseEndTime = endTime;
+    }
+
+    public boolean isOrePaused(long gameTime) {
+        return gameTime < orePauseEndTime;
+    }
 
     @Override
     public ResourceLocation getUid() {

@@ -22,6 +22,8 @@ Config.java (ModConfigSpec 定义)
 
 ## 2. Config.java 完整模板
 
+以下为本模组实际使用的 Config.java：
+
 ```java
 package com.example.modid.config;
 
@@ -29,20 +31,17 @@ import net.neoforged.neoforge.common.ModConfigSpec;
 import org.apache.logging.log4j.Logger;
 
 public class Config {
-    // === Spec 入口（必须） ===
     public static final ModConfigSpec SPEC;
 
-    // === 配置项声明 ===
     public static final ModConfigSpec.IntValue MAX_VEIN_SIZE;
-    public static final ModConfigSpec.BooleanValue ENABLE_FEATURE;
+    public static final ModConfigSpec.IntValue MIN_LIGHT_LEVEL;
+    public static final ModConfigSpec.IntValue TORCH_COOLDOWN_TICKS;
+    public static final ModConfigSpec.IntValue COMBAT_RETURN_DELAY_TICKS;
+    public static final ModConfigSpec.BooleanValue DEBUG_LOGGING;
 
     static {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
-
-        // === 顶级注释 ===
-        builder.comment("My Mod 配置");
-
-        // === 分类 section（必须成对 push → pop） ===
+        builder.comment("Mining Little Maid 配置");
         builder.push("mining")
                 .translation("config.modid.section.mining");
 
@@ -50,23 +49,53 @@ public class Config {
                 .comment("矿脉连锁最大块数（仅好感度等级 3 生效）")
                 .defineInRange("maxVeinSize", 8, 2, 64);
 
-        ENABLE_FEATURE = builder
-                .comment("启用某功能（需重启生效）")
-                .define("enableFeature", true);
+        MIN_LIGHT_LEVEL = builder
+                .comment("亮度低于此值时女仆放置火把")
+                .defineInRange("minLightLevel", 7, 0, 15);
 
-        // === 分类结束 ===
+        TORCH_COOLDOWN_TICKS = builder
+                .comment("火把放置冷却时间（tick，20 tick = 1 秒）")
+                .defineInRange("torchCooldownTicks", 120, 20, 600);
+
+        COMBAT_RETURN_DELAY_TICKS = builder
+                .comment("战斗结束后等多久切回采矿（tick，20 tick = 1 秒）")
+                .defineInRange("combatReturnDelayTicks", 100, 20, 600);
+
+        DEBUG_LOGGING = builder
+                .comment("启用 Debug 日志输出（需重启生效）")
+                .define("enableDebugLog", false);
+
         builder.pop();
-
         SPEC = builder.build();
     }
 
-    // === 条件日志（可选） ===
     public static void debugLog(Logger logger, String message, Object... params) {
-        if (ENABLE_FEATURE.get()) {
+        if (DEBUG_LOGGING.get()) {
             logger.debug(message, params);
         }
     }
 }
+```
+
+生成的 TOML 文件：
+
+```toml
+# config/mining_little_maid-common.toml
+[mining]
+    # 矿脉连锁最大块数（仅好感度等级 3 生效）
+    # 范围: 2 ~ 64
+    maxVeinSize = 8
+    # 亮度低于此值时女仆放置火把
+    # 范围: 0 ~ 15
+    minLightLevel = 7
+    # 火把放置冷却时间（tick，20 tick = 1 秒）
+    # 范围: 20 ~ 600
+    torchCooldownTicks = 120
+    # 战斗结束后等多久切回采矿（tick，20 tick = 1 秒）
+    # 范围: 20 ~ 600
+    combatReturnDelayTicks = 100
+    # 启用 Debug 日志输出（需重启生效）
+    enableDebugLog = false
 ```
 
 ---
@@ -88,7 +117,7 @@ public class Config {
 ```java
 // 在运行时读取（线程安全）
 int veinSize = Config.MAX_VEIN_SIZE.get();
-boolean enabled = Config.ENABLE_FEATURE.get();
+boolean enabled = Config.DEBUG_LOGGING.get();
 ```
 
 **注意**：不要在 static 初始化块中调用 `.get()`，只能在 `static {}` 完成后读取。
@@ -107,9 +136,6 @@ public class MyMod {
     public MyMod(IEventBus modEventBus, ModContainer modContainer) {
         // 注册 COMMON 配置（客户端+服务端共用）
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
-        
-        // 可选：SERVER 配置（仅服务端）
-        // modContainer.registerConfig(ModConfig.Type.SERVER, ServerConfig.SPEC);
     }
 }
 ```
@@ -131,13 +157,23 @@ public class MyMod {
 ## 7. 分类 section（push/pop）
 
 ```java
-builder.push("mining")                    // TOML 中生成 [mining] 头
-        .translation("config.modid.section.mining");  // 分类标题翻译键
+builder.push("mining")                               // TOML 生成 [mining] 头
+        .translation("config.modid.section.mining");  // 分类标题翻译键（Cloth Config 2 用）
 // ... 配置项 ...
-builder.pop();                            // 必须与 push 配对
+builder.pop();                                       // 必须与 push 配对
 ```
 
+**`push` 生成效果**：
+
+```toml
+[mining]       ← builder.push("mining") 产生
+maxVeinSize = 8
+```
+
+**`.translation()` 的作用**：若安装了 Cloth Config 2（TouhouLittleMaid 已自带），该翻译键在游戏内 Mods 配置界面中显示为分类标题。无 Cloth Config 仍可生效，仅无分类标题。
+
 翻译键注册（语言文件）：
+
 ```json
 {
     "config.modid.section.mining": "采矿"
@@ -146,9 +182,43 @@ builder.pop();                            // 必须与 push 配对
 
 ---
 
-## 8. TouhouLittleMaid 父模组配置参考
+## 8. 多 section 扩展示例
 
-TouhouLittleMaid 的 `GeneralConfig` 分为 6 个 section：
+大型模组可按功能拆分多个 section：
+
+```java
+static {
+    ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
+
+    builder.push("mining").translation("config.modid.section.mining");
+    MAX_VEIN_SIZE = builder.defineInRange("maxVeinSize", 8, 2, 64);
+    // ... 其他采矿配置 ...
+    builder.pop();
+
+    builder.push("combat").translation("config.modid.section.combat");
+    COMBAT_DELAY = builder.defineInRange("combatDelay", 100, 20, 600);
+    // ... 其他战斗配置 ...
+    builder.pop();
+
+    SPEC = builder.build();
+}
+```
+
+生成 TOML：
+
+```toml
+[mining]
+maxVeinSize = 8
+
+[combat]
+combatDelay = 100
+```
+
+---
+
+## 9. TouhouLittleMaid 父模组配置参考
+
+TouhouLittleMaid 的 `GeneralConfig` 分为 6 个 section（使用 `builder.push`）：
 
 | section | 翻译键 | 内容 |
 |---------|--------|------|
@@ -159,11 +229,11 @@ TouhouLittleMaid 的 `GeneralConfig` 分为 6 个 section：
 | `[render]` | `config.touhou_little_maid.render` | 渲染 |
 | `[ai]` | *(无翻译)* | AI 相关 |
 
-父模组游戏内配置 GUI 使用 **Cloth Config 2** (`MenuIntegration.java`)。
+父模组游戏内配置 GUI 使用 **Cloth Config 2**（`MenuIntegration.java`）。
 
 ---
 
-## 9. Debug/条件日志模式
+## 10. Debug/条件日志模式
 
 ```java
 // Config.java 中定义
@@ -179,7 +249,7 @@ Config.debugLog(LOGGER, "BFS search started, radius={}", radius);
 
 ---
 
-## 10. 每只女仆的个性化设置（非 Config.java）
+## 11. 每只女仆的个性化设置（非 Config.java）
 
 如需每只女仆独立配置，使用 **NBT 持久化** + **任务配置 Tab** 模式：
 
@@ -196,10 +266,11 @@ boolean enabled = !maid.getPersistentData().contains("my_key")
 
 ---
 
-## 11. 完整文件清单
+## 12. 完整文件清单
 
 | 文件 | 职责 |
 |------|------|
 | `config/Config.java` | 定义 ModConfigSpec + 条件日志方法 |
 | `lang/zh_cn.json` | 包含 `config.modid.section.*` 分类翻译键 |
+| `lang/en_us.json` | 同上，英文版 |
 | `YourMod.java` (@Mod) | `modContainer.registerConfig()` 注册入口 |
