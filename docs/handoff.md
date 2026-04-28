@@ -56,7 +56,7 @@ Mining Config Tab 打开 → setScreen(null) → 鼠标居中
 | 矿石重复通知 | `MaidMineMoveTask.java:44`, `TaskMining.java:38` | `isOrePaused` 无条件 return，`ORE_PAUSE_TICKS` → 200 |
 | 火把刷屏 | `MaidMineTorchPlaceTask.java` | 冷却计时器替代亮度重置 |
 | 洞顶裸露矿探测 | `MaidMineMoveTask.java` | BFS 无果后垂直列扫描 O(14)（性能优先） |
-| 矿石种类 GUI | `MiningTaskConfigGui.java` | 推倒重建，对齐 TLW AttackTab 架构 |
+| 矿石种类 GUI | `MiningTaskConfigGui.java` | 推倒重建，对齐 TLM AttackTab 架构 |
 
 ## 关键 API 备忘
 

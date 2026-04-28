@@ -20,7 +20,7 @@ MiningClothConfig.java 监听 AddClothConfigEvent
 游戏内通过 "Mods → Touhou Little Maid → 配置 → 采矿" 修改
 ```
 
-**本模组不独立注册 `IConfigScreenFactory`**，而是通过 TLW 的 `AddClothConfigEvent` 将配置项注入到 TouhouLittleMaid 的设置菜单中。
+**本模组不独立注册 `IConfigScreenFactory`**，而是通过 TLM 的 `AddClothConfigEvent` 将配置项注入到 TouhouLittleMaid 的设置菜单中。
 
 ---
 
@@ -142,7 +142,7 @@ public class MyMod {
 }
 ```
 
-**本模组不注册 `IConfigScreenFactory`**——这是刻意为之。本模组通过 TLW 的 `AddClothConfigEvent` 将配置项注入到 TouhouLittleMaid 的设置菜单中（见第 8 节）。
+**本模组不注册 `IConfigScreenFactory`**——这是刻意为之。本模组通过 TLM 的 `AddClothConfigEvent` 将配置项注入到 TouhouLittleMaid 的设置菜单中（见第 8 节）。
 
 ---
 
@@ -174,7 +174,7 @@ builder.pop();                                       // 必须与 push 配对
 maxVeinSize = 8
 ```
 
-**`.translation()` 的作用**：在 Cloth Config 2 的 GUI 中显示为分类标题。本模组通过 `AddClothConfigEvent` 注入配置项时，相同的翻译键会自动带入 TLW 的配置菜单。
+**`.translation()` 的作用**：在 Cloth Config 2 的 GUI 中显示为分类标题。本模组通过 `AddClothConfigEvent` 注入配置项时，相同的翻译键会自动带入 TLM 的配置菜单。
 
 翻译键注册（语言文件）：
 
@@ -186,11 +186,11 @@ maxVeinSize = 8
 
 ---
 
-## 8. 整合入 TLW 配置菜单（AddClothConfigEvent）
+## 8. 整合入 TLM 配置菜单（AddClothConfigEvent）
 
 ### 核心原理
 
-TLW 在构建配置 GUI 后，通过 **`NeoForge.EVENT_BUS`**（GAME bus）发送 `AddClothConfigEvent`。附属模组只需监听该事件，即可向 TLW 的配置菜单中添加自定义分类和条目。
+TLM 在构建配置 GUI 后，通过 **`NeoForge.EVENT_BUS`**（GAME bus）发送 `AddClothConfigEvent`。附属模组只需监听该事件，即可向 TLM 的配置菜单中添加自定义分类和条目。
 
 **不需要** Mixin、反射或 `IConfigScreenFactory`。
 
@@ -250,7 +250,7 @@ public class MiningClothConfig {
 
 | API | 来源 | 用途 |
 |-----|------|------|
-| `AddClothConfigEvent` | TLW (`api.event.client`) | 扩展点事件，在 TLW 构建配置菜单后发送 |
+| `AddClothConfigEvent` | TLM (`api.event.client`) | 扩展点事件，在 TLM 构建配置菜单后发送 |
 | `event.getRoot()` | → `me.shedaniel.clothconfig2.api.ConfigBuilder` | Cloth Config 根构建器 |
 | `event.getEntryBuilder()` | → `ConfigEntryBuilder` | 创建滑块、开关等条目 |
 | `getOrCreateCategory(Component)` | → `ConfigCategory` | 获取或创建一个分类 |
@@ -280,9 +280,9 @@ public class MiningClothConfig {
 
 | | IConfigScreenFactory | AddClothConfigEvent |
 |---|---|---|
-| 入口位置 | 独立的 Mod 配置页 | **TLW 配置菜单内部** |
-| 依赖 | 需要 Cloth Config API 编译依赖 | 无需额外依赖（TLW 已提供） |
-| 用户体验 | 用户需在 Mods 列表中找我们的 Mod | 用户只需打开 TLW 的配置页面 |
+| 入口位置 | 独立的 Mod 配置页 | **TLM 配置菜单内部** |
+| 依赖 | 需要 Cloth Config API 编译依赖 | 无需额外依赖（TLM 已提供） |
+| 用户体验 | 用户需在 Mods 列表中找我们的 Mod | 用户只需打开 TLM 的配置页面 |
 | 本模组使用 | ❌ 已废弃 | ✅ 当前方案 |
 
 ---
@@ -376,7 +376,7 @@ boolean enabled = !maid.getPersistentData().contains("my_key")
 | 文件 | 职责 |
 |------|------|
 | `config/Config.java` | 定义 `ModConfigSpec`（`push("mining")` + 5 项配置 + `debugLog` 方法） |
-| `compat/MiningClothConfig.java` | 监听 `AddClothConfigEvent`，向 TLW 配置菜单注入条目 |
+| `compat/MiningClothConfig.java` | 监听 `AddClothConfigEvent`，向 TLM 配置菜单注入条目 |
 | `lang/zh_cn.json` | 包含所有 `config.modid.*` 翻译键 |
 | `lang/en_us.json` | 同上，英文版 |
 | `YourMod.java` (@Mod) | `modContainer.registerConfig(COMMON, Config.SPEC)`（不要注册 `IConfigScreenFactory`） |
