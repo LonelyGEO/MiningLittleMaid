@@ -6,6 +6,7 @@ import com.github.lonelygeo.mininglittlemaid.task.OreToggleManager;
 import com.github.tartaricacid.touhoulittlemaid.client.gui.entity.maid.task.MaidTaskConfigGui;
 import com.github.tartaricacid.touhoulittlemaid.client.gui.widget.button.MaidConfigButton;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -23,7 +24,6 @@ public class MiningTaskConfigGui extends MaidTaskConfigGui<MiningTaskConfigConta
             ResourceLocation.fromNamespaceAndPath("touhou_little_maid",
                     "textures/gui/attack_task_config.png");
     private static final int BG_HEIGHT = 137;
-    private static final int BG_OFFSET_Y = 28;
     private static final int PANEL_X_OFFSET = 80;
     private static final int PANEL_Y_OFFSET = 28;
     private static final int TITLE_X_OFFSET = 88;
@@ -91,10 +91,15 @@ public class MiningTaskConfigGui extends MaidTaskConfigGui<MiningTaskConfigConta
             if (dataIndex < oreGroups.size()) {
                 OreToggleManager.OreGroup group = oreGroups.get(dataIndex);
                 boolean isEnabled = OreToggleManager.isOreGroupEnabled(maid, group.groupKey());
-                oreRows[i].bind(group.representativeBlock().getName(), isEnabled, () -> {
-                    OreToggleManager.toggleOreGroup(maid, group.groupKey());
-                    refreshOreRows();
-                });
+                oreRows[i].bind(group.representativeBlock().getName(), isEnabled,
+                        () -> {
+                            OreToggleManager.setOreGroupEnabled(maid, group.groupKey(), false);
+                            refreshOreRows();
+                        },
+                        () -> {
+                            OreToggleManager.setOreGroupEnabled(maid, group.groupKey(), true);
+                            refreshOreRows();
+                        });
             } else {
                 oreRows[i].clear();
             }
@@ -126,7 +131,8 @@ public class MiningTaskConfigGui extends MaidTaskConfigGui<MiningTaskConfigConta
             return;
         }
         Component title = Component.translatable("gui.mininglittlemaid.ore_toggles");
-        graphics.drawString(font, title, leftPos + TITLE_X_OFFSET, topPos + TITLE_Y_OFFSET, 0x404040, false);
+        graphics.drawString(font, title, leftPos + TITLE_X_OFFSET, topPos + TITLE_Y_OFFSET,
+                ChatFormatting.WHITE.getColor(), false);
 
         if (maxScroll > 0) {
             int barWidth = 4;
@@ -152,20 +158,29 @@ public class MiningTaskConfigGui extends MaidTaskConfigGui<MiningTaskConfigConta
     }
 
     private static final class OreRowWidget extends AbstractWidget {
+        private static final ResourceLocation BUTTON_ICON =
+                ResourceLocation.fromNamespaceAndPath("touhou_little_maid",
+                        "textures/gui/maid_gui_button.png");
+        private static final int ICON_U = 63;
+        private static final int ICON_V_NORMAL = 128;
+        private static final int ICON_V_HOVERED = 141;
+
         private boolean hasData;
         private Component oreName = Component.empty();
         private boolean toggled;
-        private Runnable onToggle;
+        private Runnable onDisable;
+        private Runnable onEnable;
 
         OreRowWidget(int x, int y, int width, int height) {
             super(x, y, width, height, Component.empty());
             this.hasData = false;
         }
 
-        void bind(Component oreName, boolean toggled, Runnable onToggle) {
+        void bind(Component oreName, boolean toggled, Runnable onDisable, Runnable onEnable) {
             this.oreName = oreName;
             this.toggled = toggled;
-            this.onToggle = onToggle;
+            this.onDisable = onDisable;
+            this.onEnable = onEnable;
             this.hasData = true;
             this.visible = true;
             this.active = true;
@@ -175,7 +190,8 @@ public class MiningTaskConfigGui extends MaidTaskConfigGui<MiningTaskConfigConta
             this.hasData = false;
             this.visible = false;
             this.active = false;
-            this.onToggle = null;
+            this.onDisable = null;
+            this.onEnable = null;
         }
 
         @Override
@@ -184,17 +200,19 @@ public class MiningTaskConfigGui extends MaidTaskConfigGui<MiningTaskConfigConta
                 return;
             }
             graphics.enableScissor(getX(), getY(), getX() + width, getY() + height);
-            if (isHovered) {
-                graphics.fill(getX(), getY(), getX() + width, getY() + height, 0x20FFFFFF);
-            }
+
+            int v = isHovered ? ICON_V_HOVERED : ICON_V_NORMAL;
+            graphics.blit(BUTTON_ICON, getX(), getY(), ICON_U, v, width, height, 256, 256);
+
             graphics.drawString(Minecraft.getInstance().font, oreName,
-                    getX() + 5, getY() + 3, 0xE0E0E0, false);
+                    getX() + 5, getY() + 3, 0x444444, false);
             Component value = Component.translatable(toggled
                     ? "gui.mininglittlemaid.option.on"
                     : "gui.mininglittlemaid.option.off");
-            int valueColor = toggled ? 0x55FF55 : 0xFF5555;
+            int valueColor = toggled ? 0x55FF55 : 0x444444;
             graphics.drawCenteredString(Minecraft.getInstance().font, value,
                     getX() + 142, getY() + 3, valueColor);
+
             graphics.disableScissor();
         }
 
@@ -203,10 +221,20 @@ public class MiningTaskConfigGui extends MaidTaskConfigGui<MiningTaskConfigConta
             if (!hasData || !visible || !active) {
                 return false;
             }
-            if (mouseX >= getX() + 100 && mouseX <= getX() + width
-                    && mouseY >= getY() && mouseY <= getY() + height) {
-                if (onToggle != null) {
-                    onToggle.run();
+            if (mouseY < getY() || mouseY > getY() + height) {
+                return false;
+            }
+            // 左键区: 关闭 (与 MaidConfigButton 左点击区一致)
+            if (mouseX >= getX() + 120 && mouseX <= getX() + 130) {
+                if (onDisable != null) {
+                    onDisable.run();
+                    return true;
+                }
+            }
+            // 右键区: 开启 (与 MaidConfigButton 右点击区一致)
+            if (mouseX >= getX() + 154 && mouseX <= getX() + 164) {
+                if (onEnable != null) {
+                    onEnable.run();
                     return true;
                 }
             }

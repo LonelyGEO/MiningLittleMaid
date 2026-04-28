@@ -25,8 +25,12 @@ public final class OreToggleManager {
     }
 
     public static void toggleOreGroup(EntityMaid maid, String groupKey) {
+        setOreGroupEnabled(maid, groupKey, !isOreGroupEnabled(maid, groupKey));
+    }
+
+    public static void setOreGroupEnabled(EntityMaid maid, String groupKey, boolean enabled) {
         Set<String> disabled = getDisabledGroups(maid);
-        if (disabled.contains(groupKey)) {
+        if (enabled) {
             disabled.remove(groupKey);
         } else {
             disabled.add(groupKey);
