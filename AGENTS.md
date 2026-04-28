@@ -144,17 +144,20 @@ Avoid reordering imports unless required by your edit.
 
 ### Entry points
 
-- `MiningLittleMaid` — `@Mod` 主类，注册音效和网络包
+- `MiningLittleMaid` — `@Mod` 主类，注册音效、网络包、MenuType（任务配置 Tab）
 - `MiningAddonPlugin` — `@LittleMaidExtension` 扩展入口，注册 `TaskMining`
 
 ### Package roles
 
 | 包 | 职责 |
 |---|---|
-| `task.*` | 任务定义 + AI 行为（TaskMining, MaidMineMoveTask, MaidMineBreakTask, MiningFavorGate） |
+| `task.*` | 任务定义 + AI 行为（TaskMining, MaidMineMoveTask, MaidMineBreakTask, MiningFavorGate 等） |
 | `init.*` | 注册（InitSounds 音效 DeferredRegister） |
 | `network.*` | 网络包（MiningChatNotifyToggleMessage，record 类型） |
-| `event.*` | 客户端 GUI 事件（ClientGuiEventHandler） |
+| `event.*` | 事件订阅（MaidMineCombatEventHandler，战斗结束切回采矿） |
+| `config.*` | Mod 配置（Config.java，NeoForge Common Config） |
+| `client.*` | 客户端（MiningLittleMaidClient 屏幕注册，gui 子包含 MiningTaskConfigGui） |
+| `inventory.container.*` | 容器（MiningTaskConfigContainer，任务配置 Tab） |
 
 ### Task system
 
@@ -162,15 +165,20 @@ Avoid reordering imports unless required by your edit.
 
 - `canHarvest()` — 检查镐子 + 矿石类型
 - `harvest()` — 调用 `maid.destroyBlock(pos)`
-- `createBrainTasks()` — 返回两个 AI: `MaidMineMoveTask`(优先级5) + `MaidMineBreakTask`(优先级6)
+- `createBrainTasks()` — 返回 6 个 AI: 4 个优先级 4 监控任务（耐久/背包/火把/战斗） + 优先级 5 移动 + 优先级 6 挖掘
 - `onFunctionCallSwitch()` — 切换任务时自动从背包装备镐子
+- `getTaskConfigGuiProvider()` — 返回采矿配置 Tab 的 MenuProvider
 
 ### AI behaviors
 
-| 类 | 父类 | 职责 |
-|---|---|---|
-| `MaidMineMoveTask` | `MaidCheckRateTask` | BFS 搜索矿石（嗅探半径由好感度决定），找不到时随机跟随主人 |
-| `MaidMineBreakTask` | `Behavior<EntityMaid>` | 到达 → 检查高度差 → 挖掘 → 近邻搜索下一个矿石 |
+| 类 | 父类 | 优先级 | 职责 |
+|---|---|---|---|
+| `MaidMineDurabilityCheckTask` | `MaidCheckRateTask` | 4 | 耐久预检 + 自动换镐（好感 Lv1+） |
+| `MaidMineInventoryCheckTask` | `MaidCheckRateTask` | 4 | 背包满时停止 + 通知 |
+| `MaidMineTorchPlaceTask` | `MaidCheckRateTask` | 4 | 暗处自动放置火把 |
+| `MaidMineCombatCheckTask` | `MaidCheckRateTask` | 4 | 遇怪自动切换战斗（好感 Lv1+） |
+| `MaidMineMoveTask` | `MaidCheckRateTask` | 5 | BFS 搜索矿石（嗅探半径由好感度决定），找不到时随机跟随主人 |
+| `MaidMineBreakTask` | `Behavior<EntityMaid>` | 6 | 到达 → 高度差检测 → 挖掘 → 矿脉连锁 → 近邻搜索 |
 
 ### Favor gating (MiningFavorGate)
 
@@ -194,9 +202,16 @@ Avoid reordering imports unless required by your edit.
 task.mining_little_maid.mining
 task.mining_little_maid.mining.desc
 task.mining_little_maid.mining.condition.has_pickaxe
+task.mining_little_maid.mining.config
 subtitle.mining_little_maid.maid.mode.mining
-message.mining_little_maid.ore_above_below
+message.mining_little_maid.ore_above
+message.mining_little_maid.ore_below
+message.mining_little_maid.inventory_full
+message.mining_little_maid.no_torch
 gui.mining_little_maid.chat_notify
+gui.mining_little_maid.option.on
+gui.mining_little_maid.option.off
+config.mining_little_maid.section.mining
 ```
 
 ## 7) Agent workflow checklist
@@ -256,12 +271,12 @@ Keep this file updated when tooling/rules/project conventions change.
 
 ## 12) Versioning
 
-- 当前版本: `0.3.1-neoforge+mc1.21.1`
+- 当前版本: `0.4.0-neoforge+mc1.21.1`
 - 后缀 `-neoforge+mc1.21.1` 为平台标识，保持不变
 
 | 版本位 | 触发条件 |
 |--------|---------|
-| PATCH (`0.1.x`) | Bug 修复、参数微调、语言文件补充 |
+| PATCH (`0.4.x`) | Bug 修复、参数微调、语言文件补充 |
 | MINOR (`0.x.0`) | 新增功能（每完成 planToAgent.md 中一项） |
 | MAJOR (`x.0.0`) | 功能基本完整时升至 `1.0.0`；架构重写或 MC 版本升级 |
 
