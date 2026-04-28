@@ -63,7 +63,12 @@ public class MaidMineBreakTask extends Behavior<EntityMaid> {
         maid.getBrain().getMemory(InitEntities.TARGET_POS.get()).ifPresent(posTracker -> {
             BlockPos targetPos = BlockPos.containing(posTracker.currentPosition());
             int yDiff = targetPos.getY() - maid.blockPosition().getY();
-            if (yDiff > 3 || yDiff < -1) {
+            if (yDiff > 3 || yDiff < -2) {
+                if (!task.canAlertOre(targetPos, worldIn.getGameTime())) {
+                    maid.getBrain().eraseMemory(InitEntities.TARGET_POS.get());
+                    maid.getBrain().eraseMemory(MemoryModuleType.WALK_TARGET);
+                    return;
+                }
                 Config.debugLog(LOGGER,"Ore at {} unreachable (yDiff={}), sending above/below message", targetPos, yDiff);
                 maid.getBrain().eraseMemory(InitEntities.TARGET_POS.get());
                 maid.getBrain().eraseMemory(MemoryModuleType.WALK_TARGET);
@@ -83,6 +88,7 @@ public class MaidMineBreakTask extends Behavior<EntityMaid> {
                 if (isChatNotifyEnabled(maid) && maid.getOwner() instanceof ServerPlayer player) {
                     player.sendSystemMessage(msg);
                 }
+                task.setOrePauseEndTime(worldIn.getGameTime() + 100);
                 return;
             }
             Config.debugLog(LOGGER,"Mining ore at {}", targetPos);
