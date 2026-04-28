@@ -38,6 +38,7 @@
     "config.mininglittlemaid.combatSearchVertical": "Monster Search Vertical Radius",
     "config.mininglittlemaid.breakCloseEnoughHorizontal": "Horizontal Close Range",
     "config.mininglittlemaid.breakCloseEnoughVertical": "Vertical Close Range",
+    "config.mininglittlemaid.oreAlertMinDist": "Ore Alert Same-Area Distance",
     "config.mininglittlemaid.sniffRadiusHorizontalLevel0": "Lv0 Horizontal Sniff",
     "config.mininglittlemaid.sniffRadiusHorizontalLevel1": "Lv1 Horizontal Sniff",
     "config.mininglittlemaid.sniffRadiusHorizontalLevel2": "Lv2 Horizontal Sniff",

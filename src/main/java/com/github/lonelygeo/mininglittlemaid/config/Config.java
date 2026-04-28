@@ -34,6 +34,7 @@ public class Config {
     public static final ModConfigSpec.IntValue COMBAT_SEARCH_VERTICAL;
     public static final ModConfigSpec.IntValue BREAK_CLOSE_ENOUGH_H;
     public static final ModConfigSpec.IntValue BREAK_CLOSE_ENOUGH_V;
+    public static final ModConfigSpec.IntValue ORE_ALERT_MIN_DIST;
 
     // [mining.perception] 感知范围
     public static final ModConfigSpec.IntValue SNIFF_RADIUS_H_LEVEL_0;
@@ -152,6 +153,10 @@ public class Config {
         BREAK_CLOSE_ENOUGH_V = builder
                 .comment("接近判定垂直高度差（格）")
                 .defineInRange("breakCloseEnoughVertical", 2, 1, 4);
+
+        ORE_ALERT_MIN_DIST = builder
+                .comment("矿石通知的同区域判定距离（格）")
+                .defineInRange("oreAlertMinDist", 8, 4, 32);
 
         builder.pop();
 

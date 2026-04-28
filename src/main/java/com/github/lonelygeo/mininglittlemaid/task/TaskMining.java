@@ -32,7 +32,6 @@ import java.util.function.Predicate;
 public class TaskMining implements IFarmTask {
     private static final ResourceLocation UID = ResourceLocation.fromNamespaceAndPath(MiningLittleMaid.MOD_ID, "mining");
     private static final Logger LOGGER = LogManager.getLogger();
-    private static final int ORE_ALERT_MIN_DIST_SQ = 8 * 8;
 
     private BlockPos lastOreAlertPos = BlockPos.ZERO;
     private long lastOreAlertTime;
@@ -41,9 +40,11 @@ public class TaskMining implements IFarmTask {
 
     public boolean canAlertOre(BlockPos pos, long gameTime, String oreGroupKey) {
         if (gameTime - lastOreAlertTime < Config.ORE_ALERT_COOLDOWN_TICKS.get()
-                && lastOreAlertGroupKey.equals(oreGroupKey)
-                && pos.distSqr(lastOreAlertPos) <= ORE_ALERT_MIN_DIST_SQ) {
-            return false;
+                && lastOreAlertGroupKey.equals(oreGroupKey)) {
+            int distThreshold = Config.ORE_ALERT_MIN_DIST.get();
+            if (pos.distSqr(lastOreAlertPos) <= distThreshold * distThreshold) {
+                return false;
+            }
         }
         lastOreAlertPos = pos.immutable();
         lastOreAlertTime = gameTime;

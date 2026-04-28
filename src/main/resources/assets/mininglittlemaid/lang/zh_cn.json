@@ -38,6 +38,7 @@
     "config.mininglittlemaid.combatSearchVertical": "怪物搜索垂直半径",
     "config.mininglittlemaid.breakCloseEnoughHorizontal": "水平接近距离",
     "config.mininglittlemaid.breakCloseEnoughVertical": "垂直接近高度",
+    "config.mininglittlemaid.oreAlertMinDist": "矿石通知同区域距离",
     "config.mininglittlemaid.sniffRadiusHorizontalLevel0": "0级水平嗅探半径",
     "config.mininglittlemaid.sniffRadiusHorizontalLevel1": "1级水平嗅探半径",
     "config.mininglittlemaid.sniffRadiusHorizontalLevel2": "2级水平嗅探半径",

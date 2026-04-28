@@ -220,6 +220,15 @@ public class MiningClothConfig {
                 .setTooltip(Component.literal("女仆允许挖掘的头顶高度差上限（格）。超过此差会通知玩家"))
                 .build());
 
+        range.addEntry(entryBuilder
+                .startIntSlider(
+                        Component.translatable("config.mininglittlemaid.oreAlertMinDist"),
+                        Config.ORE_ALERT_MIN_DIST.get(), 4, 32)
+                .setDefaultValue(8)
+                .setSaveConsumer(val -> Config.ORE_ALERT_MIN_DIST.set(val))
+                .setTooltip(Component.literal("两次矿石通知视为同区域的距离（格）。超过此距离必定重新提示"))
+                .build());
+
         // 采矿 - 感知范围
         ConfigCategory perception = event.getRoot().getOrCreateCategory(
                 Component.translatable("config.mininglittlemaid.section.perception"));
