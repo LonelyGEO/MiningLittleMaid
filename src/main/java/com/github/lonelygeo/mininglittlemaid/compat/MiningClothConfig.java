@@ -39,19 +39,19 @@ public class MiningClothConfig {
         mining.addEntry(entryBuilder
                 .startIntSlider(
                         Component.translatable("config.mininglittlemaid.torchCooldown"),
-                        Config.TORCH_COOLDOWN_TICKS.get(), 20, 600)
-                .setDefaultValue(120)
-                .setSaveConsumer(val -> Config.TORCH_COOLDOWN_TICKS.set(val))
-                .setTooltip(Component.literal("火把放置冷却时间（tick）"))
+                        Config.TORCH_COOLDOWN_TICKS.get() / 20, 1, 30)
+                .setDefaultValue(6)
+                .setSaveConsumer(val -> Config.TORCH_COOLDOWN_TICKS.set(val * 20))
+                .setTooltip(Component.literal("火把放置冷却时间（秒）"))
                 .build());
 
         mining.addEntry(entryBuilder
                 .startIntSlider(
                         Component.translatable("config.mininglittlemaid.combatReturnDelay"),
-                        Config.COMBAT_RETURN_DELAY_TICKS.get(), 20, 600)
-                .setDefaultValue(100)
-                .setSaveConsumer(val -> Config.COMBAT_RETURN_DELAY_TICKS.set(val))
-                .setTooltip(Component.literal("战斗结束后等多久切回采矿（tick）"))
+                        Config.COMBAT_RETURN_DELAY_TICKS.get() / 20, 1, 30)
+                .setDefaultValue(5)
+                .setSaveConsumer(val -> Config.COMBAT_RETURN_DELAY_TICKS.set(val * 20))
+                .setTooltip(Component.literal("战斗结束后等多久切回采矿（秒）"))
                 .build());
 
         mining.addEntry(entryBuilder
@@ -66,28 +66,28 @@ public class MiningClothConfig {
         mining.addEntry(entryBuilder
                 .startIntSlider(
                         Component.translatable("config.mininglittlemaid.orePauseTicks"),
-                        Config.ORE_PAUSE_TICKS.get(), 100, 600)
-                .setDefaultValue(200)
-                .setSaveConsumer(val -> Config.ORE_PAUSE_TICKS.set(val))
-                .setTooltip(Component.literal("检测到不可达矿石后暂停搜索的时长（tick）"))
+                        Config.ORE_PAUSE_TICKS.get() / 20, 5, 30)
+                .setDefaultValue(10)
+                .setSaveConsumer(val -> Config.ORE_PAUSE_TICKS.set(val * 20))
+                .setTooltip(Component.literal("检测到不可达矿石后暂停搜索的时长（秒）"))
                 .build());
 
         mining.addEntry(entryBuilder
                 .startIntSlider(
                         Component.translatable("config.mininglittlemaid.oreAlertCooldownTicks"),
-                        Config.ORE_ALERT_COOLDOWN_TICKS.get(), 2400, 72000)
-                .setDefaultValue(12000)
-                .setSaveConsumer(val -> Config.ORE_ALERT_COOLDOWN_TICKS.set(val))
-                .setTooltip(Component.literal("同一区域矿石通知的冷却时间（tick）"))
+                        Config.ORE_ALERT_COOLDOWN_TICKS.get() / 20, 120, 3600)
+                .setDefaultValue(600)
+                .setSaveConsumer(val -> Config.ORE_ALERT_COOLDOWN_TICKS.set(val * 20))
+                .setTooltip(Component.literal("同一区域矿石通知的冷却时间（秒）"))
                 .build());
 
         mining.addEntry(entryBuilder
                 .startIntSlider(
                         Component.translatable("config.mininglittlemaid.torchNotifyCooldownTicks"),
-                        Config.TORCH_NOTIFY_COOLDOWN_TICKS.get(), 200, 72000)
-                .setDefaultValue(6000)
-                .setSaveConsumer(val -> Config.TORCH_NOTIFY_COOLDOWN_TICKS.set(val))
-                .setTooltip(Component.literal("无火把通知的冷却时间（tick）"))
+                        Config.TORCH_NOTIFY_COOLDOWN_TICKS.get() / 20, 10, 3600)
+                .setDefaultValue(300)
+                .setSaveConsumer(val -> Config.TORCH_NOTIFY_COOLDOWN_TICKS.set(val * 20))
+                .setTooltip(Component.literal("无火把通知的冷却时间（秒）"))
                 .build());
     }
 }
