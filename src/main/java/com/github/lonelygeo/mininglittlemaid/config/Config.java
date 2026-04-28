@@ -16,7 +16,7 @@ public class Config {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
         builder.comment("Mining Little Maid 配置");
         builder.push("mining")
-                .translation("config.mining_little_maid.section.mining");
+                .translation("config.mininglittlemaid.section.mining");
 
         MAX_VEIN_SIZE = builder
                 .comment("矿脉连锁最大块数（仅好感度等级 3 生效）")

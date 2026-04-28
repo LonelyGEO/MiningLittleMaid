@@ -17,6 +17,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
 import com.github.lonelygeo.mininglittlemaid.config.Config;
+import com.github.lonelygeo.mininglittlemaid.MiningLittleMaid;
 import com.github.lonelygeo.mininglittlemaid.inventory.container.MiningTaskConfigContainer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.SimpleMenuProvider;
@@ -29,7 +30,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 public class TaskMining implements IFarmTask {
-    private static final ResourceLocation UID = ResourceLocation.fromNamespaceAndPath("mining_little_maid", "mining");
+    private static final ResourceLocation UID = ResourceLocation.fromNamespaceAndPath(MiningLittleMaid.MOD_ID, "mining");
     private static final int VERTICAL_SEARCH_RANGE = 16;
     private static final Logger LOGGER = LogManager.getLogger();
     private static final int ORE_ALERT_COOLDOWN = 200;
@@ -166,7 +167,7 @@ public class TaskMining implements IFarmTask {
         return new SimpleMenuProvider(
                 (containerId, inventory, player) ->
                         new MiningTaskConfigContainer(containerId, inventory, entityId),
-                Component.translatable("task.mining_little_maid.mining.config"));
+                Component.translatable("task.mininglittlemaid.mining.config"));
     }
 
     private boolean hasPickaxe(EntityMaid maid) {

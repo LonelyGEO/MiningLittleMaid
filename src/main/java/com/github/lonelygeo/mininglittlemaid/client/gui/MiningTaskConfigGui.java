@@ -19,19 +19,19 @@ public class MiningTaskConfigGui extends MaidTaskConfigGui<MiningTaskConfigConta
     protected void initAdditionWidgets() {
         EntityMaid maid = getMaid();
         boolean enabled = MaidMineBreakTask.isChatNotifyEnabled(maid);
-        Component btnText = Component.translatable("gui.mining_little_maid.chat_notify")
+        Component btnText = Component.translatable("gui.mininglittlemaid.chat_notify")
                 .append(": ")
                 .append(Component.translatable(enabled
-                        ? "gui.mining_little_maid.option.on"
-                        : "gui.mining_little_maid.option.off"));
+                        ? "gui.mininglittlemaid.option.on"
+                        : "gui.mininglittlemaid.option.off"));
         Button toggleBtn = Button.builder(btnText, btn -> {
                     MaidMineBreakTask.toggleChatNotify(maid);
                     boolean newState = MaidMineBreakTask.isChatNotifyEnabled(maid);
-                    btn.setMessage(Component.translatable("gui.mining_little_maid.chat_notify")
+                    btn.setMessage(Component.translatable("gui.mininglittlemaid.chat_notify")
                             .append(": ")
                             .append(Component.translatable(newState
-                                    ? "gui.mining_little_maid.option.on"
-                                    : "gui.mining_little_maid.option.off")));
+                                    ? "gui.mininglittlemaid.option.on"
+                                    : "gui.mininglittlemaid.option.off")));
                 })
                 .pos(leftPos + 86, topPos + 52)
                 .size(164, 20)

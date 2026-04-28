@@ -19,7 +19,7 @@ import java.util.function.Supplier;
 
 @Mod(MiningLittleMaid.MOD_ID)
 public class MiningLittleMaid {
-    public static final String MOD_ID = "mining_little_maid";
+    public static final String MOD_ID = "mininglittlemaid";
 
     public static final DeferredRegister<MenuType<?>> MENU_TYPES =
             DeferredRegister.create(Registries.MENU, MOD_ID);
