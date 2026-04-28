@@ -43,6 +43,16 @@ public class MiningTaskConfigGui extends MaidTaskConfigGui<MiningTaskConfigConta
     }
 
     @Override
+    public void init() {
+        long window = Minecraft.getInstance().getWindow().getWindow();
+        double[] mx = new double[1];
+        double[] my = new double[1];
+        org.lwjgl.glfw.GLFW.glfwGetCursorPos(window, mx, my);
+        super.init();
+        org.lwjgl.glfw.GLFW.glfwSetCursorPos(window, mx[0], my[0]);
+    }
+
+    @Override
     protected void renderBg(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
         super.renderBg(graphics, partialTicks, mouseX, mouseY);
         graphics.blit(BG, leftPos + PANEL_X_OFFSET, topPos + PANEL_Y_OFFSET, 0, 0, imageWidth, BG_HEIGHT);
