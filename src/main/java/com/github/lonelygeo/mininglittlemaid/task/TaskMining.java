@@ -95,7 +95,7 @@ public class TaskMining implements IFarmTask {
         if (!hasPickaxe(maid)) {
             return false;
         }
-        return MiningFavorGate.isMineableOre(cropState);
+        return MiningFavorGate.isMineableOre(maid, cropState);
     }
 
     @Override

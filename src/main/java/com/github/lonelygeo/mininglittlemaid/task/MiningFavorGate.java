@@ -1,6 +1,7 @@
 package com.github.lonelygeo.mininglittlemaid.task;
 
 import com.github.lonelygeo.mininglittlemaid.MiningLittleMaid;
+import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -64,8 +65,15 @@ public class MiningFavorGate {
     }
 
     private static String getBaseOreName(BlockState state) {
-        return BuiltInRegistries.BLOCK.getKey(state.getBlock())
-                .getPath().replace("deepslate_", "");
+        return getOreGroupKey(state);
+    }
+
+    public static String getOreGroupKey(BlockState state) {
+        return getOreGroupKey(BuiltInRegistries.BLOCK.getKey(state.getBlock()).getPath());
+    }
+
+    public static String getOreGroupKey(String path) {
+        return path.replace("deepslate_", "").replace("nether_", "");
     }
 
     /**
@@ -83,6 +91,10 @@ public class MiningFavorGate {
 
     public static boolean isMineableOre(BlockState state) {
         return state.is(MINEABLE_ORES);
+    }
+
+    public static boolean isMineableOre(EntityMaid maid, BlockState state) {
+        return state.is(MINEABLE_ORES) && OreToggleManager.isOreEnabled(maid, state);
     }
 
     /**

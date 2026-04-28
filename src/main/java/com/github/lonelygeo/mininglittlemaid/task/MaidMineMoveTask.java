@@ -63,7 +63,7 @@ public class MaidMineMoveTask extends MaidCheckRateTask {
                     for (int dz = -sniffRadius; dz <= sniffRadius; dz++) {
                         BlockPos checkPos = pos.offset(dx, dy, dz);
                         BlockState state = world.getBlockState(checkPos);
-                        if (MiningFavorGate.isMineableOre(state)
+                        if (MiningFavorGate.isMineableOre(maid, state)
                                 && task.canHarvest(maid, checkPos, state)
                                 && MiningFavorGate.hasReachableExposedFace(world, pos, checkPos)) {
                             this.adjacentOrePos = checkPos.immutable();

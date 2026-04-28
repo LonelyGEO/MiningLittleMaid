@@ -156,7 +156,7 @@ public class MaidMineBreakTask extends Behavior<EntityMaid> {
                 if (!visited.contains(neighborPos)) {
                     visited.add(neighborPos.immutable());
                     BlockState neighborState = world.getBlockState(neighborPos);
-                    if (MiningFavorGate.isMineableOre(neighborState)
+                    if (MiningFavorGate.isMineableOre(maid, neighborState)
                             && MiningFavorGate.isSameOreType(firstState, neighborState)) {
                         queue.add(neighborPos.immutable());
                     }
@@ -164,7 +164,7 @@ public class MaidMineBreakTask extends Behavior<EntityMaid> {
             }
 
             BlockState currentState = world.getBlockState(current);
-            if (!MiningFavorGate.isMineableOre(currentState) || !maid.canDestroyBlock(current)) {
+            if (!MiningFavorGate.isMineableOre(maid, currentState) || !maid.canDestroyBlock(current)) {
                 continue;
             }
             if (!maid.destroyBlock(current)) {
@@ -183,7 +183,7 @@ public class MaidMineBreakTask extends Behavior<EntityMaid> {
                 for (int z = -3; z <= 3; z++) {
                     mutablePos.setWithOffset(maidPos, x, y, z);
                     BlockState state = world.getBlockState(mutablePos);
-                    if (MiningFavorGate.isMineableOre(state)
+                    if (MiningFavorGate.isMineableOre(maid, state)
                             && task.canHarvest(maid, mutablePos, state)) {
                         return mutablePos.immutable();
                     }

@@ -10,6 +10,7 @@
     "message.mininglittlemaid.inventory_full": "%s: Inventory full, mining stopped",
     "message.mininglittlemaid.no_torch": "%s: Needs a torch, but none in inventory",
     "gui.mininglittlemaid.chat_notify": "Show Mining Alert",
+    "gui.mininglittlemaid.ore_toggles": "Mineable Ores",
     "gui.mininglittlemaid.option.on": "ON",
     "gui.mininglittlemaid.option.off": "OFF",
     "config.mininglittlemaid.section.mining": "Mining",

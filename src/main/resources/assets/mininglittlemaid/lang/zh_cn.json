@@ -10,6 +10,7 @@
     "message.mininglittlemaid.inventory_full": "%s: 背包已满，停止采矿",
     "message.mininglittlemaid.no_torch": "%s: 需要火把，但背包里没有",
     "gui.mininglittlemaid.chat_notify": "显示挖矿提示",
+    "gui.mininglittlemaid.ore_toggles": "挖掘矿石开关",
     "gui.mininglittlemaid.option.on": "开启",
     "gui.mininglittlemaid.option.off": "关闭",
     "config.mininglittlemaid.section.mining": "采矿",
