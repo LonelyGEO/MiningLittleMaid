@@ -86,11 +86,15 @@ public class MaidMineMoveTask extends MaidCheckRateTask {
             } else {
                 Config.debugLog(LOGGER,"No ore from BFS or ceiling scan, wandering near owner");
                 BlockPos ownerPos = maid.getOwner().blockPosition();
-            int wanderH = Config.WANDER_RADIUS_H.get();
-            int wanderV = Config.WANDER_RADIUS_V.get();
-            int x = ownerPos.getX() + maid.getRandom().nextInt(wanderH) - wanderH / 2;
-            int y = ownerPos.getY() + maid.getRandom().nextInt(wanderV) - wanderV / 2;
-            int z = ownerPos.getZ() + maid.getRandom().nextInt(wanderH) - wanderH / 2;
+                int wanderH = Config.WANDER_RADIUS_H.get();
+                int wanderV = Config.WANDER_RADIUS_V.get();
+                int x = ownerPos.getX() + maid.getRandom().nextInt(wanderH * 2 + 1) - wanderH;
+                int y = ownerPos.getY() + maid.getRandom().nextInt(3) - 1;
+                int z = ownerPos.getZ() + maid.getRandom().nextInt(wanderH * 2 + 1) - wanderH;
+                if (Math.abs(x - ownerPos.getX()) + Math.abs(z - ownerPos.getZ()) < 2) {
+                    x = ownerPos.getX() + (maid.getRandom().nextBoolean() ? wanderH : -wanderH);
+                    z = ownerPos.getZ() + (maid.getRandom().nextBoolean() ? wanderH : -wanderH);
+                }
                 BehaviorUtils.setWalkAndLookTargetMemories(maid, new BlockPos(x, y, z), movementSpeed * 0.5f, 2);
             }
         }
