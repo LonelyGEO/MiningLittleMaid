@@ -25,3 +25,9 @@ description="${mod_description}"
     versionRange="[1.5.2,)"
     ordering="AFTER"
     side="BOTH"
+[[dependencies.${mod_id}]]
+    modId="cloth_config"
+    mandatory=false
+    versionRange="[15,)"
+    ordering="NONE"
+    side="CLIENT"
