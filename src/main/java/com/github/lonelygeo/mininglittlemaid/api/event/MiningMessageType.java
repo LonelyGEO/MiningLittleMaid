@@ -8,5 +8,6 @@ public enum MiningMessageType {
     ORE_BELOW,
     ORE_UNREACHABLE,
     INVENTORY_FULL,
-    NO_TORCH
+    NO_TORCH,
+    COMBAT_DETECTED
 }

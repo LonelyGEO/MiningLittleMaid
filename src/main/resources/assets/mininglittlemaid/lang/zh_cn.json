@@ -9,6 +9,7 @@
     "message.mininglittlemaid.ore_unreachable": "%s: 发现%s了但是过不去啦！绕个路吧",
     "message.mininglittlemaid.inventory_full": "%s: 背包塞爆了啦！快来找我收菜 (╯°□°)╯",
     "message.mininglittlemaid.no_torch": "%s: 好黑好暗！主人给点火把嘛 (´；ω；`)",
+    "message.mininglittlemaid.combat_detected": "%s: 前方发现%d个怪物！主人小心 (｀・ω・´)",
     "gui.mininglittlemaid.chat_notify": "聊天栏显示开关",
     "gui.mininglittlemaid.ore_toggles": "采矿工作配置界面",
     "gui.mininglittlemaid.option.on": "开启",

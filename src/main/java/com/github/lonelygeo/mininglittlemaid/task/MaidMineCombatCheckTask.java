@@ -1,5 +1,7 @@
 package com.github.lonelygeo.mininglittlemaid.task;
 
+import com.github.lonelygeo.mininglittlemaid.api.event.MiningMessageEvent;
+import com.github.lonelygeo.mininglittlemaid.api.event.MiningMessageType;
 import com.github.lonelygeo.mininglittlemaid.config.Config;
 import com.github.tartaricacid.touhoulittlemaid.api.task.IMaidTask;
 import com.github.tartaricacid.touhoulittlemaid.entity.ai.brain.task.MaidCheckRateTask;
@@ -7,14 +9,19 @@ import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.github.tartaricacid.touhoulittlemaid.entity.task.TaskManager;
 import com.github.tartaricacid.touhoulittlemaid.util.TaskEquipUtil;
 import com.google.common.collect.ImmutableMap;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.phys.AABB;
+import net.neoforged.neoforge.common.NeoForge;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MaidMineCombatCheckTask extends MaidCheckRateTask {
     private static final String ATTACK_TASK_ID = "touhou_little_maid:attack";
@@ -65,6 +72,21 @@ public class MaidMineCombatCheckTask extends MaidCheckRateTask {
             return;
         }
         Config.debugLog(LOGGER,"Combat detected, equipping weapon and switching to attack task");
+
+        Component bubbleText = Component.literal("Monsters! (｀・ω・´)");
+        maid.getChatBubbleManager().addTextChatBubble(bubbleText.getString());
+        Component msg = Component.translatable("message.mininglittlemaid.combat_detected",
+                maid.getDisplayName(), monsters.size());
+        Map<String, Object> context = new HashMap<>();
+        context.put("monster_count", monsters.size());
+        MiningMessageEvent event = new MiningMessageEvent(maid,
+                MiningMessageType.COMBAT_DETECTED, null,
+                bubbleText, msg, context);
+        NeoForge.EVENT_BUS.post(event);
+        if (!event.isCanceled() && MaidMineBreakTask.isChatNotifyEnabled(maid)
+                && maid.getOwner() instanceof ServerPlayer player) {
+            player.sendSystemMessage(msg);
+        }
 
         if (currentTask != null) {
             maid.getPersistentData().putString(RESUME_KEY, currentTask.getUid().toString());

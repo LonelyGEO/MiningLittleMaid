@@ -9,6 +9,7 @@
     "message.mininglittlemaid.ore_unreachable": "%s: Found %s but can't reach it! Find another way~",
     "message.mininglittlemaid.inventory_full": "%s: My bags are bursting! Come get your loot! (╯°□°)╯",
     "message.mininglittlemaid.no_torch": "%s: It's so dark and scary! Gimme a torch, master... (´；ω；`)",
+    "message.mininglittlemaid.combat_detected": "%s: %d monster(s) ahead! Be careful master! (｀・ω・´)",
     "gui.mininglittlemaid.chat_notify": "Chat Notification Toggle",
     "gui.mininglittlemaid.ore_toggles": "Mining Work Config",
     "gui.mininglittlemaid.option.on": "ON",
