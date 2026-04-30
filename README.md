@@ -17,6 +17,7 @@
 | 背包满停止 | 背包已满时自动停止并通知 | 无 |
 | 自动放火把 | 洞穴内亮度低于阈值自动放置火把 | 无 |
 | 遇怪切战斗 | 检测怪物自动切战斗任务，结束后切回采矿 | Lv1+ |
+| 遇怪说话 | 发现怪物时气泡+聊天栏提示，可对接 ELMAI | Lv1+ |
 | 矿石种类开关 | 每只女仆独立配置要挖的矿石，采矿 Tab 操作 | 无 |
 | 聊天栏开关 | 每只女仆独立控制是否发送系统消息 | 无 |
 | 模组工具兼容 | Item Tag 驱动，支持第三方采矿工具 | 无 |
@@ -132,8 +133,9 @@ public void onMiningMessage(MiningMessageEvent event) {
 | `ORE_UNREACHABLE` | 矿石无暴露面可达 |
 | `INVENTORY_FULL` | 背包已满 |
 | `NO_TORCH` | 缺少火把 |
+| `COMBAT_DETECTED` | 发现怪物 |
 
-Context Map 可选键：`target_pos`、`y_diff`、`block_state`、`kaomoji`。
+Context Map 可选键：`target_pos`、`y_diff`、`block_state`、`kaomoji`、`monster_count`。
 
 ## Datapack 扩展
 

@@ -302,7 +302,7 @@ For changes under `network`:
 | MAJOR (`x.0.0`) | 功能基本完整时升至 `1.0.0`；架构重写或 MC 版本升级 |
 
 规则：
-- 版本号变更单独一条 commit，格式 `release: 0.x.y`
+- 版本号变更单独一条 commit，格式 `release: 1.x.y`
 - PATCH、MINOR 级别（Bug 修复、参数微调、语言文件补充）Agent 可自行决定并变更，无需等待确认
 - MAJOR 版本迭代前**必须向用户确认**，不得自行决定发版
 - 发版时在 `WorkingPlan.md` 记录该版本已完成的功能
